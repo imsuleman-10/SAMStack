@@ -1,0 +1,2 @@
+FirebaseError: [code=not-found]: Request failed with error: The database (default) does not exist for project samstack-tech Please visit https://console.cloud.google.com/datastore/setup?project=samstack-tech to add a Cloud Datastore or Cloud Firestore database. 
+FirebaseError: Request failed with error: The database (default) does not exist for project samstack-tech Please visit https://console.cloud.google.com/datastore/setup?project=samstack-tech to add a Cloud Datastore or Cloud Firestore database. 

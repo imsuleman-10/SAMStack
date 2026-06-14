@@ -1,0 +1,125 @@
+{
+  "counters": {
+    "lastAssignedSequence": 3
+  },
+  "interns": [
+    {
+      "fullName": "Suleman Zaheer",
+      "email": "alisuleman492440@gmail.com",
+      "trackSelected": "MERN",
+      "university": "Not Specified",
+      "id": "intern-1779039500723-rcu9x78s2",
+      "rollNumber": "SAM-2026-0001",
+      "applicationTimestamp": "2026-05-17T17:38:20.724Z",
+      "status": "APPROVED",
+      "submissionData": {
+        "submissionTimestamp": "2026-05-17T17:40:21.529Z",
+        "githubRepositoryUrl": "https://github.com/imsuleman-10",
+        "liveDeploymentUrl": "https://suleman-zaheer.web.app",
+        "studentNotes": "",
+        "completedTaskCount": 3,
+        "completedTasks": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "fullName": "Awais",
+      "email": "kmawais412@gmail.com",
+      "trackSelected": "REACT",
+      "university": "Not Specified",
+      "id": "intern-1779095426593-q7ol9653a",
+      "rollNumber": "SAM-2026-0002",
+      "applicationTimestamp": "2026-05-18T09:10:26.594Z",
+      "status": "SUBMITTED",
+      "submissionData": {
+        "submissionTimestamp": "2026-05-18T09:11:53.344Z",
+        "githubRepositoryUrl": "https://github.com/imsuleman-10",
+        "liveDeploymentUrl": "https://suleman-zaheer.web.app/",
+        "studentNotes": "",
+        "completedTaskCount": 5,
+        "completedTasks": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "fullName": "abdullah",
+      "email": "syedabdullah1919@gmail.com",
+      "trackSelected": "MERN",
+      "university": "Not Specified",
+      "id": "intern-1779257196141-dsqhbqgfn",
+      "rollNumber": "SAM-2026-0003",
+      "applicationTimestamp": "2026-05-20T06:06:36.141Z",
+      "status": "SUBMITTED",
+      "submissionData": {
+        "submissionTimestamp": "2026-05-20T06:08:05.914Z",
+        "githubRepositoryUrl": "https://github.com/imsuleman-10",
+        "liveDeploymentUrl": "https://suleman-zaheer.web.app/",
+        "studentNotes": "",
+        "completedTaskCount": 3,
+        "completedTasks": [
+          1,
+          0,
+          2
+        ]
+      }
+    }
+  ],
+  "certificates": [
+    {
+      "certificateNumber": "SAM-CERT-2026-DD1618B0",
+      "associatedRollNumber": "SAM-2026-0001",
+      "recipientName": "Suleman Zaheer",
+      "trackTitle": "Full Stack MERN Enterprise Ecosystems",
+      "issuanceDate": "2026-05-17T17:40:49.281Z",
+      "isValid": true
+    }
+  ],
+  "posts": [
+    {
+      "id": "post-1",
+      "title": "Next.js 15 & Serverless Edge: Orchestrating Decoupled Architecture",
+      "slug": "nextjs-15-serverless-edge-decoupled-architecture",
+      "excerpt": "How to architecture high-throughput full-stack endpoints with sub-50ms Edge compute times and zero infrastructure costs.",
+      "contentMarkdown": "## Decoupling Serverless Functions from Rendering Engines\n\nIn traditional serverless applications, the user's client request waits synchronously for slow back-end operations to finish. This creates a double penalty:\n1. **LCP & UX Degradation:** The client experiences high-latency white screens.\n2. **Compute Cost Exhaustion:** The serverless function remains warm and active, eating into execution budgets.\n\n### The SAMStack Philosophy: Decoupled Queueing\n\nAt **SAMStack Tech**, we resolve this by enforcing a zero-wait execution cycle. When an intern applies, we process the metadata and database entries synchronously in under **10ms**, and immediately dispatch an asynchronous trigger to a Google Apps Script webhook running in the background.\n\n```javascript\n// Immediate edge return context\nconst applyTx = await db.runTransaction(async (transaction) => {\n  const counterDoc = await transaction.get(counterRef);\n  const nextSeq = counterDoc.data().lastAssignedSequence + 1;\n  transaction.update(counterRef, { lastAssignedSequence: nextSeq });\n  \n  const rollNumber = `SAM-2026-${String(nextSeq).padStart(4, '0')}`;\n  transaction.set(internRef, { ...profile, rollNumber });\n  return rollNumber;\n});\n\n// Asynchronous trigger (Fire and Forget)\nfetch(process.env.GAS_WEBHOOK_URL, {\n  method: 'POST',\n  body: JSON.stringify({ ...payload, rollNumber }),\n}).catch(console.error);\n\nreturn NextResponse.json({ rollNumber }, { status: 201 });\n```\n\nBy offloading PDF rendering and SMTP mailing to the Google Workspace cloud environment, our Edge handlers remain lightning fast, achieving perfect LCP scores while maintaining $0 operational costs.",
+      "author": {
+        "name": "Suleman Zaheer",
+        "role": "Founder & Lead Engineer",
+        "avatarUrl": "/avatars/suleman.jpg"
+      },
+      "tags": [
+        "NEXTJS",
+        "DEVOPS",
+        "SERVERLESS"
+      ],
+      "publishedAt": "2026-05-15T08:00:00.000Z",
+      "isFeatured": true
+    },
+    {
+      "id": "post-2",
+      "title": "The Anatomy of Obsidian Aesthetics: Designing Dark-Luxury UI Panels",
+      "slug": "anatomy-of-obsidian-aesthetics-dark-luxury-ui",
+      "excerpt": "A deep dive into professional contrast, glassmorphism filters, variable HSL spacing, and layout scaling rules.",
+      "contentMarkdown": "## Core Luxury Design Principles\n\nElite software studios require elite brand validation. The aesthetic standard of your portals directly correlates to the premium value your enterprise provides. We avoid generic, high-brightness primary colors, opting instead for deep obsidian base scales, fine light-border layouts, and dynamic neon cybernetic accents.\n\n### Color Coordinate Reference Systems\n\nTo establish proper dark luxury, avoid absolute flat black (`#000000`). We utilize a deep, layered sapphire-obsidian slate palette:\n\n*   **Primary Background:** `#0b0f19` (Deep Midnight Slate)\n*   **Card Containers:** `rgba(17, 24, 39, 0.65)` (Glassmorphism overlay)\n*   **Borders:** `1px solid rgba(255, 255, 255, 0.08)` (Faint white outline)\n*   **Cyber Highlight:** `#06b6d4` (Neon Cyan glow)\n\n### The Magic of Glassmorphism\n\nStandard cards feel heavy. Glass containers feel alive because they allow background textures to bleed through. Accomplish this dynamically using pure CSS properties:\n\n```css\n.luxury-card {\n  background: rgba(17, 24, 39, 0.65);\n  backdrop-filter: blur(16px);\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  border-radius: 12px;\n  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);\n  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n}\n\n.luxury-card:hover {\n  border-color: rgba(6, 182, 212, 0.4);\n  box-shadow: 0 0 25px rgba(6, 182, 212, 0.15);\n  transform: translateY(-2px);\n}\n```\n\nApplying smooth CSS transformations and subtle cyan-glowing shadows on hover elements provides candidates with micro-feedback mechanisms that feel premium, fluid, and robust.",
+      "author": {
+        "name": "Suleman Zaheer",
+        "role": "Founder & Lead Engineer",
+        "avatarUrl": "/avatars/suleman.jpg"
+      },
+      "tags": [
+        "UI_UX",
+        "CSS",
+        "BRANDING"
+      ],
+      "publishedAt": "2026-05-16T12:00:00.000Z",
+      "isFeatured": false
+    }
+  ]
+}
