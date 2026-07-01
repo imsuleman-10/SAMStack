@@ -259,9 +259,15 @@ export default function VerificationPortal() {
                     </div>
                   </div>
                 )}
+
+                <div className="pt-4 border-t border-slate-100 dark:border-neutral-800 flex justify-center">
+                  <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold font-mono text-xs uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transform hover:-translate-y-0.5">
+                    View High-Res PDF <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             ) : (
-              <div className="hover-lift bg-white dark:bg-neutral-950/80 border border-slate-200 dark:border-rose-500/20 rounded-2xl shadow-xl dark:shadow-[0_0_50px_rgba(244,63,94,0.05)] relative overflow-hidden p-8 sm:p-10 space-y-6">
+              <div className="animate-shake hover-lift bg-white dark:bg-neutral-950/80 border border-slate-200 dark:border-rose-500/20 rounded-2xl shadow-xl dark:shadow-[0_0_50px_rgba(244,63,94,0.05)] relative overflow-hidden p-8 sm:p-10 space-y-6">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 dark:bg-rose-500/10 rounded-full filter blur-2xl pointer-events-none" />
                 <div className="absolute top-0 left-0 w-full h-[3px] bg-rose-500" />
 

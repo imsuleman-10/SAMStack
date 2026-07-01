@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Search, Filter } from "lucide-react";
 
 interface DashboardFiltersProps {
@@ -52,7 +52,7 @@ function Select({ value, onChange, options }: { value: string; onChange: (v: str
   );
 }
 
-export function DashboardFilters({
+export const DashboardFilters = React.memo(function DashboardFilters({
   activeTab,
   searchTerm,
   setSearchTerm,
@@ -61,14 +61,29 @@ export function DashboardFilters({
   selectedTrack,
   setSelectedTrack
 }: DashboardFiltersProps) {
+  const [localSearch, setLocalSearch] = useState(searchTerm);
+
+  useEffect(() => {
+    setLocalSearch(searchTerm);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (localSearch !== searchTerm) {
+        setSearchTerm(localSearch);
+      }
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [localSearch, setSearchTerm, searchTerm]);
+
   return (
     <div className="glass-card rounded-xl p-4 flex flex-col md:flex-row gap-4 items-center justify-between">
       <div className="relative w-full md:max-w-xs shrink-0">
         <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
         <input
           type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={localSearch}
+          onChange={(e) => setLocalSearch(e.target.value)}
           placeholder={activeTab === "INTERNS" ? "Search by name, roll, university..." : "Search client name, email, budget, service..."}
           className="w-full pl-9 pr-4 py-2.5 text-xs rounded-lg placeholder:text-slate-400 bg-white/70 dark:bg-black/30 border border-slate-200 dark:border-white/10 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/40 text-slate-900 dark:text-white transition-all"
         />
@@ -98,4 +113,4 @@ export function DashboardFilters({
       </div>
     </div>
   );
-}
+});

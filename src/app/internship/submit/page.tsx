@@ -116,7 +116,7 @@ export default function WorkSubmissionPortal() {
         return;
       }
     } else {
-      if (!liveUrl.trim().startsWith("https://")) {
+      if (liveUrl.trim() !== "" && !liveUrl.trim().startsWith("https://")) {
         setError("Live Staging Deployment URL must start with 'https://'");
         return;
       }
@@ -392,10 +392,9 @@ export default function WorkSubmissionPortal() {
                               onChange={(e) => setLiveUrl(e.target.value)}
                               placeholder="https://your-app.vercel.app"
                               className="w-full pl-10 pr-4 py-3 text-sm rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-200 dark:border-neutral-800 text-slate-950 dark:text-white outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 placeholder-slate-400 transition-all font-mono"
-                              required
                             />
                           </div>
-                          <p className="text-[10px] text-slate-500 font-mono">Required: Live staging endpoint (e.g. Vercel, Netlify, or similar).</p>
+                          <p className="text-[10px] text-slate-500 font-mono">Optional: Live staging endpoint (e.g. Vercel, Netlify, or similar).</p>
                         </div>
                       )}
 

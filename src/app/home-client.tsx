@@ -31,15 +31,15 @@ import { motion, useScroll, useTransform } from "framer-motion";
 // ─── Data ─────────────────────────────────────────────────
 
 const stats = [
-  { icon: ServerCog, label: "Enterprise Deployments", value: "14+", note: "Global Scale", color: "text-brand-600 dark:text-brand-400", bg: "bg-brand-50 dark:bg-brand-950/50 border-brand-200 dark:border-brand-900" },
-  { icon: Shield,    label: "Uptime Guarantee",        value: "99.9%", note: "Zero-Downtime",  color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-900" },
-  { icon: Clock,     label: "Response Time",            value: "<12h",  note: "Priority Support", color: "text-indigo-600 dark:text-indigo-400", bg: "bg-indigo-50 dark:bg-indigo-950/50 border-indigo-200 dark:border-indigo-900" },
-  { icon: Star,      label: "Client Satisfaction",      value: "9.9/10",note: "Avg NPS Score",  color: "text-amber-600 dark:text-amber-400",  bg: "bg-amber-50 dark:bg-amber-950/50 border-amber-200 dark:border-amber-900" },
+  { icon: ServerCog, label: "Enterprise Deployments", value: "14+",    note: "Global Scale",    color: "text-brand-600 dark:text-brand-400",   bg: "bg-brand-50/60 dark:bg-brand-950/30 border-brand-200 dark:border-brand-900",     image: "/images/img-global-scale.jpg" },
+  { icon: Shield,    label: "Uptime Guarantee",       value: "99.9%",  note: "Zero-Downtime",   color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50/60 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900", image: "/images/img-server-rack.jpg" },
+  { icon: Clock,     label: "Response Time",           value: "<12h",  note: "Priority Support", color: "text-indigo-600 dark:text-indigo-400",  bg: "bg-indigo-50/60 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-900",   image: "/images/img-matrix-code.jpg" },
+  { icon: Star,      label: "Client Satisfaction",     value: "9.9/10",note: "Avg NPS Score",    color: "text-amber-600 dark:text-amber-400",    bg: "bg-amber-50/60 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900",      image: "/images/img-team-meeting.jpg" },
 ];
 
 const team = [
   {
-    image: "/team-1.png",
+    image: "/suleman.jpg",
     initials: "SZ",
     name: "Suleman Zaheer",
     role: "Founder & DevOps Lead",
@@ -51,7 +51,7 @@ const team = [
     to: "to-indigo-600",
   },
   {
-    image: "/team-2.png",
+    image: "/saqib.jpg",
     initials: "SJ",
     name: "Saqib Javed",
     role: "Frontend Engineer",
@@ -63,7 +63,7 @@ const team = [
     to: "to-teal-500",
   },
   {
-    image: "/team-3.png",
+    image: "/abdullah.png",
     initials: "SA",
     name: "Syed Abdullah",
     role: "Backend Engineer",
@@ -77,10 +77,10 @@ const team = [
 ];
 
 const process = [
-  { step: "01", title: "Discovery Call",      desc: "30-minute focused session to discuss your requirements, goals, and technical constraints.",                     emoji: "🎯" },
-  { step: "02", title: "Architecture Draft",  desc: "Our engineers produce a detailed systems blueprint tailored to your stack and business objectives.",            emoji: "📐" },
-  { step: "03", title: "Agile Build Sprints", desc: "Development in structured 2-week sprints with demos, feedback loops, and milestone gates.",                     emoji: "⚡" },
-  { step: "04", title: "Deploy & Support",    desc: "Production deployment, live telemetry monitoring, and post-launch engineering support included.",               emoji: "🚀" },
+  { step: "01", title: "Discovery Call",      desc: "30-minute focused session to discuss your requirements, goals, and technical constraints.",              emoji: "🎯", image: "/images/img-discovery.jpg" },
+  { step: "02", title: "Architecture Draft",  desc: "Our engineers produce a detailed systems blueprint tailored to your stack and business objectives.",     emoji: "📐", image: "/images/img-servers.jpg" },
+  { step: "03", title: "Agile Build Sprints", desc: "Development in structured 2-week sprints with demos, feedback loops, and milestone gates.",              emoji: "⚡", image: "/images/img-coding-laptop.jpg" },
+  { step: "04", title: "Deploy & Support",    desc: "Production deployment, live telemetry monitoring, and post-launch engineering support included.",        emoji: "🚀", image: "/images/img-ai-tech.jpg" },
 ];
 
 // ─── Main Component ────────────────────────────────────────
@@ -98,9 +98,9 @@ export default function HomeClient() {
           ═══════════════════════════════════════════════════ */}
       <section
         ref={heroRef}
-        className="relative min-h-[100dvh] w-full flex flex-col justify-center items-center pt-20"
+        className="z-0 overflow-hidden relative min-h-[100dvh] w-full flex flex-col justify-center items-center pt-20 group/section"
       >
-        {/* Video */}
+        {/* No background image on section - clean solid background */}{/* Video */}
         <div className="absolute inset-0">
           <video autoPlay loop muted playsInline className="w-full h-full object-cover" src="/hero-video.mp4" />
           <div className="absolute inset-0 bg-white/50 dark:bg-black/60 backdrop-blur-[2px]" />
@@ -133,9 +133,9 @@ export default function HomeClient() {
               Start a Project
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-brand-400 dark:text-brand-600" />
             </Link>
-            <Link href="/services" className="inline-flex items-center gap-2 px-9 py-4 text-sm font-bold uppercase tracking-widest text-slate-900 dark:text-white bg-black/5 dark:bg-white/10 backdrop-blur-md hover:bg-black/10 dark:hover:bg-white/20 border border-black/10 dark:border-white/25 rounded-xl transition-all duration-200">
+            <Link href="/services" className="inline-flex items-center gap-2 px-9 py-4 text-sm font-bold uppercase tracking-widest text-white bg-brand-600 hover:bg-brand-500 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:shadow-brand-500/25">
               Our Services
-              <Layers className="w-4 h-4 text-brand-600 dark:text-cyan-300" />
+              <Layers className="w-4 h-4 text-white" />
             </Link>
           </div>
 
@@ -178,13 +178,11 @@ export default function HomeClient() {
         </div>
       </section>
 
-
-
       {/* ═══════════════════════════════════════════════════
           SECTION 2: STATS (exact h-screen)
           ═══════════════════════════════════════════════════ */}
-      <section className="min-h-[100dvh] flex flex-col justify-center bg-slate-50 dark:bg-black pt-[80px] pb-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto w-full space-y-6">
+      <section className="z-0 overflow-hidden relative min-h-[100dvh] flex flex-col justify-center bg-slate-50 dark:bg-black pt-[80px] pb-8 px-4 sm:px-6 lg:px-8 group/section">
+        {/* No background image on section - clean solid background */}<div className="z-10 relative max-w-7xl mx-auto w-full space-y-6">
           <AnimateOnScroll variant="fadeUp">
             <div className="text-center space-y-4">
               <div className="flex justify-center">
@@ -202,12 +200,16 @@ export default function HomeClient() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {stats.map((s, i) => (
               <AnimateOnScroll key={s.label} delay={0.1 * i} variant="fadeUp">
-                <div className={`p-4 sm:p-5 rounded-2xl border ${s.bg} text-center space-y-2 hover:scale-105 transition-transform duration-300`}>
-                  <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl ${s.bg} border flex items-center justify-center mx-auto`}>
+                <div className={`relative overflow-hidden group/card p-4 sm:p-5 rounded-2xl border ${s.bg} text-center space-y-2 hover:scale-105 transition-all duration-300`}>
+                  {/* Background image */}
+                  <div className="absolute inset-0 z-0 pointer-events-none rounded-[inherit] overflow-hidden">
+                    <Image src={s.image} alt={s.label} fill className="object-cover opacity-[0.06] group-hover/card:opacity-[0.12] transition-opacity duration-500 mix-blend-luminosity" />
+                  </div>
+                  <div className={`relative z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-xl ${s.bg} border flex items-center justify-center mx-auto`}>
                     <s.icon className={`w-6 h-6 ${s.color}`} />
                   </div>
-                  <p className={`text-2xl sm:text-3xl lg:text-4xl font-extrabold font-heading ${s.color}`}>{s.value}</p>
-                  <div>
+                  <p className={`relative z-10 text-2xl sm:text-3xl lg:text-4xl font-extrabold font-heading ${s.color}`}>{s.value}</p>
+                  <div className="relative z-10">
                     <p className="text-xs font-bold text-slate-800 dark:text-slate-200 font-heading uppercase tracking-wide">{s.label}</p>
                     <p className="text-xs text-slate-500 dark:text-slate-500 mt-0.5">{s.note}</p>
                   </div>
@@ -220,15 +222,19 @@ export default function HomeClient() {
           <AnimateOnScroll variant="fadeUp" delay={0.3}>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
               {[
-                { icon: Shield, label: "Full NDA Protection", desc: "All submitted project ideas are protected under a strict mutual NDA before any discussion." },
-                { icon: Zap,    label: "< 12h Guaranteed Response", desc: "Every inquiry gets a personalised reply from a senior engineer — no bots, no delays." },
-                { icon: Award,  label: "Quality Guaranteed", desc: "We stand behind every line of code. Unlimited revisions until you are satisfied." },
-              ].map((item) => (
-                <div key={item.label} className="flex items-start gap-4 p-3 sm:p-4 rounded-2xl bg-white dark:bg-neutral-950 border border-slate-200 dark:border-neutral-800 shadow-sm">
-                  <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800/40 flex items-center justify-center shrink-0">
+                { icon: Shield, label: "Full NDA Protection",       desc: "All submitted project ideas are protected under a strict mutual NDA before any discussion.", image: "/images/img-mobile-dev.jpg" },
+                { icon: Zap,    label: "< 12h Guaranteed Response",  desc: "Every inquiry gets a personalised reply from a senior engineer — no bots, no delays.",         image: "/images/img-design-tools.jpg" },
+                { icon: Award,  label: "Quality Guaranteed",          desc: "We stand behind every line of code. Unlimited revisions until you are satisfied.",                image: "/images/img-analytics.jpg" },
+              ].map((item, idx) => (
+                <div key={item.label} className="relative overflow-hidden group/card flex items-start gap-4 p-3 sm:p-4 rounded-2xl bg-white/70 dark:bg-neutral-950/70 border border-slate-200 dark:border-neutral-800 shadow-sm transition-all duration-300 hover:border-brand-300 dark:hover:border-brand-700">
+                  {/* Background image */}
+                  <div className="absolute inset-0 z-0 pointer-events-none rounded-[inherit] overflow-hidden">
+                    <Image src={item.image} alt={item.label} fill className="object-cover opacity-[0.06] group-hover/card:opacity-[0.12] transition-opacity duration-500 mix-blend-luminosity" />
+                  </div>
+                  <div className="relative z-10 w-7 h-7 sm:w-9 sm:h-9 rounded-xl bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800/40 flex items-center justify-center shrink-0">
                     <item.icon className="w-4 h-4 text-brand-600 dark:text-brand-400" />
                   </div>
-                  <div>
+                  <div className="relative z-10">
                     <p className="text-xs font-bold text-slate-900 dark:text-white font-heading mb-0.5">{item.label}</p>
                     <p className="text-xs text-slate-500 dark:text-slate-500 leading-relaxed">{item.desc}</p>
                   </div>
@@ -242,8 +248,8 @@ export default function HomeClient() {
       {/* ═══════════════════════════════════════════════════
           SECTION 3: SERVICES
           ═══════════════════════════════════════════════════ */}
-      <section className="min-h-[100dvh] flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-neutral-950">
-        <div className="max-w-7xl mx-auto w-full space-y-10">
+      <section className="z-0 overflow-hidden relative min-h-[100dvh] flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-neutral-950 group/section">
+        {/* No background image on section - clean solid background */}<div className="z-10 relative max-w-7xl mx-auto w-full space-y-10">
           <AnimateOnScroll variant="fadeUp">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white font-heading">
               Transform Your Business
@@ -253,15 +259,15 @@ export default function HomeClient() {
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
             {services.map((svc, i) => (
               <AnimateOnScroll key={svc.id} delay={0.08 * i} variant="fadeUp" className="h-full">
-                <div className="relative h-[200px] sm:h-[260px] lg:h-[300px] w-full rounded-2xl overflow-hidden group shadow-lg hover:shadow-2xl transition-all duration-300">
+                <div className="relative h-[200px] sm:h-[260px] lg:h-[300px] w-full rounded-2xl overflow-hidden group/card shadow-lg hover:shadow-2xl transition-all duration-300">
                   <Image 
                     src={svc.image} 
                     alt={svc.title} 
                     fill 
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-110" 
+                    className="object-cover transition-transform duration-700 group-hover/card:scale-110" 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/20 to-black/60 transition-opacity duration-300 group-hover:opacity-80" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/20 to-black/60 transition-opacity duration-300 group-hover/card:opacity-80" />
                   
                   <div className="absolute inset-0 p-6 flex flex-col justify-start">
                     <h3 className="text-xl sm:text-2xl font-bold text-white font-heading leading-snug drop-shadow-md">
@@ -270,7 +276,7 @@ export default function HomeClient() {
                   </div>
 
                   {/* Optional: Show description on hover like a sleek reveal */}
-                  <div className="absolute bottom-0 left-0 w-full p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-black/90 to-transparent">
+                  <div className="absolute bottom-0 left-0 w-full p-6 translate-y-full group-hover/card:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-black/90 to-transparent">
                     <p className="text-xs text-white/90 leading-relaxed mb-3 line-clamp-3">{svc.description}</p>
                     <Link href={`/contact?service=${svc.id}`} className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-cyan-400 hover:text-cyan-300 transition-colors">
                       Inquire <ArrowUpRight className="w-3.5 h-3.5" />
@@ -286,9 +292,8 @@ export default function HomeClient() {
       {/* ═══════════════════════════════════════════════════
           NEW SECTION: TECH STACK LANDING
           ═══════════════════════════════════════════════════ */}
-      <section className="min-h-[100dvh] flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-black relative">
-        
-        <div className="max-w-7xl mx-auto w-full space-y-6 sm:space-y-8 z-10">
+      <section className="z-0 overflow-hidden min-h-[100dvh] flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-black relative group/section">
+        <div className="relative z-10 max-w-7xl mx-auto w-full space-y-6 sm:space-y-8">
           <AnimateOnScroll variant="fadeUp">
             <div className="text-center space-y-3">
               <div className="flex justify-center">
@@ -317,9 +322,9 @@ export default function HomeClient() {
               const iconSrc = (tech as any).src || `https://cdn.simpleicons.org/${tech.icon}`;
               return (
                <AnimateOnScroll key={tech.name} delay={0.05 * i} variant="fadeUp" className="h-full">
-                 <Link href={tech.href} className="block relative p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 overflow-hidden group hover:border-brand-500 transition-all shadow-sm hover:shadow-xl z-10 h-full flex flex-col justify-center">
+                 <Link href={tech.href} className="block relative p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 overflow-hidden group/card hover:border-brand-500 transition-all shadow-sm hover:shadow-xl z-10 h-full flex flex-col justify-center">
                    {/* Huge watermark logo */}
-                   <div className={`absolute -bottom-6 -right-6 w-32 h-32 sm:w-40 sm:h-40 opacity-5 dark:opacity-10 transform rotate-[-15deg] group-hover:scale-110 group-hover:-rotate-6 group-hover:opacity-20 transition-all duration-500 z-0 ${tech.name === "Next.js" || tech.name === "AWS" ? "dark:invert" : ""}`}>
+                   <div className={`absolute -bottom-6 -right-6 w-32 h-32 sm:w-40 sm:h-40 opacity-5 dark:opacity-10 transform rotate-[-15deg] group-hover/card:scale-110 group-hover/card:-rotate-6 group-hover/card:opacity-20 transition-all duration-500 z-0 ${tech.name === "Next.js" || tech.name === "AWS" ? "dark:invert" : ""}`}>
                      <Image src={iconSrc} alt={tech.name} fill className="object-contain" unoptimized />
                    </div>
                    
@@ -342,9 +347,8 @@ export default function HomeClient() {
           SECTION 4: MID-PAGE CINEMATIC LANDING BREAK
           (Full-screen dark overlay section — the "landing in the middle")
           ═══════════════════════════════════════════════════ */}
-      <section className="relative min-h-[100dvh] pt-[80px] pb-8 flex flex-col items-center justify-center bg-white dark:bg-black">
-
-        {/* Grid overlay */}
+      <section className="z-0 overflow-hidden relative min-h-[100dvh] pt-[80px] pb-8 flex flex-col items-center justify-center bg-white dark:bg-black group/section">
+        {/* No background image on section - clean solid background */}{/* Grid overlay */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
 
         <div className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto space-y-8">
@@ -401,8 +405,8 @@ export default function HomeClient() {
       {/* ═══════════════════════════════════════════════════
           SECTION 5: TEAM (exact h-screen)
           ═══════════════════════════════════════════════════ */}
-      <section className="min-h-[100dvh] flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-neutral-950">
-        <div className="max-w-7xl mx-auto w-full space-y-6">
+      <section className="z-0 overflow-hidden relative min-h-[100dvh] flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-neutral-950 group/section">
+        {/* No background image on section - clean solid background */}<div className="z-10 relative max-w-7xl mx-auto w-full space-y-6">
           <AnimateOnScroll variant="fadeUp">
             <div className="text-center space-y-3">
               <div className="flex justify-center">
@@ -420,12 +424,12 @@ export default function HomeClient() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
             {team.map((member, i) => (
               <AnimateOnScroll key={member.name} delay={0.12 * i} variant="fadeUp" className="h-full">
-                <div className="relative h-[380px] lg:h-[420px] w-full flex flex-col justify-end rounded-3xl overflow-hidden group shadow-xl hover:shadow-brand-500/20 border border-slate-200 dark:border-neutral-800 transition-all duration-500">
+                <div className="relative h-[380px] lg:h-[420px] w-full flex flex-col justify-end rounded-3xl overflow-hidden group/card shadow-xl hover:shadow-brand-500/20 border border-slate-200 dark:border-neutral-800 transition-all duration-500">
                   {/* Full Background Image */}
-                  <Image src={member.image} alt={member.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <Image src={member.image} alt={member.name} fill className="object-cover transition-transform duration-700 group-hover/card:scale-105" />
                   
                   {/* Elegant Gradient overlays */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-90 group-hover/card:opacity-100 transition-opacity duration-500" />
                   
                   {/* Badge */}
                   <div className="absolute top-4 right-4 z-20">
@@ -435,13 +439,13 @@ export default function HomeClient() {
                   </div>
 
                   {/* Content Overlay */}
-                  <div className="relative z-10 p-6 sm:p-8 flex flex-col gap-3 transform transition-transform duration-500 group-hover:-translate-y-2">
+                  <div className="relative z-10 p-6 sm:p-8 flex flex-col gap-3 transform transition-transform duration-500 group-hover/card:-translate-y-2">
                     <div>
                       <h3 className="text-2xl font-extrabold text-white font-heading tracking-tight mb-1">{member.name}</h3>
                       <p className="text-xs font-mono text-brand-400 uppercase tracking-wide">{member.role}</p>
                     </div>
                     
-                    <p className="text-sm text-slate-300 leading-relaxed line-clamp-3 opacity-80 group-hover:opacity-100 transition-opacity duration-500">
+                    <p className="text-sm text-slate-300 leading-relaxed line-clamp-3 opacity-80 group-hover/card:opacity-100 transition-opacity duration-500">
                       {member.description}
                     </p>
 
@@ -472,8 +476,8 @@ export default function HomeClient() {
       {/* ═══════════════════════════════════════════════════
           SECTION 6: PROCESS (exact h-screen)
           ═══════════════════════════════════════════════════ */}
-      <section className="min-h-[100dvh] flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-black">
-        <div className="max-w-7xl mx-auto w-full space-y-6">
+      <section className="z-0 overflow-hidden relative min-h-[100dvh] flex flex-col justify-center py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-black group/section">
+        {/* No background image on section - clean solid background */}<div className="z-10 relative max-w-7xl mx-auto w-full space-y-6">
           <AnimateOnScroll variant="fadeUp">
             <div className="text-center space-y-3">
               <div className="flex justify-center">
@@ -499,16 +503,20 @@ export default function HomeClient() {
             {/* Right: Process Steps */}
             <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
               {process.map((p, i) => (
-                <AnimateOnScroll key={p.step} delay={0.1 * i} variant="fadeUp">
-                  <div className="relative p-5 rounded-2xl bg-slate-50 dark:bg-neutral-950 border border-slate-200 dark:border-neutral-800 space-y-2 hover:border-brand-300 dark:hover:border-brand-800 transition-all duration-300">
-                    <div className="flex items-center gap-3">
+                <AnimateOnScroll key={p.step} delay={0.1 * i} variant="fadeUp" className="h-full">
+                  <div className="relative overflow-hidden group/card p-5 rounded-2xl bg-slate-50/80 dark:bg-neutral-950/80 border border-slate-200 dark:border-neutral-800 space-y-2 hover:border-brand-300 dark:hover:border-brand-800 transition-all duration-300">
+                    {/* Background image */}
+                    <div className="absolute inset-0 z-0 pointer-events-none rounded-[inherit] overflow-hidden">
+                      <Image src={p.image} alt={p.title} fill className="object-cover opacity-[0.06] group-hover/card:opacity-[0.12] transition-opacity duration-500 mix-blend-luminosity" />
+                    </div>
+                    <div className="relative z-10 flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold font-mono text-xs">
                         {i + 1}
                       </div>
                       <span className="text-xs font-bold text-slate-400 dark:text-slate-600 font-mono tracking-wide">{p.step}</span>
                     </div>
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-white font-heading">{p.title}</h3>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{p.desc}</p>
+                    <h3 className="relative z-10 text-sm font-bold text-slate-900 dark:text-white font-heading">{p.title}</h3>
+                    <p className="relative z-10 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{p.desc}</p>
                   </div>
                 </AnimateOnScroll>
               ))}
@@ -520,8 +528,8 @@ export default function HomeClient() {
       {/* ═══════════════════════════════════════════════════
           SECTION 7: QUOTE & CTA (exact h-screen)
           ═══════════════════════════════════════════════════ */}
-      <section className="min-h-[100dvh] flex flex-col justify-center items-center relative bg-slate-50 dark:bg-neutral-950 py-24 px-4 sm:px-6">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] dark:opacity-100 opacity-0" />
+      <section className="z-0 overflow-hidden min-h-[100dvh] flex flex-col justify-center items-center relative bg-slate-50 dark:bg-neutral-950 py-24 px-4 sm:px-6 group/section">
+        {/* No background image on section - clean solid background */}<div className="z-10 relative absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] dark:opacity-100 opacity-0" />
         
         <div className="relative z-10 max-w-4xl mx-auto w-full space-y-10">
           
@@ -531,7 +539,7 @@ export default function HomeClient() {
               {/* Subtle gradient glow inside card */}
               
               <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden flex-shrink-0 shadow-xl border-2 border-slate-100 dark:border-neutral-800">
-                <Image src="/founder.png" alt="Suleman Zaheer" fill className="object-cover" />
+                <Image src="/suleman.jpg" alt="Suleman Zaheer" fill className="object-cover" />
               </div>
               
               <div className="space-y-5 text-center md:text-left relative z-10 pt-1">

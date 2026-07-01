@@ -5,14 +5,14 @@ export const services = [
     id: "CUSTOM_SOFTWARE",
     slug: "custom-enterprise-software",
     title: "Custom Enterprise Software",
-    subtitle: "Performance Core",
-    description: "Low-latency systems architecture, dynamic database configurations, high-throughput backend services, and multithreaded logic engines tailored for scale.",
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200",
+    subtitle: "Scale Without Limits",
+    description: "We engineer resilient backends that prevent downtime and scale seamlessly. Stop losing revenue to system crashes; our low-latency architectures ensure your business operations remain uninterrupted, no matter the traffic.",
+    image: "/images/img-servers.jpg",
     icon: Code2,
     features: [
-      "Microservices Architecture",
+      "Zero-Downtime Architecture",
       "High-throughput APIs",
-      "Database Optimization",
+      "Revenue-Protecting Reliability",
       "Legacy System Modernization"
     ],
     techStack: ["Node.js", "Go", "PostgreSQL", "Redis"]
@@ -21,31 +21,31 @@ export const services = [
     id: "SERVERLESS_WEB",
     slug: "web-serverless-apps",
     title: "Web & Serverless Apps",
-    subtitle: "Sub-50ms Edge",
-    description: "Ultra-fast Next.js App Router pages, server-side pre-rendered HTML, optimised cloud edge routes, and zero-cost scaling solutions.",
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1200",
+    subtitle: "Dominate Search Rankings",
+    description: "Your website is your best salesperson. We build ultra-fast, server-rendered applications optimized for zero-delay indexing and maximum SEO visibility. Higher Lighthouse scores mean lower bounce rates and more organic leads.",
+    image: "/images/img-coding-laptop.jpg",
     icon: Globe,
     features: [
-      "Next.js App Router",
-      "Edge Computing",
-      "Zero-downtime Deployments",
-      "Global CDN Distribution"
+      "Technical SEO & Fast Indexing",
+      "Sub-50ms Global Load Times",
+      "Increased Organic Traffic",
+      "Conversion-Optimized UI"
     ],
     techStack: ["Next.js", "React", "Vercel", "Tailwind CSS"]
   },
   {
     id: "AGENTIC_AI",
     slug: "agentic-ai-integrations",
-    title: "Agentic AI & Integrations",
-    subtitle: "Next-Gen Tech",
-    description: "Custom AI autonomous workflow agents, semantic vector indexing, retrieval-augmented systems (RAG), and smart pipeline automations.",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1200",
+    title: "Agentic AI & Automation",
+    subtitle: "Reduce Operational Costs",
+    description: "Replace manual, error-prone workflows with autonomous AI agents. By integrating custom Machine Learning models into your data pipelines, we dramatically reduce your overhead costs and save hundreds of hours of manual labor.",
+    image: "/images/img-ai-tech.jpg",
     icon: Bot,
     features: [
-      "Autonomous Agents",
-      "RAG Implementations",
-      "LLM Fine-tuning",
-      "Workflow Automation"
+      "Automated Data Classification",
+      "Cost-Saving AI Workflows",
+      "Smart Customer Support Agents",
+      "Data-Driven Decision Making"
     ],
     techStack: ["Python", "LangChain", "Pinecone", "OpenAI"]
   },
@@ -53,14 +53,14 @@ export const services = [
     id: "DEVOPS_CLOUD",
     slug: "devops-cloud-architectures",
     title: "DevOps & Cloud Architectures",
-    subtitle: "Zero Downtime",
-    description: "Containerised docker registries, CI/CD pipeline automation, and cloud serverless monitoring for highly available production systems.",
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1200",
+    subtitle: "Zero Deployment Risk",
+    description: "Ship features faster without breaking production. Our automated CI/CD pipelines and proactive infrastructure monitoring mean you catch errors before your users do, protecting your brand reputation.",
+    image: "/images/img-global-scale.jpg",
     icon: ServerCog,
     features: [
-      "CI/CD Pipelines",
-      "Infrastructure as Code",
-      "Kubernetes Orchestration",
+      "Automated Safe Deployments",
+      "Proactive Error Monitoring",
+      "Infrastructure Cost Optimization",
       "24/7 Telemetry"
     ],
     techStack: ["Docker", "Kubernetes", "AWS", "GitHub Actions"]
@@ -71,7 +71,7 @@ export const services = [
     title: "Mobile App Development",
     subtitle: "Cross-Platform",
     description: "Native-performance iOS and Android applications built with React Native and Expo, featuring offline-first architecture and seamless backend integration.",
-    image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=1200",
+    image: "/images/img-mobile-dev.jpg",
     icon: Smartphone,
     features: [
       "React Native & Expo",
@@ -87,7 +87,7 @@ export const services = [
     title: "UI/UX Design Systems",
     subtitle: "Pixel-Perfect",
     description: "Research-driven interface design, scalable design systems, interactive prototyping, and user experience audits that convert visitors into customers.",
-    image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=1200",
+    image: "/images/img-design-tools.jpg",
     icon: Palette,
     features: [
       "Design System Architecture",
@@ -103,7 +103,7 @@ export const services = [
     title: "Data Analytics & BI",
     subtitle: "Actionable Insights",
     description: "Real-time data pipelines, interactive dashboards, predictive analytics models, and business intelligence systems that turn raw data into strategic decisions.",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200",
+    image: "/images/img-analytics.jpg",
     icon: BarChart3,
     features: [
       "Real-Time Dashboards",

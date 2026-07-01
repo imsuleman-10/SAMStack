@@ -34,8 +34,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "UI/UX track submissions must include a valid Figma project link (starting with 'https://')." }, { status: 400 });
       }
     } else {
-      if (!liveUrl || !liveUrl.trim().toLowerCase().startsWith("https://")) {
-        return NextResponse.json({ error: "A valid live staging deployment URL (starting with 'https://') is required." }, { status: 400 });
+      if (liveUrl && liveUrl.trim() !== "" && !liveUrl.trim().toLowerCase().startsWith("https://")) {
+        return NextResponse.json({ error: "If provided, the live staging deployment URL must start with 'https://'." }, { status: 400 });
       }
     }
 

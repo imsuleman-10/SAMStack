@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Scale, ArrowRight, Sparkles, CheckCircle2, AlertCircle, BookOpen } from "lucide-react";
@@ -18,8 +19,8 @@ export default function TermsPage() {
   return (
     <div className="flex-1 w-full bg-white dark:bg-black">
       {/* ═══ HERO SECTION ═══════════════════════════════════════════ */}
-      <section className="relative py-24 sm:py-32 flex flex-col items-center justify-center pt-32 sm:pt-40 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-black dark:via-neutral-950 dark:to-black">
-        <div className="absolute top-1/4 -left-32 w-[350px] h-[350px] bg-brand-600/8 dark:bg-brand-600/8 rounded-full blur-[120px]" />
+      <section className="z-0 overflow-hidden relative py-24 sm:py-32 flex flex-col items-center justify-center pt-32 sm:pt-40 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-black dark:via-neutral-950 dark:to-black group">
+        <div className="z-10 relative absolute top-1/4 -left-32 w-[350px] h-[350px] bg-brand-600/8 dark:bg-brand-600/8 rounded-full blur-[120px]" />
         <div className="absolute bottom-1/4 -right-32 w-[300px] h-[300px] bg-indigo-600/8 dark:bg-indigo-600/8 rounded-full blur-[120px]" />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px] opacity-[0.07] dark:opacity-[0.05]" />
 
@@ -43,8 +44,8 @@ export default function TermsPage() {
       </section>
 
       {/* ═══ MAIN CONTENT WITH SIDEBAR ═══════════════════════════════ */}
-      <section className="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-t border-slate-100 dark:border-neutral-900">
-        <div className="max-w-6xl mx-auto flex gap-8 lg:gap-12">
+      <section className="z-0 overflow-hidden relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 border-t border-slate-100 dark:border-neutral-900 group">
+        <div className="z-10 relative max-w-6xl mx-auto flex gap-8 lg:gap-12">
 
           {/* Sticky Sidebar */}
           <aside className="hidden lg:block w-56 shrink-0">
@@ -54,8 +55,8 @@ export default function TermsPage() {
                 <a key={section.anchor} href={`#${section.anchor}`}
                   className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-neutral-800 transition-all group"
                 >
-                  <section.icon className="w-4 h-4 text-brand-600 dark:text-brand-400 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm font-semibold">{section.title}</span>
+                  <section.icon className="z-0 overflow-hidden relative w-4 h-4 text-brand-600 dark:text-brand-400 group-hover:scale-110 transition-transform" />
+        <span className="text-sm font-semibold">{section.title}</span>
                 </a>
               ))}
             </div>
@@ -75,8 +76,8 @@ export default function TermsPage() {
 
               {/* Sections */}
               <AnimateOnScroll variant="fadeUp" delay={0.05}>
-                <section id="services" className="space-y-5 scroll-mt-20">
-                  <div className="flex items-center gap-3">
+                <section id="services" className="z-0 overflow-hidden relative space-y-5 scroll-mt-20 group">
+        <div className="z-10 relative flex items-center gap-3">
                     <div className="w-2 h-2 bg-brand-600 dark:bg-brand-400 rounded-full" />
                     <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">1. Acceptance of Terms</h3>
                   </div>
@@ -87,8 +88,8 @@ export default function TermsPage() {
               </AnimateOnScroll>
 
               <AnimateOnScroll variant="fadeUp" delay={0.1}>
-                <section className="space-y-5 scroll-mt-20">
-                  <div className="flex items-center gap-3">
+                <section className="z-0 overflow-hidden relative space-y-5 scroll-mt-20 group">
+        <div className="z-10 relative flex items-center gap-3">
                     <div className="w-2 h-2 bg-brand-600 dark:bg-brand-400 rounded-full" />
                     <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">2. Our Services</h3>
                   </div>
@@ -99,8 +100,8 @@ export default function TermsPage() {
               </AnimateOnScroll>
 
               <AnimateOnScroll variant="fadeUp" delay={0.15}>
-                <section id="ip" className="space-y-5 scroll-mt-20">
-                  <div className="flex items-center gap-3">
+                <section id="ip" className="z-0 overflow-hidden relative space-y-5 scroll-mt-20 group">
+        <div className="z-10 relative flex items-center gap-3">
                     <div className="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
                     <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">3. Intellectual Property Rights</h3>
                   </div>
@@ -125,8 +126,8 @@ export default function TermsPage() {
               </AnimateOnScroll>
 
               <AnimateOnScroll variant="fadeUp" delay={0.2}>
-                <section id="liability" className="space-y-5 scroll-mt-20">
-                  <div className="flex items-center gap-3">
+                <section id="liability" className="z-0 overflow-hidden relative space-y-5 scroll-mt-20 group">
+        <div className="z-10 relative flex items-center gap-3">
                     <div className="w-2 h-2 bg-amber-600 dark:bg-amber-400 rounded-full" />
                     <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">4. Limitations of Liability</h3>
                   </div>
@@ -139,8 +140,8 @@ export default function TermsPage() {
               </AnimateOnScroll>
 
               <AnimateOnScroll variant="fadeUp" delay={0.25}>
-                <section className="space-y-5 scroll-mt-20">
-                  <div className="flex items-center gap-3">
+                <section className="z-0 overflow-hidden relative space-y-5 scroll-mt-20 group">
+        <div className="z-10 relative flex items-center gap-3">
                     <div className="w-2 h-2 bg-emerald-600 dark:bg-emerald-400 rounded-full" />
                     <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">5. Disclaimers</h3>
                   </div>
@@ -161,8 +162,8 @@ export default function TermsPage() {
               </AnimateOnScroll>
 
               <AnimateOnScroll variant="fadeUp" delay={0.3}>
-                <section className="space-y-5">
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">6. Payment & Billing</h3>
+                <section className="z-0 overflow-hidden relative space-y-5 group">
+        <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">6. Payment & Billing</h3>
                   <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
                     All invoices are due within 30 days of issuance unless otherwise stated in the SOW. Overdue payments may incur interest at 1.5% per month or the maximum rate allowed by law, whichever is less.
                   </p>
@@ -170,8 +171,8 @@ export default function TermsPage() {
               </AnimateOnScroll>
 
               <AnimateOnScroll variant="fadeUp" delay={0.35}>
-                <section className="space-y-5">
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">7. Termination</h3>
+                <section className="z-0 overflow-hidden relative space-y-5 group">
+        <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">7. Termination</h3>
                   <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
                     Either party may terminate an engagement with written notice as specified in the SOW. Upon termination, client must pay all fees incurred through the termination date.
                   </p>
@@ -179,8 +180,8 @@ export default function TermsPage() {
               </AnimateOnScroll>
 
               <AnimateOnScroll variant="fadeUp" delay={0.4}>
-                <section className="space-y-5">
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">8. Governing Law</h3>
+                <section className="z-0 overflow-hidden relative space-y-5 group">
+        <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">8. Governing Law</h3>
                   <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
                     These terms are governed by the laws of the jurisdiction in which SAMStack Tech is registered, without regard to its conflict of law provisions.
                   </p>
@@ -188,8 +189,8 @@ export default function TermsPage() {
               </AnimateOnScroll>
 
               <AnimateOnScroll variant="fadeUp" delay={0.45}>
-                <section className="space-y-5">
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">9. Contact for Disputes</h3>
+                <section className="z-0 overflow-hidden relative space-y-5 group">
+        <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-heading">9. Contact for Disputes</h3>
                   <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
                     If you have questions or disputes regarding these terms, please contact:
                   </p>

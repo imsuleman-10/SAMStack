@@ -9,7 +9,7 @@ interface MessageListProps {
   formatDate: (timestamp: any) => string;
 }
 
-export function MessageList({
+export const MessageList = React.memo(function MessageList({
   isLoadingMessages,
   filteredMessages,
   processingMessageId,
@@ -149,4 +149,4 @@ export function MessageList({
       </table>
     </div>
   );
-}
+});

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { DashboardStats } from "./components/DashboardStats";
 import { DashboardFilters } from "./components/DashboardFilters";
@@ -149,7 +149,7 @@ export default function AdminDashboardPage() {
     fetchMessages();
   }, []);
 
-  const handleAction = async (rollNumber: string, action: "APPROVE" | "REJECT") => {
+  const handleAction = useCallback(async (rollNumber: string, action: "APPROVE" | "REJECT") => {
     if (processingRoll) return;
 
     setProcessingRoll(rollNumber);
@@ -183,9 +183,9 @@ export default function AdminDashboardPage() {
     } finally {
       setProcessingRoll(null);
     }
-  };
+  }, [processingRoll]);
 
-  const handleMessageStatus = async (messageId: string, newStatus: 'UNREAD' | 'READ' | 'RESPONDED') => {
+  const handleMessageStatus = useCallback(async (messageId: string, newStatus: 'UNREAD' | 'READ' | 'RESPONDED') => {
     if (processingMessageId) return;
 
     setProcessingMessageId(messageId);
@@ -218,9 +218,9 @@ export default function AdminDashboardPage() {
     } finally {
       setProcessingMessageId(null);
     }
-  };
+  }, [processingMessageId]);
 
-  const handleResend = async (rollNumber: string, type: "OFFER_LETTER" | "CERTIFICATE") => {
+  const handleResend = useCallback(async (rollNumber: string, type: "OFFER_LETTER" | "CERTIFICATE") => {
     if (resendingRoll) return;
     setResendingRoll(`${rollNumber}-${type}`);
     setError(null);
@@ -240,7 +240,7 @@ export default function AdminDashboardPage() {
     } finally {
       setResendingRoll(null);
     }
-  };
+  }, [resendingRoll]);
 
   const handleLogout = async () => {
     try {
@@ -292,38 +292,42 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const filteredInterns = interns.filter((intern) => {
-    const matchesSearch =
-      intern.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      intern.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      intern.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      intern.university.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredInterns = useMemo(() => {
+    return interns.filter((intern) => {
+      const matchesSearch =
+        intern.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        intern.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        intern.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        intern.university.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus = selectedStatus === "ALL" || intern.status === selectedStatus;
-    const matchesTrack = selectedTrack === "ALL" || intern.trackSelected === selectedTrack;
+      const matchesStatus = selectedStatus === "ALL" || intern.status === selectedStatus;
+      const matchesTrack = selectedTrack === "ALL" || intern.trackSelected === selectedTrack;
 
-    return matchesSearch && matchesStatus && matchesTrack;
-  });
+      return matchesSearch && matchesStatus && matchesTrack;
+    });
+  }, [interns, searchTerm, selectedStatus, selectedTrack]);
 
-  const filteredMessages = messages.filter((msg) => {
-    const matchesSearch =
-      msg.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      msg.clientEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      msg.organization.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      msg.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      msg.message.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredMessages = useMemo(() => {
+    return messages.filter((msg) => {
+      const matchesSearch =
+        msg.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        msg.clientEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        msg.organization.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        msg.serviceType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        msg.message.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus = selectedStatus === "ALL" || msg.status === selectedStatus;
+      const matchesStatus = selectedStatus === "ALL" || msg.status === selectedStatus;
 
-    return matchesSearch && matchesStatus;
-  });
+      return matchesSearch && matchesStatus;
+    });
+  }, [messages, searchTerm, selectedStatus]);
 
-  const messageStats = {
+  const messageStats = useMemo(() => ({
     total: messages.length,
     unread: messages.filter(x => x.status === "UNREAD").length,
     read: messages.filter(x => x.status === "READ").length,
     responded: messages.filter(x => x.status === "RESPONDED").length
-  };
+  }), [messages]);
 
   const formatDate = (isoString: string) => {
     if (!isoString) return "";

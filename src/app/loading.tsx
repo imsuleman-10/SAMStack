@@ -21,9 +21,6 @@ export default function Loading() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black relative overflow-hidden">
       {/* Ambient blurs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-brand-500/8 dark:bg-brand-500/4 rounded-full blur-[160px] pointer-events-none" />
-      <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-indigo-500/5 dark:bg-indigo-500/3 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[250px] h-[250px] bg-cyan-500/5 dark:bg-cyan-500/3 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative z-10 flex flex-col items-center gap-10">
         {/* Logo */}

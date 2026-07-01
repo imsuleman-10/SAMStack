@@ -12,7 +12,7 @@ interface InternTableProps {
   formatDate: (timestamp: any) => string;
 }
 
-export function InternTable({
+export const InternTable = React.memo(function InternTable({
   isLoading,
   filteredInterns,
   tracks,
@@ -300,4 +300,4 @@ export function InternTable({
       </table>
     </div>
   );
-}
+});

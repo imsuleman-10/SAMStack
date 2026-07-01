@@ -10,51 +10,47 @@ export default function StickyVideoSection() {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"]
+    offset: ["start start", "end end"],
   });
 
-  // Add spring physics for buttery smooth scrolling
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
+    stiffness: 60,
+    damping: 20,
+    restDelta: 0.001,
   });
 
-  // Transform video width from 100vw to 45vw
-  const videoWidth = useTransform(smoothProgress, [0, 0.5], ["100vw", "45vw"]);
-  // Transform video height from 100vh to 60vh
-  const videoHeight = useTransform(smoothProgress, [0, 0.5], ["100vh", "65vh"]);
-  // Transform video x to shift it to the left side of the screen
-  const videoX = useTransform(smoothProgress, [0, 0.5], ["0vw", "-18vw"]);
-  
-  // Border radius starts at 0 (square full screen), becomes 24px ONLY when it shrinks
-  const videoBorderRadius = useTransform(smoothProgress, [0, 0.3, 0.5], ["0px", "0px", "24px"]);
-  
-  // Opacity and slide for the text container
-  const textOpacity = useTransform(smoothProgress, [0.4, 0.6], [0, 1]);
-  const textY = useTransform(smoothProgress, [0.4, 0.6], [50, 0]);
+  // Desktop transforms
+  const videoWidth = useTransform(smoothProgress, [0, 0.3], ["100%", "52%"]);
+  const borderRadius = useTransform(smoothProgress, [0.03, 0.3], [0, 20]);
+  const textOpacity = useTransform(smoothProgress, [0.2, 0.35], [0, 1]);
+  const textX = useTransform(smoothProgress, [0.2, 0.35], [50, 0]);
 
-  // Loop only first 4 seconds
+  // Mobile transforms
+  const mobileVideoWidth = useTransform(smoothProgress, [0, 0.3], ["100%", "88%"]);
+  const mobileBorderRadius = useTransform(smoothProgress, [0.05, 0.3], [0, 16]);
+  const mobileTextOpacity = useTransform(smoothProgress, [0.2, 0.38], [0, 1]);
+  const mobileTextY = useTransform(smoothProgress, [0.2, 0.38], [30, 0]);
+
   const handleTimeUpdate = () => {
-    if (videoRef.current && videoRef.current.currentTime >= 4) {
+    if (videoRef.current && videoRef.current.currentTime >= 5) {
       videoRef.current.currentTime = 0;
       videoRef.current.play();
     }
   };
 
   return (
-    <section ref={containerRef} className="relative h-[250vh] bg-white dark:bg-black">
-      <div className="sticky top-[80px] h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden w-full">
-        
-        {/* Animated Video Container */}
-        <motion.div 
-          style={{ 
-            width: videoWidth, 
-            height: videoHeight,
-            x: videoX,
-            borderRadius: videoBorderRadius
-          }}
-          className="relative z-10 overflow-hidden shadow-2xl flex-shrink-0"
+    <section
+      ref={containerRef}
+      className="relative h-[200vh] bg-white dark:bg-zinc-950"
+    >
+
+      {/* -- DESKTOP LAYOUT -- */}
+      <div className="hidden md:flex sticky top-[80px] h-[calc(100vh-80px)] w-full bg-white dark:bg-zinc-950 items-center overflow-hidden pl-8">
+
+        {/* VIDEO — shrinks from full-width, stays left-aligned */}
+        <motion.div
+          style={{ width: videoWidth, borderRadius }}
+          className="relative h-[75vh] overflow-hidden flex-shrink-0 shadow-xl"
         >
           <video
             ref={videoRef}
@@ -62,60 +58,80 @@ export default function StickyVideoSection() {
             autoPlay
             muted
             playsInline
+            loop
             onTimeUpdate={handleTimeUpdate}
             className="w-full h-full object-cover"
           />
-          {/* Subtle overlay */}
-          <div className="absolute inset-0 bg-black/10" />
         </motion.div>
 
-        {/* Text Container that appears on the right */}
-        <motion.div 
-          style={{ 
-            opacity: textOpacity,
-            y: textY,
-            position: 'absolute',
-            right: 'max(4vw, calc((100vw - 80rem) / 2))',
-            width: '40%',
-            maxWidth: '500px'
-          }}
-          className="hidden md:flex flex-col justify-center space-y-6 z-20 pointer-events-auto"
+        {/* TEXT � appears on the right as video shrinks */}
+        <motion.div
+          style={{ opacity: textOpacity, x: textX }}
+          className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col gap-5 pr-[7vw] pl-6 w-[46%] max-w-[500px]"
         >
-          <div className="space-y-4">
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-500">
-              Careers
-            </p>
-            <h2 className="text-4xl lg:text-6xl font-extrabold text-slate-900 dark:text-white font-heading leading-tight">
-              Human-first is our<br />foundation.
-            </h2>
-            <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed max-w-md">
-              Join a culture that celebrates excellence and diversity, Globally!
-            </p>
-          </div>
-          <div>
-            <Link href="/contact" className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#1bc2cd] hover:bg-[#15aab4] text-white font-bold text-sm transition-colors shadow-lg shadow-[#1bc2cd]/30">
-              Join Us
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#1bc2cd]">
+            What We Do
+          </p>
+          <h2 className="text-4xl xl:text-5xl font-extrabold text-slate-900 dark:text-white font-heading leading-tight">
+            We Turn Ideas Into<br />Business Solutions.
+          </h2>
+          <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed">
+            From startups to enterprises � we engineer scalable software that drives real growth, not just lines of code.
+          </p>
+          <div className="mt-1">
+            <Link
+              href="/services"
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#1bc2cd] hover:bg-[#15aab4] text-white font-bold text-sm transition-colors shadow-lg shadow-[#1bc2cd]/30"
+            >
+              Our Services
             </Link>
           </div>
         </motion.div>
+      </div>
 
-        {/* Mobile Text Container (shows below video on mobile) */}
-        <motion.div 
-          style={{ opacity: textOpacity }}
-          className="md:hidden absolute bottom-10 left-4 right-4 flex flex-col items-center text-center space-y-4 p-6 bg-white/90 dark:bg-black/90 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-white/10"
+      {/* -- MOBILE LAYOUT � stacked: video on top, text below -- */}
+      <div className="md:hidden sticky top-[80px] h-[calc(100vh-80px)] w-full bg-white dark:bg-zinc-950 flex flex-col items-center justify-center gap-6 overflow-hidden px-4">
+
+        {/* VIDEO */}
+        <motion.div
+          style={{ width: mobileVideoWidth, borderRadius: mobileBorderRadius }}
+          className="w-full overflow-hidden flex-shrink-0 shadow-xl"
         >
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white font-heading">
-            Human-first is our foundation.
-          </h2>
-          <p className="text-slate-600 dark:text-slate-400 text-sm">
-            Join a culture that celebrates excellence and diversity, Globally!
-          </p>
-          <Link href="/contact" className="px-6 py-2.5 rounded-full bg-[#1bc2cd] text-white font-bold text-xs">
-            Join Us
-          </Link>
+          <div className="relative" style={{ height: "45vh" }}>
+            <video
+              src="/2nd-vid.mp4"
+              autoPlay
+              muted
+              playsInline
+              loop
+              className="w-full h-full object-cover"
+            />
+          </div>
         </motion.div>
 
+        {/* TEXT � below video */}
+        <motion.div
+          style={{ opacity: mobileTextOpacity, y: mobileTextY }}
+          className="flex flex-col items-center text-center gap-3 px-2"
+        >
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#1bc2cd]">
+            What We Do
+          </p>
+          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white font-heading leading-tight">
+            We Turn Ideas Into Business Solutions.
+          </h2>
+          <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed max-w-xs">
+            Scalable software that drives real growth � from startups to enterprises.
+          </p>
+          <Link
+            href="/services"
+            className="mt-1 inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#1bc2cd] hover:bg-[#15aab4] text-white font-bold text-xs transition-colors shadow-lg shadow-[#1bc2cd]/30"
+          >
+            Our Services
+          </Link>
+        </motion.div>
       </div>
+
     </section>
   );
 }

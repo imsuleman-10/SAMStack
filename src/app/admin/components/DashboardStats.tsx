@@ -70,7 +70,7 @@ function StatCard({ item, getValue, index }: { item: any; getValue: number; inde
   );
 }
 
-export function DashboardStats({ activeTab, stats, messageStats }: DashboardStatsProps) {
+export const DashboardStats = React.memo(function DashboardStats({ activeTab, stats, messageStats }: DashboardStatsProps) {
   const items = activeTab === "INTERNS" ? statCards.interns : statCards.messages;
   const getValue = (item: any) => item.value(activeTab === "INTERNS" ? stats : messageStats);
 
@@ -81,4 +81,4 @@ export function DashboardStats({ activeTab, stats, messageStats }: DashboardStat
       ))}
     </div>
   );
-}
+});

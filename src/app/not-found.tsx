@@ -1,14 +1,18 @@
 import React from "react";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { AlertTriangle, Terminal, Home, MessageSquare } from "lucide-react";
 import AnimateOnScroll from "@/app/components/AnimateOnScroll";
+
+export const metadata: Metadata = {
+  title: "404 — Page Not Found | SAMStack Tech",
+  description: "The page you are looking for does not exist.",
+  robots: { index: false, follow: false },
+};
 
 export default function NotFound() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-black relative overflow-hidden px-4 sm:px-6">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-500/8 dark:bg-amber-500/4 rounded-full blur-[180px] pointer-events-none" />
-      <div className="absolute top-0 right-0 w-[350px] h-[350px] bg-indigo-500/5 dark:bg-indigo-500/3 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-brand-500/5 dark:bg-brand-500/3 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="relative z-10 max-w-2xl w-full text-center space-y-8">
         <AnimateOnScroll variant="scaleUp">

@@ -2,213 +2,313 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Clock, Calendar, Sparkles, BookOpen } from "lucide-react";
+import {
+  ArrowRight,
+  Clock,
+  Calendar,
+  Sparkles,
+  ArrowUpRight,
+  Rss,
+  Tag,
+  Search,
+  BookOpen
+} from "lucide-react";
 import Image from "next/image";
 import AnimateOnScroll from "../components/AnimateOnScroll";
 import { blogPosts, getFeaturedPost } from "@/lib/data/blog-posts";
 
 const tags = ["All Logs", "Next.js", "DevOps", "Serverless", "AI & Agents", "Architecture", "TypeScript"];
 
+const getAuthorImage = (name: string) => {
+  if (name.includes("Suleman")) return "/suleman.jpg";
+  if (name.includes("Abdullah")) return "/abdullah.png";
+  if (name.includes("Saqib")) return "/saqib.jpg";
+  return null;
+};
+
 export default function BlogPage() {
   const [activeTag, setActiveTag] = useState("All Logs");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const featuredArticle = getFeaturedPost();
-  
-  const filteredArticles = activeTag === "All Logs" 
-    ? blogPosts.filter(p => p.slug !== featuredArticle.slug)
-    : blogPosts.filter(p => p.tags.includes(activeTag) && p.slug !== featuredArticle.slug);
+
+  let filteredArticles = blogPosts;
+
+  // Filter by tag (exclude featured if we are on "All Logs", or include it if it matches the tag)
+  if (activeTag === "All Logs") {
+    filteredArticles = filteredArticles.filter((p) => p.slug !== featuredArticle.slug);
+  } else {
+    filteredArticles = filteredArticles.filter((p) => p.tags.includes(activeTag) && p.slug !== featuredArticle.slug);
+  }
+
+  // Filter by search query
+  if (searchQuery.trim() !== "") {
+    const q = searchQuery.toLowerCase();
+    filteredArticles = filteredArticles.filter((p) => 
+      p.title.toLowerCase().includes(q) || 
+      p.excerpt.toLowerCase().includes(q) ||
+      p.tags.some(t => t.toLowerCase().includes(q))
+    );
+  }
 
   return (
-    <div className="w-full overflow-x-hidden bg-zinc-950 text-zinc-50 min-h-screen">
-      
-      {/* ═══ 01 · HERO ══════════════════════════════════════════════════ */}
-      <section className="relative pt-32 sm:pt-40 pb-20 sm:pb-24 px-4 sm:px-6 dot-bg border-b border-zinc-800">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-brand-500/10 rounded-full blur-[140px] pointer-events-none" />
-        
-        <div className="max-w-6xl mx-auto relative z-10">
-          <AnimateOnScroll variant="fadeUp">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 backdrop-blur-sm text-cyan-400 text-[11px] font-mono uppercase tracking-widest mb-6">
-              <BookOpen className="w-3.5 h-3.5" />
-              SAMStack Insights
-            </div>
-            
-            <h1 className="text-5xl sm:text-7xl font-black font-heading leading-tight tracking-[-0.04em] mb-6">
-              Systems Architecture <br />
-              <span className="text-gradient-industrial">&amp; Engineering Logs</span>
-            </h1>
-            
-            <p className="text-zinc-400 text-lg max-w-2xl leading-relaxed mb-10 font-medium">
-              Deep dives into full-stack architecture, high-throughput serverless systems, and edge pipeline engineering.
-            </p>
-          </AnimateOnScroll>
+    <div className="flex-1 w-full bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white selection:bg-brand-500/30">
 
-          {/* Tags Filter */}
-          <AnimateOnScroll variant="fadeUp" delay={0.1}>
-            <div className="flex flex-wrap items-center gap-3">
-              {tags.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => setActiveTag(tag)}
-                  className={`px-4 py-2 rounded-full text-xs font-mono uppercase tracking-widest transition-all duration-300 border ${
-                    activeTag === tag
-                      ? "bg-cyan-500/20 border-cyan-500/50 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.2)]"
-                      : "bg-zinc-900/80 border-zinc-700/50 text-zinc-400 hover:text-white hover:border-zinc-500"
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
+      {/* ══════════════════════════════════════════
+          HERO SECTION — Premium Industrial
+      ══════════════════════════════════════════ */}
+      <section className="relative overflow-hidden w-full pt-32 pb-16 lg:pt-40 lg:pb-24 px-4 sm:px-6 lg:px-8 border-b border-slate-200 dark:border-neutral-900">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-500/10 dark:bg-brand-500/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] dark:opacity-[0.05] pointer-events-none mix-blend-overlay" />
+        
+        <div className="relative z-10 max-w-6xl mx-auto w-full">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
+            <div className="space-y-6 max-w-3xl">
+              <AnimateOnScroll variant="fadeUp">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/40 border border-brand-100 dark:border-brand-800/50 text-brand-700 dark:text-brand-400 text-[10px] font-bold uppercase tracking-[0.2em] shadow-sm">
+                  <Rss className="w-3 h-3" /> Technical Insights
+                </div>
+              </AnimateOnScroll>
+
+              <AnimateOnScroll variant="fadeUp" delay={0.1}>
+                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-slate-900 dark:text-white font-heading leading-[1.05] tracking-tight">
+                  Engineering <br/>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-indigo-500 to-cyan-500 dark:from-brand-400 dark:via-indigo-400 dark:to-cyan-400">
+                    &amp; Architecture Logs.
+                  </span>
+                </h1>
+              </AnimateOnScroll>
+
+              <AnimateOnScroll variant="fadeUp" delay={0.2}>
+                <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg lg:text-xl font-medium leading-relaxed max-w-2xl">
+                  Deep technical dives into full-stack architecture, high-throughput systems, scalable cloud infrastructure, and modern frontend paradigms.
+                </p>
+              </AnimateOnScroll>
             </div>
-          </AnimateOnScroll>
+
+            <AnimateOnScroll variant="fadeLeft" delay={0.3} className="w-full lg:w-72 shrink-0">
+              <div className="relative group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-brand-500 transition-colors" />
+                <input
+                  type="text"
+                  placeholder="Search articles..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all shadow-sm"
+                />
+              </div>
+            </AnimateOnScroll>
+          </div>
         </div>
-        <div className="absolute top-10 right-10 section-number">01 // Logs</div>
       </section>
 
-      {/* ═══ 02 · FEATURED ARTICLE ══════════════════════════════════════ */}
-      {activeTag === "All Logs" && featuredArticle && (
-        <section className="py-20 sm:py-24 px-4 sm:px-6 bg-zinc-950 relative">
+      {/* ══════════════════════════════════════════
+          FEATURED ARTICLE — Cinematic Card
+      ══════════════════════════════════════════ */}
+      {activeTag === "All Logs" && featuredArticle && searchQuery === "" && (
+        <section className="relative px-4 sm:px-6 lg:px-8 py-10 sm:py-16 -mt-8 z-20">
           <div className="max-w-6xl mx-auto">
             <AnimateOnScroll variant="fadeUp">
-              <h2 className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 mb-6">Featured Entry</h2>
-              
-              <div className="group relative rounded-2xl bg-zinc-900 border border-zinc-800 overflow-hidden hover:border-cyan-500/40 transition-colors duration-500 shadow-2xl flex flex-col lg:flex-row">
-                {/* Accents */}
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-indigo-500 z-20" />
-                <div className="absolute left-0 top-0 w-1 h-full bg-gradient-to-b from-cyan-500 to-indigo-500 z-20 opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                {/* Left Image */}
-                <div className="relative w-full lg:w-1/2 aspect-video lg:aspect-auto overflow-hidden bg-zinc-950 border-b lg:border-b-0 lg:border-r border-zinc-800">
+              <Link
+                href={`/blog/${featuredArticle.slug}`}
+                className="group relative flex flex-col lg:flex-row rounded-[2rem] bg-white dark:bg-neutral-900/80 backdrop-blur-xl border border-slate-200 dark:border-neutral-800 shadow-2xl shadow-slate-200/50 dark:shadow-black/80 overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:shadow-brand-500/10 hover:border-brand-500/30"
+              >
+                {/* Image Section */}
+                <div className="relative w-full lg:w-1/2 h-[300px] lg:h-[450px] overflow-hidden bg-slate-100 dark:bg-neutral-950">
                   <Image
                     src={featuredArticle.image}
                     alt={featuredArticle.title}
                     fill
-                    className="object-cover opacity-60 mix-blend-luminosity group-hover:scale-105 group-hover:opacity-80 transition-all duration-700"
+                    className="object-cover transition-transform duration-[2000ms] group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 lg:from-transparent lg:bg-gradient-to-r lg:to-transparent lg:via-zinc-900/50 lg:from-zinc-950 opacity-80" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-black/20 lg:to-black/80" />
                   
-                  <div className="absolute bottom-6 left-6 z-10 flex flex-wrap gap-2 pr-4">
-                    {featuredArticle.tags.map((t) => (
-                      <span key={t} className="px-2.5 py-1 bg-black/60 backdrop-blur-md border border-zinc-700/50 rounded text-[10px] font-mono text-cyan-400 uppercase tracking-widest">
-                        {t}
-                      </span>
-                    ))}
+                  {/* Badge */}
+                  <div className="absolute top-6 left-6">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white text-[10px] font-bold uppercase tracking-widest shadow-lg">
+                      <Sparkles className="w-3 h-3 text-brand-400" /> Featured Post
+                    </span>
                   </div>
                 </div>
 
-                {/* Right Content */}
-                <div className="relative w-full lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
-                  <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs font-mono text-zinc-400 mb-6">
-                    <span className="text-cyan-400">{featuredArticle.category}</span>
-                    <span>&bull;</span>
+                {/* Content Section */}
+                <div className="relative w-full lg:w-1/2 p-8 sm:p-10 lg:p-12 xl:p-14 flex flex-col justify-center">
+                  <div className="flex flex-wrap items-center gap-4 text-xs font-mono font-bold text-slate-500 dark:text-slate-400 mb-6">
+                    <span className="text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-500/10 px-2 py-0.5 rounded-md">{featuredArticle.category}</span>
                     <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> {featuredArticle.date}</span>
-                    <span>&bull;</span>
                     <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {featuredArticle.readTime}</span>
                   </div>
-                  
-                  <h3 className="text-3xl lg:text-4xl font-heading font-black leading-tight text-white mb-4 group-hover:text-cyan-400 transition-colors">
+
+                  <h2 className="text-3xl sm:text-4xl font-black font-heading text-slate-900 dark:text-white leading-[1.15] mb-5 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-3">
                     {featuredArticle.title}
-                  </h3>
-                  
-                  <p className="text-zinc-400 leading-relaxed mb-8 text-base md:text-lg">
+                  </h2>
+
+                  <p className="text-slate-600 dark:text-slate-400 font-medium leading-relaxed text-base mb-8 line-clamp-3">
                     {featuredArticle.excerpt}
                   </p>
 
-                  <div className="mt-auto pt-6 border-t border-zinc-800 flex items-center justify-between">
-                    <div className="font-medium text-sm text-zinc-300">By {featuredArticle.author}</div>
-                    <Link href={`/blog/${featuredArticle.slug}`} className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-cyan-400 hover:text-cyan-300 transition-colors">
-                      Read Article <ArrowRight className="w-4 h-4" />
-                    </Link>
+                  <div className="flex items-center justify-between pt-6 mt-auto border-t border-slate-100 dark:border-neutral-800">
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-[10px] font-black text-white shadow-md overflow-hidden">
+                        {getAuthorImage(featuredArticle.author) ? (
+                          <Image src={getAuthorImage(featuredArticle.author)!} alt={featuredArticle.author} fill className="object-cover" />
+                        ) : (
+                          featuredArticle.author.split(' ').map(n=>n[0]).join('')
+                        )}
+                      </div>
+                      <span className="text-xs font-bold text-slate-900 dark:text-white">{featuredArticle.author}</span>
+                    </div>
+                    <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-500/10 px-4 py-2 rounded-xl group-hover:bg-brand-600 group-hover:text-white transition-all">
+                      Read Article <ArrowUpRight className="w-3.5 h-3.5" />
+                    </span>
                   </div>
                 </div>
-              </div>
+              </Link>
             </AnimateOnScroll>
           </div>
         </section>
       )}
 
-      {/* ═══ 03 · ARTICLES GRID ═════════════════════════════════════════ */}
-      <section className="py-20 sm:py-24 px-4 sm:px-6 border-t border-zinc-800 bg-zinc-950/50 relative">
+      {/* ══════════════════════════════════════════
+          MAIN CONTENT — Filters & Grid
+      ══════════════════════════════════════════ */}
+      <section id="articles" className="relative px-4 sm:px-6 lg:px-8 pb-24 sm:pb-32">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-12 gap-4">
-            <h2 className="text-3xl font-heading font-black text-white">Engineering Logs Index</h2>
-            <div className="font-mono text-sm text-zinc-500">[{filteredArticles.length} Logs]</div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-            {filteredArticles.map((article, i) => (
-              <AnimateOnScroll key={article.slug} delay={0.05 * i} variant="fadeUp">
-                <Link href={`/blog/${article.slug}`} className="group flex flex-col h-full bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden hover:border-cyan-500/40 transition-colors hover:-translate-y-1 shadow-lg">
-                  <div className="relative aspect-[16/9] w-full overflow-hidden bg-zinc-950 border-b border-zinc-800">
-                    <Image
-                      src={article.image}
-                      alt={article.title}
-                      fill
-                      className="object-cover opacity-50 mix-blend-luminosity group-hover:scale-105 group-hover:opacity-70 transition-all duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 to-transparent opacity-80" />
-                  </div>
-                  
-                  <div className="flex flex-col flex-1 p-6 sm:p-8">
-                    <div className="flex flex-wrap items-center gap-3 text-[10px] sm:text-xs font-mono text-zinc-400 mb-4">
-                      <span className="text-cyan-400">{article.category}</span>
-                      <span>&bull;</span>
-                      <span>{article.date}</span>
-                      <span>&bull;</span>
-                      <span>{article.readTime}</span>
-                    </div>
-
-                    <h3 className="text-xl sm:text-2xl font-heading font-black text-white mb-3 group-hover:text-cyan-400 transition-colors leading-snug">
-                      {article.title}
-                    </h3>
-                    
-                    <p className="text-zinc-400 text-sm leading-relaxed mb-6 flex-1">
-                      {article.excerpt}
-                    </p>
-
-                    <div className="flex items-center justify-between pt-5 border-t border-zinc-800/60 mt-auto">
-                      <span className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-zinc-500">
-                        {article.author}
-                      </span>
-                      <span className="flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-cyan-400 group-hover:translate-x-1 transition-transform">
-                        Read <ArrowRight className="w-3.5 h-3.5" />
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              </AnimateOnScroll>
-            ))}
-            
-            {filteredArticles.length === 0 && (
-              <div className="col-span-1 md:col-span-2 text-center py-20 text-zinc-500 font-mono">
-                No logs found for tag [{activeTag}]
+          
+          {/* Filters Bar */}
+          <AnimateOnScroll variant="fadeUp" delay={0.1}>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 pb-6 border-b border-slate-200 dark:border-neutral-800">
+              <div className="flex items-center gap-3 overflow-x-auto pb-2 md:pb-0 hide-scrollbar mask-edges">
+                <Tag className="w-4 h-4 text-slate-400 shrink-0" />
+                <div className="flex gap-2">
+                  {tags.map((tag) => (
+                    <button
+                      key={tag}
+                      onClick={() => setActiveTag(tag)}
+                      className={`whitespace-nowrap px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 border ${
+                        activeTag === tag
+                          ? "text-white bg-slate-900 dark:bg-white dark:text-slate-900 border-slate-900 dark:border-white shadow-md"
+                          : "text-slate-500 dark:text-slate-400 bg-transparent border-slate-200 dark:border-neutral-800 hover:border-brand-400 dark:hover:border-neutral-600 hover:bg-slate-50 dark:hover:bg-neutral-900"
+                      }`}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
               </div>
-            )}
-          </div>
+              <div className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-widest shrink-0">
+                Showing {filteredArticles.length} Logs
+              </div>
+            </div>
+          </AnimateOnScroll>
+
+          {/* Grid */}
+          {filteredArticles.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {filteredArticles.map((article, i) => (
+                <AnimateOnScroll key={article.slug} delay={0.05 * (i % 6)} variant="fadeUp" className="h-full">
+                  <Link
+                    href={`/blog/${article.slug}`}
+                    className="group flex flex-col h-full rounded-[24px] bg-white dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800 overflow-hidden hover:border-brand-300 dark:hover:border-brand-700 hover:shadow-2xl hover:shadow-brand-500/10 transition-all duration-500 hover:-translate-y-1"
+                  >
+                    {/* Card Image */}
+                    <div className="relative w-full h-52 sm:h-60 overflow-hidden bg-slate-100 dark:bg-neutral-950 shrink-0">
+                      <Image
+                        src={article.image}
+                        alt={article.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />
+                      <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
+                        {article.tags.slice(0,2).map((t) => (
+                          <span key={t} className="px-2.5 py-1 bg-black/40 backdrop-blur-md border border-white/20 rounded-md text-[9px] font-mono font-bold text-white uppercase tracking-widest shadow-sm">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Card Content */}
+                    <div className="flex flex-col flex-1 p-6 sm:p-8">
+                      <div className="flex items-center gap-3 text-[10px] font-mono font-bold text-slate-400 mb-4">
+                        <span className="text-brand-600 dark:text-brand-400 uppercase tracking-wider">{article.category}</span>
+                        <span>&bull;</span>
+                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {article.readTime}</span>
+                      </div>
+                      
+                      <h3 className="text-xl font-black font-heading text-slate-900 dark:text-white leading-snug mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors line-clamp-2">
+                        {article.title}
+                      </h3>
+                      
+                      <p className="text-sm text-slate-600 dark:text-slate-400 font-medium leading-relaxed line-clamp-3 mb-6 flex-1">
+                        {article.excerpt}
+                      </p>
+
+                      <div className="flex items-center justify-between pt-5 mt-auto border-t border-slate-100 dark:border-neutral-800/80">
+                        <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                          {article.date}
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors bg-slate-100 dark:bg-neutral-800 group-hover:bg-brand-50 dark:group-hover:bg-brand-500/10 px-3 py-1.5 rounded-lg">
+                          Read <ArrowRight className="w-3 h-3" />
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </AnimateOnScroll>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-32 rounded-[2rem] border border-dashed border-slate-300 dark:border-neutral-800 bg-slate-50 dark:bg-neutral-900/30">
+              <BookOpen className="w-12 h-12 text-slate-300 dark:text-neutral-700 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No articles found</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-sm">
+                Try adjusting your search query or tag filters.
+              </p>
+              <button
+                onClick={() => { setSearchQuery(""); setActiveTag("All Logs"); }}
+                className="mt-6 px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold uppercase tracking-widest hover:bg-slate-700 dark:hover:bg-slate-200 transition-colors"
+              >
+                Clear Filters
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* ═══ 04 · CTA BANNER ════════════════════════════════════════════ */}
-      <section className="relative py-28 sm:py-36 px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-cyan-600 to-indigo-700 border-t border-zinc-800">
-        <div className="absolute inset-0 grid-bg mix-blend-overlay opacity-30" />
-        
-        <div className="max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
+      {/* ══════════════════════════════════════════
+          NEWSLETTER CTA
+      ══════════════════════════════════════════ */}
+      <section className="relative overflow-hidden py-24 sm:py-32 px-4 sm:px-6 bg-slate-900 dark:bg-black border-t border-slate-800">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(14,165,233,0.15),transparent)] pointer-events-none" />
+        <div className="relative z-10 max-w-3xl mx-auto text-center space-y-8">
           <AnimateOnScroll variant="fadeUp">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-[11px] font-bold uppercase tracking-[0.2em] backdrop-blur-md mb-8">
-              <Sparkles className="w-3.5 h-3.5" />
-              Apply the Knowledge
-            </div>
-            <h2 className="text-4xl sm:text-6xl font-black text-white font-heading tracking-[-0.04em] mb-6">
-              Turn Knowledge <br className="hidden sm:block" /> Into Product
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white font-heading tracking-tight mb-4">
+              Never Miss an <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300">Update.</span>
             </h2>
-            <p className="text-white/80 text-lg sm:text-xl max-w-xl mx-auto mb-10 leading-relaxed">
-              We apply these engineering patterns daily to build enterprise software that performs at scale. Let's build yours.
+            <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto font-medium">
+              Join 10,000+ engineers receiving our best technical deep-dives and architecture patterns directly in their inbox.
             </p>
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center gap-2 px-10 py-4 bg-white text-zinc-950 rounded-xl font-heading font-bold tracking-wide hover:bg-zinc-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-            >
-              Start Your Project <ArrowRight className="w-4 h-4" />
-            </Link>
+          </AnimateOnScroll>
+
+          <AnimateOnScroll variant="fadeUp" delay={0.1}>
+            <form className="flex flex-col sm:flex-row max-w-lg mx-auto gap-3 mt-8" onSubmit={(e) => e.preventDefault()}>
+              <input 
+                type="email" 
+                placeholder="developer@company.com" 
+                className="flex-1 px-5 py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition-all text-sm font-medium"
+                required
+              />
+              <button 
+                type="submit"
+                className="px-8 py-4 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold uppercase tracking-widest transition-all shadow-lg hover:shadow-brand-500/25 shrink-0"
+              >
+                Subscribe
+              </button>
+            </form>
+            <p className="text-[10px] text-slate-500 mt-4 uppercase tracking-widest font-mono">
+              No spam. Unsubscribe anytime.
+            </p>
           </AnimateOnScroll>
         </div>
       </section>

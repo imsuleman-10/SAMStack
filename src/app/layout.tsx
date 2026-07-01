@@ -19,15 +19,32 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack.tech'),
   title: {
-    default: "SAMStack Tech | Elite Software Engineering Agency",
+    default: "SAMStack Tech | Software Engineering Agency — Lahore, Pakistan",
     template: "%s | SAMStack Tech",
   },
   description: "SAMStack Tech is an elite software engineering agency based in Lahore, Pakistan. We build high-performance enterprise web apps, AI-powered systems, and scalable cloud infrastructure for businesses worldwide.",
-  keywords: ["software agency Pakistan", "web development Lahore", "enterprise software", "MERN stack", "Next.js development", "SAMStack Tech"],
+  keywords: [
+    "software agency Pakistan",
+    "software engineering agency Lahore",
+    "enterprise software development Pakistan",
+    "web development Lahore",
+    "hire software developers Pakistan",
+    "outsource software development Pakistan",
+    "Next.js development agency",
+    "MERN stack agency",
+    "DevOps consulting Pakistan",
+    "AI development agency Pakistan",
+    "SAMStack Tech",
+    "Suleman Zaheer",
+  ],
   authors: [{ name: "Suleman Zaheer", url: "https://suleman-zaheer.vercel.app" }],
   creator: "SAMStack Tech",
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack.tech',
+    languages: { 'en': process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack.tech' },
+  },
   openGraph: {
-    title: "SAMStack Tech | Elite Software Engineering Agency",
+    title: "SAMStack Tech | Elite Software Engineering Agency — Lahore, Pakistan",
     description: "SAMStack Tech is an elite software engineering agency. We build high-performance enterprise web apps, AI systems, and scalable cloud infrastructure.",
     url: "https://samstack.tech",
     siteName: "SAMStack Tech",
@@ -44,9 +61,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SAMStack Tech | Elite Software Engineering Agency",
-    description: "Elite software agency specializing in enterprise solutions, custom web apps, and cloud infrastructure.",
+    title: "SAMStack Tech | Elite Software Engineering Agency — Lahore, Pakistan",
+    description: "Elite software agency specializing in enterprise solutions, custom web apps, and cloud infrastructure. Based in Lahore, Pakistan. Serving clients globally.",
     images: ["/logo.png"],
+    creator: "@samstacktech",
   },
   robots: {
     index: true,
@@ -155,7 +173,7 @@ const personJsonLd = {
   "familyName": "Zaheer",
   "alternateName": "Suleman Zaheer Mughal",
   "url": "https://suleman-zaheer.vercel.app",
-  "image": "https://samstack.tech/founder.png",
+  "image": "https://samstack.tech/suleman.jpg",
   "jobTitle": "Full Stack Engineer & DevOps Lead",
   "description": "Founder of SAMStack Tech — an elite software engineering studio based in Lahore, Pakistan. Specializes in Next.js, DevOps, cloud architecture, and AI agent systems.",
   "telephone": "+923285778715",
@@ -184,6 +202,31 @@ const personJsonLd = {
   }
 };
 
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "SAMStack Tech",
+  "url": "https://samstack.tech",
+  "description": "Elite software engineering agency based in Lahore, Pakistan. Enterprise web apps, AI systems, and cloud infrastructure.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "SAMStack Tech",
+    "url": "https://samstack.tech",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://samstack.tech/logo.png"
+    }
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://samstack.tech/blog?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -203,6 +246,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
         <ThemeProvider>
 

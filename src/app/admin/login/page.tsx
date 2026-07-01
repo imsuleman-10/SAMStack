@@ -47,8 +47,6 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-[100dvh] pb-4 px-4 sm:px-6 lg:px-8 flex items-center justify-center relative">
       {/* Background orbs */}
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-brand-500/10 dark:bg-brand-500/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-md w-full space-y-8 relative z-10">
         <AnimateOnScroll variant="fadeUp">
