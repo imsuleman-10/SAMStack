@@ -16,13 +16,13 @@ export const metadata: Metadata = {
     "outsource software development",
   ],
   alternates: {
-    canonical: "https://samstack.tech/services",
-    languages: { 'en': 'https://samstack.tech/services' },
+    canonical: "https://samstack-tech.vercel.app/services",
+    languages: { 'en': 'https://samstack-tech.vercel.app/services' },
   },
   openGraph: {
     title: "Software Engineering Services | SAMStack Tech",
     description: "Explore our core services: enterprise web development, AI automation, DevOps, mobile apps, and UI/UX design. Built for high-growth businesses. Based in Lahore, Pakistan.",
-    url: "https://samstack.tech/services",
+    url: "https://samstack-tech.vercel.app/services",
     type: "website",
     images: [{ url: "/logo.png", width: 1200, height: 630, alt: "SAMStack Tech Software Services" }],
   },
@@ -40,8 +40,8 @@ const servicesJsonLd = {
     {
       "@type": "BreadcrumbList",
       "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://samstack.tech" },
-        { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://samstack.tech/services" }
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://samstack-tech.vercel.app" },
+        { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://samstack-tech.vercel.app/services" }
       ]
     },
     {
@@ -55,8 +55,8 @@ const servicesJsonLd = {
             "@type": "Service",
             "name": "Custom Enterprise Software Development",
             "description": "Low-latency systems architecture, dynamic database configurations, high-throughput backend services, and multithreaded logic engines tailored for scale.",
-            "provider": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack.tech" },
-            "url": "https://samstack.tech/services/custom-enterprise-software",
+            "provider": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack-tech.vercel.app" },
+            "url": "https://samstack-tech.vercel.app/services/custom-enterprise-software",
             "serviceType": "Software Development"
           }
         },
@@ -66,8 +66,8 @@ const servicesJsonLd = {
             "@type": "Service",
             "name": "Web & Serverless Application Development",
             "description": "Ultra-fast Next.js App Router pages, server-side pre-rendered HTML, optimised cloud edge routes, and zero-cost scaling solutions.",
-            "provider": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack.tech" },
-            "url": "https://samstack.tech/services/web-serverless-apps",
+            "provider": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack-tech.vercel.app" },
+            "url": "https://samstack-tech.vercel.app/services/web-serverless-apps",
             "serviceType": "Web Development"
           }
         },
@@ -77,8 +77,8 @@ const servicesJsonLd = {
             "@type": "Service",
             "name": "Agentic AI & LLM Integrations",
             "description": "Custom AI autonomous workflow agents, semantic vector indexing, retrieval-augmented systems (RAG), and smart pipeline automations.",
-            "provider": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack.tech" },
-            "url": "https://samstack.tech/services/agentic-ai-integrations",
+            "provider": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack-tech.vercel.app" },
+            "url": "https://samstack-tech.vercel.app/services/agentic-ai-integrations",
             "serviceType": "Artificial Intelligence"
           }
         },
@@ -88,8 +88,8 @@ const servicesJsonLd = {
             "@type": "Service",
             "name": "DevOps & Cloud Architecture",
             "description": "Containerised docker registries, CI/CD pipeline automation, and cloud serverless monitoring for highly available production systems.",
-            "provider": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack.tech" },
-            "url": "https://samstack.tech/services/devops-cloud-architectures",
+            "provider": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack-tech.vercel.app" },
+            "url": "https://samstack-tech.vercel.app/services/devops-cloud-architectures",
             "serviceType": "DevOps Consulting"
           }
         },
@@ -99,8 +99,8 @@ const servicesJsonLd = {
             "@type": "Service",
             "name": "Mobile App Development",
             "description": "Native-performance iOS and Android applications built with React Native and Expo, featuring offline-first architecture.",
-            "provider": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack.tech" },
-            "url": "https://samstack.tech/services/mobile-app-development",
+            "provider": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack-tech.vercel.app" },
+            "url": "https://samstack-tech.vercel.app/services/mobile-app-development",
             "serviceType": "Mobile Development"
           }
         },
@@ -110,8 +110,8 @@ const servicesJsonLd = {
             "@type": "Service",
             "name": "UI/UX Design Systems",
             "description": "Research-driven interface design, scalable design systems, interactive prototyping, and user experience audits.",
-            "provider": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack.tech" },
-            "url": "https://samstack.tech/services/ui-ux-design-systems",
+            "provider": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack-tech.vercel.app" },
+            "url": "https://samstack-tech.vercel.app/services/ui-ux-design-systems",
             "serviceType": "UI/UX Design"
           }
         },
@@ -121,8 +121,8 @@ const servicesJsonLd = {
             "@type": "Service",
             "name": "Data Analytics & Business Intelligence",
             "description": "Real-time data pipelines, interactive dashboards, predictive analytics models, and business intelligence systems.",
-            "provider": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack.tech" },
-            "url": "https://samstack.tech/services/data-analytics-bi",
+            "provider": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack-tech.vercel.app" },
+            "url": "https://samstack-tech.vercel.app/services/data-analytics-bi",
             "serviceType": "Data Analytics"
           }
         }

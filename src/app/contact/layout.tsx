@@ -14,13 +14,13 @@ export const metadata: Metadata = {
     "free software consultation",
   ],
   alternates: {
-    canonical: "https://samstack.tech/contact",
-    languages: { 'en': 'https://samstack.tech/contact' },
+    canonical: "https://samstack-tech.vercel.app/contact",
+    languages: { 'en': 'https://samstack-tech.vercel.app/contact' },
   },
   openGraph: {
     title: "Contact SAMStack Tech | Start Your Enterprise Software Project",
     description: "Get in touch with SAMStack Tech. We respond to enterprise inquiries within 12 hours. Let's build your next high-performance software solution from Lahore, Pakistan.",
-    url: "https://samstack.tech/contact",
+    url: "https://samstack-tech.vercel.app/contact",
     type: "website",
     images: [{ url: "/logo.png", width: 1200, height: 630, alt: "Contact SAMStack Tech" }],
   },
@@ -37,12 +37,12 @@ const contactJsonLd = {
   "@graph": [
     {
       "@type": ["LocalBusiness", "ProfessionalService"],
-      "@id": "https://samstack.tech#business",
+      "@id": "https://samstack-tech.vercel.app#business",
       "name": "SAMStack Tech",
       "description": "Elite software engineering agency specializing in enterprise web applications, AI-powered automation, and cloud infrastructure.",
-      "url": "https://samstack.tech",
-      "logo": "https://samstack.tech/logo.png",
-      "image": "https://samstack.tech/logo.png",
+      "url": "https://samstack-tech.vercel.app",
+      "logo": "https://samstack-tech.vercel.app/logo.png",
+      "image": "https://samstack-tech.vercel.app/logo.png",
       "email": "samstacktechs@gmail.com",
       "telephone": "+923285778715",
       "priceRange": "$$",
@@ -83,15 +83,15 @@ const contactJsonLd = {
     },
     {
       "@type": "ContactPage",
-      "@id": "https://samstack.tech/contact",
-      "url": "https://samstack.tech/contact",
+      "@id": "https://samstack-tech.vercel.app/contact",
+      "url": "https://samstack-tech.vercel.app/contact",
       "name": "Contact SAMStack Tech",
       "description": "Get in touch with SAMStack Tech to start your enterprise software project.",
       "breadcrumb": {
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://samstack.tech" },
-          { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://samstack.tech/contact" }
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://samstack-tech.vercel.app" },
+          { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://samstack-tech.vercel.app/contact" }
         ]
       }
     }

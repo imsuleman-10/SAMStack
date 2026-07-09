@@ -9,9 +9,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  } as any,
+  allowedDevOrigins: ['192.168.100.10'],
   typescript: {
     ignoreBuildErrors: true,
   },

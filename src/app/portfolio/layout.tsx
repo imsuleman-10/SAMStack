@@ -14,13 +14,13 @@ export const metadata: Metadata = {
     "software agency case studies",
   ],
   alternates: {
-    canonical: "https://samstack.tech/portfolio",
-    languages: { 'en': 'https://samstack.tech/portfolio' },
+    canonical: "https://samstack-tech.vercel.app/portfolio",
+    languages: { 'en': 'https://samstack-tech.vercel.app/portfolio' },
   },
   openGraph: {
     title: "Software Engineering Portfolio | SAMStack Tech",
     description: "Explore enterprise software projects, AI systems, mobile apps, and cloud infrastructure built by SAMStack Tech for global clients.",
-    url: "https://samstack.tech/portfolio",
+    url: "https://samstack-tech.vercel.app/portfolio",
     type: "website",
     images: [{ url: "/logo.png", width: 1200, height: 630, alt: "SAMStack Tech Portfolio" }],
   },
@@ -37,22 +37,22 @@ const portfolioJsonLd = {
   "@graph": [
     {
       "@type": "CollectionPage",
-      "@id": "https://samstack.tech/portfolio",
-      "url": "https://samstack.tech/portfolio",
+      "@id": "https://samstack-tech.vercel.app/portfolio",
+      "url": "https://samstack-tech.vercel.app/portfolio",
       "name": "SAMStack Tech Portfolio",
       "description": "Showcase of enterprise software projects built by SAMStack Tech.",
-      "isPartOf": { "@type": "WebSite", "url": "https://samstack.tech" },
+      "isPartOf": { "@type": "WebSite", "url": "https://samstack-tech.vercel.app" },
       "publisher": {
         "@type": "Organization",
         "name": "SAMStack Tech",
-        "url": "https://samstack.tech"
+        "url": "https://samstack-tech.vercel.app"
       }
     },
     {
       "@type": "BreadcrumbList",
       "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://samstack.tech" },
-        { "@type": "ListItem", "position": 2, "name": "Portfolio", "item": "https://samstack.tech/portfolio" }
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://samstack-tech.vercel.app" },
+        { "@type": "ListItem", "position": 2, "name": "Portfolio", "item": "https://samstack-tech.vercel.app/portfolio" }
       ]
     }
   ]

@@ -3,7 +3,7 @@ import { services } from '@/lib/data/services';
 import { blogPosts } from '@/lib/data/blog-posts';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack.tech';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack-tech.vercel.app';
 
   // ── Tier 1: Homepage (1.0) ──────────────────────────────────────────────
   const homePage: MetadataRoute.Sitemap = [
@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1.0,
+      images: [`${baseUrl}/logo.png`, `${baseUrl}/images/img-server-rack.jpg`, `${baseUrl}/images/img-team-meeting.jpg`],
     },
   ];
 

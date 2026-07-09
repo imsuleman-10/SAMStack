@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack.tech';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack-tech.vercel.app';
 
   return {
     rules: [
@@ -24,6 +24,10 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/admin/', '/api/'],
         crawlDelay: 2,
+      },
+      {
+        userAgent: ['GPTBot', 'PerplexityBot', 'ClaudeBot', 'Google-Extended', 'anthropic-ai'],
+        allow: '/',
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

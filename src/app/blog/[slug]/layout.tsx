@@ -2,7 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import { getBlogPost } from "@/lib/data/blog-posts";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samstack.tech";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samstack-tech.vercel.app";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -80,8 +80,8 @@ export default async function BlogPostLayout({
         "publisher": {
           "@type": "Organization",
           "name": "SAMStack Tech",
-          "url": "https://samstack.tech",
-          "logo": { "@type": "ImageObject", "url": "https://samstack.tech/logo.png" }
+          "url": "https://samstack-tech.vercel.app",
+          "logo": { "@type": "ImageObject", "url": "https://samstack-tech.vercel.app/logo.png" }
         },
         "url": `${BASE_URL}/blog/${post.slug}`,
         "mainEntityOfPage": { "@type": "WebPage", "@id": `${BASE_URL}/blog/${post.slug}` },

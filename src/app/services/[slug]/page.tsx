@@ -17,9 +17,32 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const service = services.find((s) => s.slug === slug);
   if (!service) return { title: "Service Not Found" };
 
+  const url = `https://samstack-tech.vercel.app/services/${slug}`;
+
   return {
-    title: `${service.title} | SAMStack Tech`,
+    title: `${service.title} | SAMStack Tech Services`,
     description: service.description,
+    keywords: [
+      service.title,
+      service.subtitle,
+      "SAMStack Tech",
+      "Software Engineering Pakistan",
+      ...service.techStack,
+    ].join(", "),
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${service.title} | SAMStack Tech`,
+      description: service.description,
+      url,
+      type: "article",
+      images: [{ url: service.image, width: 1200, height: 630, alt: service.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: service.title,
+      description: service.description,
+      images: [service.image],
+    },
   };
 }
 
@@ -34,8 +57,62 @@ export default async function ServiceDetailsPage({ params }: { params: Promise<{
   const Icon = service.icon;
   const relatedServices = services.filter((s) => s.id !== service.id);
 
+  // AEO/LLMo JSON-LD Setup
+  const serviceJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": service.title,
+    "description": service.description,
+    "provider": {
+      "@type": "Organization",
+      "name": "SAMStack Tech",
+      "url": "https://samstack-tech.vercel.app"
+    },
+    "areaServed": "Worldwide",
+    "serviceType": service.subtitle
+  };
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": `What is ${service.title}?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": service.description
+        }
+      },
+      {
+        "@type": "Question",
+        "name": `What technologies are used in ${service.title}?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": `We utilize a modern tech stack for ${service.title} including: ${service.techStack.join(", ")}.`
+        }
+      },
+      {
+        "@type": "Question",
+        "name": `How to start a ${service.title} project with SAMStack Tech?`,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can start by booking a free discovery call. We offer a response within 12 hours, full NDA protection, and an elite delivery team."
+        }
+      }
+    ]
+  };
+
   return (
     <div className="flex-1 w-full bg-white dark:bg-black">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
 
       {/* ══════════════════════════════════════════
           HERO — Cinematic Full-screen

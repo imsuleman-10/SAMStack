@@ -15,13 +15,13 @@ export const metadata: Metadata = {
     "UET Lahore internship",
   ],
   alternates: {
-    canonical: "https://samstack.tech/internship",
-    languages: { 'en': 'https://samstack.tech/internship' },
+    canonical: "https://samstack-tech.vercel.app/internship",
+    languages: { 'en': 'https://samstack-tech.vercel.app/internship' },
   },
   openGraph: {
     title: "Software Engineering Internship in Lahore | SAMStack Tech",
     description: "Join SAMStack Tech's elite internship program. Work on live enterprise products, gain hands-on experience with Next.js, DevOps, and AI, and earn a verified certificate.",
-    url: "https://samstack.tech/internship",
+    url: "https://samstack-tech.vercel.app/internship",
     type: "website",
     images: [{ url: "/logo.png", width: 1200, height: 630, alt: "SAMStack Tech Internship Program" }],
   },
@@ -43,7 +43,7 @@ const internshipJsonLd = {
       "provider": {
         "@type": "Organization",
         "name": "SAMStack Tech",
-        "url": "https://samstack.tech",
+        "url": "https://samstack-tech.vercel.app",
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "Lahore",
@@ -53,19 +53,19 @@ const internshipJsonLd = {
       },
       "educationalProgramMode": "in-person",
       "occupationalCategory": "Software Engineering",
-      "url": "https://samstack.tech/internship",
+      "url": "https://samstack-tech.vercel.app/internship",
       "applicationStartDate": "2026-01-01",
       "offers": {
         "@type": "Offer",
         "category": "Internship",
-        "url": "https://samstack.tech/internship"
+        "url": "https://samstack-tech.vercel.app/internship"
       }
     },
     {
       "@type": "BreadcrumbList",
       "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://samstack.tech" },
-        { "@type": "ListItem", "position": 2, "name": "Internship", "item": "https://samstack.tech/internship" }
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://samstack-tech.vercel.app" },
+        { "@type": "ListItem", "position": 2, "name": "Internship", "item": "https://samstack-tech.vercel.app/internship" }
       ]
     }
   ]

@@ -57,8 +57,30 @@ const PROCESS = [
 ];
 
 export default function InternshipPage() {
+  const courseJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "Software Engineering Internship Program",
+    "description": "An elite software engineering residency where candidates ship 5 production-grade projects and receive a verified credential.",
+    "provider": {
+      "@type": "Organization",
+      "name": "SAMStack Tech",
+      "url": "https://samstack-tech.vercel.app"
+    },
+    "coursePrerequisites": "Basic understanding of programming concepts.",
+    "hasCourseInstance": {
+      "@type": "CourseInstance",
+      "courseMode": "Online",
+      "instructor": {
+        "@type": "Person",
+        "name": "Suleman Zaheer"
+      }
+    }
+  };
+
   return (
     <div className="flex-1 w-full bg-white/80 dark:bg-black text-slate-900 dark:text-white" style={{ overflowX: "clip" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }} />
 
       {/* ══════════════════════════════════════════
           SLIDE 1: HERO

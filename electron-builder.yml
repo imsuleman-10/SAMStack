@@ -1,0 +1,46 @@
+appId: com.samstack.tech
+productName: SAMStack Tech
+copyright: Copyright © 2026 SAMStack Tech
+directories:
+  output: dist
+  buildResources: public
+files:
+  - .next/standalone/**/*
+  - .next/static/**/*
+  - public/**/*
+  - electron/**/*
+extraResources:
+  - from: .next/standalone
+    to: server
+    filter:
+      - "**/*"
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: public/logo.png
+  artifactName: ${productName}-Setup-${version}.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: SAMStack Tech
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  icon: public/logo.png
+  category: public.app-category.developer
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+  icon: public/logo.png
+  category: Development

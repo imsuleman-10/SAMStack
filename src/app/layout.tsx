@@ -17,7 +17,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack.tech'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack-tech.vercel.app'),
   title: {
     default: "SAMStack Tech | Software Engineering Agency — Lahore, Pakistan",
     template: "%s | SAMStack Tech",
@@ -35,18 +35,30 @@ export const metadata: Metadata = {
     "DevOps consulting Pakistan",
     "AI development agency Pakistan",
     "SAMStack Tech",
+    "SAMStack",
+    "samstacktech",
+    "SAMStack team",
     "Suleman Zaheer",
+    "Suleman Zaheer Mughal",
+    "Saqib Javed",
+    "Syed Abdullah SAMStack",
   ],
   authors: [{ name: "Suleman Zaheer", url: "https://suleman-zaheer.vercel.app" }],
   creator: "SAMStack Tech",
   alternates: {
-    canonical: process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack.tech',
-    languages: { 'en': process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack.tech' },
+    canonical: process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack-tech.vercel.app',
+    languages: { 'en': process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack-tech.vercel.app' },
+  },
+  verification: {
+    google: 'JRME-PLs0sv_kYo3-V1UEvHaoSnq5Db5Elq65LYHri0',
+  },
+  other: {
+    "llmo:citation": "https://samstack-tech.vercel.app",
   },
   openGraph: {
     title: "SAMStack Tech | Elite Software Engineering Agency — Lahore, Pakistan",
     description: "SAMStack Tech is an elite software engineering agency. We build high-performance enterprise web apps, AI systems, and scalable cloud infrastructure.",
-    url: "https://samstack.tech",
+    url: "https://samstack-tech.vercel.app",
     siteName: "SAMStack Tech",
     images: [
       {
@@ -81,9 +93,9 @@ const organizationJsonLd = {
   "@type": ["ProfessionalService", "Organization"],
   "name": "SAMStack Tech",
   "description": "Elite software engineering agency based in Lahore, Pakistan, specializing in enterprise web applications, AI-powered systems, and cloud infrastructure.",
-  "url": "https://samstack.tech",
-  "logo": "https://samstack.tech/logo.png",
-  "image": "https://samstack.tech/logo.png",
+  "url": "https://samstack-tech.vercel.app",
+  "logo": "https://samstack-tech.vercel.app/logo.png",
+  "image": "https://samstack-tech.vercel.app/logo.png",
   "email": "samstacktechs@gmail.com",
   "telephone": "+923285778715",
   "contactPoint": [
@@ -123,6 +135,11 @@ const organizationJsonLd = {
   "serviceType": ["Web Application Development", "Enterprise Software", "AI & Machine Learning", "DevOps & Cloud Infrastructure", "UI/UX Design", "Mobile App Development"],
   "priceRange": "$$",
   "openingHours": "Mo-Su 00:00-23:59",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "40"
+  },
   "founder": {
     "@type": "Person",
     "name": "Suleman Zaheer",
@@ -149,7 +166,9 @@ const organizationJsonLd = {
   },
   "sameAs": [
     "https://github.com/imsuleman-10",
-    "https://www.linkedin.com/in/suleman-zaheer-mughal"
+    "https://www.linkedin.com/in/suleman-zaheer-mughal",
+    "https://www.linkedin.com/company/samstack-tech",
+    "https://twitter.com/samstacktech"
   ],
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
@@ -173,7 +192,7 @@ const personJsonLd = {
   "familyName": "Zaheer",
   "alternateName": "Suleman Zaheer Mughal",
   "url": "https://suleman-zaheer.vercel.app",
-  "image": "https://samstack.tech/suleman.jpg",
+  "image": "https://samstack-tech.vercel.app/suleman.jpg",
   "jobTitle": "Full Stack Engineer & DevOps Lead",
   "description": "Founder of SAMStack Tech — an elite software engineering studio based in Lahore, Pakistan. Specializes in Next.js, DevOps, cloud architecture, and AI agent systems.",
   "telephone": "+923285778715",
@@ -187,13 +206,13 @@ const personJsonLd = {
   "worksFor": {
     "@type": "Organization",
     "name": "SAMStack Tech",
-    "url": "https://samstack.tech"
+    "url": "https://samstack-tech.vercel.app"
   },
   "sameAs": [
     "https://github.com/imsuleman-10",
     "https://www.linkedin.com/in/suleman-zaheer-mughal",
     "https://wa.me/923285778715",
-    "https://samstack.tech"
+    "https://samstack-tech.vercel.app"
   ],
   "knowsAbout": ["Software Engineering", "Next.js", "React", "TypeScript", "DevOps", "Docker", "Kubernetes", "AWS", "Agentic AI", "System Architecture", "Node.js", "PostgreSQL"],
   "alumniOf": {
@@ -202,26 +221,99 @@ const personJsonLd = {
   }
 };
 
+const saqibJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Saqib Javed",
+  "jobTitle": "UI/UX & Client Logic Frontend Engineer",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "SAMStack Tech",
+    "url": "https://samstack-tech.vercel.app"
+  },
+  "knowsAbout": ["React", "TypeScript", "Framer Motion", "Figma", "Frontend Engineering"]
+};
+
+const abdullahJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Syed Abdullah",
+  "jobTitle": "Database & APIs Backend Engineer",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "SAMStack Tech",
+    "url": "https://samstack-tech.vercel.app"
+  },
+  "knowsAbout": ["Node.js", "PostgreSQL", "GraphQL", "Firebase", "Backend Engineering"]
+};
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Who is SAMStack Tech?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SAMStack Tech is an elite software engineering agency based in Lahore, Pakistan, specializing in enterprise web applications, AI-powered systems, and scalable cloud infrastructure."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who founded SAMStack Tech?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SAMStack Tech was founded by Suleman Zaheer, a Full Stack Engineer and DevOps Lead."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where is SAMStack Tech located?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SAMStack Tech is based in Lahore, Punjab, Pakistan, but serves clients worldwide."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What services does SAMStack Tech provide?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SAMStack Tech provides Custom Enterprise Software Development, Web & Serverless App Development, Agentic AI & LLM Integrations, DevOps & Cloud Architecture, Mobile App Development, and UI/UX Design Systems."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who are the team members at SAMStack Tech?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Key team members include Suleman Zaheer (Founder & Lead Architect), Saqib Javed (Frontend Engineer for UI/UX & Client Logic), and Syed Abdullah (Backend Engineer for Database & APIs)."
+      }
+    }
+  ]
+};
+
 const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "SAMStack Tech",
-  "url": "https://samstack.tech",
+  "url": "https://samstack-tech.vercel.app",
   "description": "Elite software engineering agency based in Lahore, Pakistan. Enterprise web apps, AI systems, and cloud infrastructure.",
   "publisher": {
     "@type": "Organization",
     "name": "SAMStack Tech",
-    "url": "https://samstack.tech",
+    "url": "https://samstack-tech.vercel.app",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://samstack.tech/logo.png"
+      "url": "https://samstack-tech.vercel.app/logo.png"
     }
   },
   "potentialAction": {
     "@type": "SearchAction",
     "target": {
       "@type": "EntryPoint",
-      "urlTemplate": "https://samstack.tech/blog?q={search_term_string}"
+      "urlTemplate": "https://samstack-tech.vercel.app/blog?q={search_term_string}"
     },
     "query-input": "required name=search_term_string"
   }
@@ -246,6 +338,18 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(saqibJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(abdullahJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
         <script
           type="application/ld+json"

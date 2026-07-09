@@ -1,12 +1,17 @@
 {
-  "name": "comp",
-  "version": "0.1.0",
+  "name": "samstack-tech",
+  "version": "1.0.0",
   "private": true,
+  "main": "electron/main.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "electron-dev": "concurrently \"next dev -p 3000\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-build": "next build && node scripts/copy-standalone.js && electron-builder --win --x64",
+    "electron-pack": "electron-builder --win --x64",
+    "electron-pack-all": "electron-builder --win --x64 --mac --linux"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "^1.1.1",
@@ -28,9 +33,14 @@
     "@types/nodemailer": "^8.0.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^10.0.3",
+    "electron": "^43.0.0",
+    "electron-builder": "^26.15.3",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "fs-extra": "^11.3.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wait-on": "^9.0.10"
   }
 }

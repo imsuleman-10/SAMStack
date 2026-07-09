@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Intern record not found." }, { status: 404 });
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://samstack.tech";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://samstack-tech.vercel.app";
     let responseData: Record<string, unknown> = { success: true };
 
     // ── APPROVE ──────────────────────────────────────────────────────────────

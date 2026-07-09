@@ -24,7 +24,8 @@ import {
   Trash2,
   Send,
   FileText,
-  Award
+  Award,
+  Download
 } from "lucide-react";
 import { tracks } from "@/lib/curriculum";
 import AnimateOnScroll from "@/app/components/AnimateOnScroll";
@@ -67,6 +68,7 @@ export default function AdminDashboardPage() {
   const [interns, setInterns] = useState<Intern[]>([]);
   const [messages, setMessages] = useState<ClientMessage[]>([]);
   const [activeTab, setActiveTab] = useState<"INTERNS" | "MESSAGES">("INTERNS");
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
@@ -147,6 +149,9 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     fetchApplications();
     fetchMessages();
+    setCurrentTime(new Date());
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
   }, []);
 
   const handleAction = useCallback(async (rollNumber: string, action: "APPROVE" | "REJECT") => {
@@ -249,10 +254,52 @@ export default function AdminDashboardPage() {
       router.refresh();
     } catch (err) {
       console.error("Logout failed:", err);
-      document.cookie = "admin_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
       router.push("/");
       router.refresh();
     }
+  };
+
+  const handleExportCSV = () => {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    if (activeTab === "INTERNS") {
+      csvContent += "ID,Name,Email,University,Track,RollNumber,Status,AppliedOn\n";
+      filteredInterns.forEach(intern => {
+        const row = [
+          intern.id,
+          `"${intern.fullName.replace(/"/g, '""')}"`,
+          `"${intern.email}"`,
+          `"${intern.university.replace(/"/g, '""')}"`,
+          intern.trackSelected,
+          intern.rollNumber,
+          intern.status,
+          intern.applicationTimestamp
+        ].join(",");
+        csvContent += row + "\r\n";
+      });
+    } else {
+      csvContent += "ID,ClientName,ClientEmail,Organization,ServiceType,Budget,Status,Timestamp\n";
+      filteredMessages.forEach(msg => {
+        const row = [
+          msg.id,
+          `"${msg.clientName.replace(/"/g, '""')}"`,
+          `"${msg.clientEmail}"`,
+          `"${msg.organization.replace(/"/g, '""')}"`,
+          `"${msg.serviceType}"`,
+          `"${msg.budget}"`,
+          msg.status,
+          msg.timestamp
+        ].join(",");
+        csvContent += row + "\r\n";
+      });
+    }
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `samstack_export_${activeTab.toLowerCase()}_${new Date().getTime()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handlePurgeDatabase = async () => {
@@ -344,9 +391,9 @@ export default function AdminDashboardPage() {
       <AnimateOnScroll variant="fadeUp">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-200 dark:border-white/5">
           <div className="space-y-2">
-            <span className="section-label">
-              <Terminal className="w-3.5 h-3.5" />
-              System Console Active
+            <span className="section-label flex flex-wrap items-center gap-2">
+              <span className="flex items-center gap-1.5"><Terminal className="w-3.5 h-3.5" /> System Console Active</span>
+              {currentTime && <span className="pl-2 border-l border-brand-500/30 font-mono text-[10px] opacity-80">{currentTime.toLocaleTimeString()}</span>}
             </span>
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white uppercase">
               Operator <span className="text-gradient-brand">Console Dashboard</span>
@@ -364,6 +411,15 @@ export default function AdminDashboardPage() {
               title="Refresh current database"
             >
               <RefreshCw className={`w-4 h-4 ${(isLoading || isLoadingMessages) ? "animate-spin" : ""}`} />
+            </button>
+
+            <button
+              onClick={handleExportCSV}
+              className="btn-secondary px-4 py-2.5 text-xs text-brand-600 dark:text-brand-400 border-brand-500/30 hover:bg-brand-50 dark:hover:bg-brand-500/10"
+              title="Export current view to CSV"
+            >
+              <Download className="w-3.5 h-3.5" />
+              Export
             </button>
 
             <button
@@ -414,14 +470,14 @@ export default function AdminDashboardPage() {
 
       <AnimateOnScroll variant="fadeUp" delay={0.15}>
         <div className="flex justify-center md:justify-start">
-          <div className="glass-card p-1 rounded-xl flex gap-1">
+          <div className="glass-card p-1 rounded-xl flex flex-col sm:flex-row w-full sm:w-auto gap-1">
             <button
               onClick={() => {
                 setActiveTab("INTERNS");
                 setSelectedStatus("ALL");
                 setSearchTerm("");
               }}
-              className={`px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-lg transition-all flex items-center gap-2 ${
+              className={`w-full sm:w-auto justify-center px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-lg transition-all flex items-center gap-2 ${
                 activeTab === "INTERNS"
                   ? "bg-brand-500/10 text-brand-600 dark:text-brand-400 shadow-sm border border-brand-500/20"
                   : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-300 border border-transparent hover:bg-white/50 dark:hover:bg-white/5"
@@ -441,7 +497,7 @@ export default function AdminDashboardPage() {
                 setSelectedStatus("ALL");
                 setSearchTerm("");
               }}
-              className={`px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-lg transition-all flex items-center gap-2 ${
+              className={`w-full sm:w-auto justify-center px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-lg transition-all flex items-center gap-2 ${
                 activeTab === "MESSAGES"
                   ? "bg-brand-500/10 text-brand-600 dark:text-brand-400 shadow-sm border border-brand-500/20"
                   : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-300 border border-transparent hover:bg-white/50 dark:hover:bg-white/5"

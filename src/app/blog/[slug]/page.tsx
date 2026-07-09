@@ -11,7 +11,7 @@ import type { Metadata } from "next";
 
 export const revalidate = 3600;
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samstack.tech";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samstack-tech.vercel.app";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;

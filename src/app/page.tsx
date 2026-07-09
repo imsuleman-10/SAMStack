@@ -2,7 +2,7 @@ import React from "react";
 import HomeClient from "./home-client";
 import type { Metadata } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samstack.tech";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://samstack-tech.vercel.app";
 
 export const metadata: Metadata = {
   title: "SAMStack Tech | Software Engineering Agency in Lahore, Pakistan",

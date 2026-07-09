@@ -56,7 +56,7 @@ function StatCard({ item, getValue, index }: { item: any; getValue: number; inde
   const Icon = item.icon;
   return (
     <AnimateOnScroll variant="fadeUp" delay={index * 0.08}>
-      <div className="glass-card rounded-xl p-5 flex flex-col justify-between hover-lift relative overflow-hidden group">
+      <div className="glass-card rounded-xl p-4 sm:p-5 flex flex-col justify-between hover-lift relative overflow-hidden group">
         <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${c.glow} blur-3xl`} />
         <span className={`relative text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 ${c.text} ${c.darkText}`}>
           <Icon className="w-4 h-4" />
@@ -75,7 +75,7 @@ export const DashboardStats = React.memo(function DashboardStats({ activeTab, st
   const getValue = (item: any) => item.value(activeTab === "INTERNS" ? stats : messageStats);
 
   return (
-    <div className={`grid grid-cols-2 ${items.length === 5 ? "lg:grid-cols-5" : "lg:grid-cols-4"} gap-4`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 ${items.length === 5 ? "lg:grid-cols-5" : "lg:grid-cols-4"} gap-4`}>
       {items.map((item, idx) => (
         <StatCard key={item.label} item={item} getValue={getValue(item)} index={idx} />
       ))}

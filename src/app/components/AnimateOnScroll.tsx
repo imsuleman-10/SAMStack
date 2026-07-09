@@ -61,16 +61,38 @@ export default function AnimateOnScroll({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Safety fallback: if observer never fires, show content after 1.5s
+    const fallbackTimer = setTimeout(() => {
+      controls.start("visible");
+    }, 1500);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
+          clearTimeout(fallbackTimer);
           controls.start("visible");
         }
       },
-      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0.05, rootMargin: "0px 0px 0px 0px" }
     );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
+
+    if (ref.current) {
+      // If already in viewport on mount, show immediately
+      const rect = ref.current.getBoundingClientRect();
+      const inViewport =
+        rect.top < window.innerHeight && rect.bottom > 0;
+      if (inViewport) {
+        clearTimeout(fallbackTimer);
+        controls.start("visible");
+      } else {
+        observer.observe(ref.current);
+      }
+    }
+
+    return () => {
+      clearTimeout(fallbackTimer);
+      observer.disconnect();
+    };
   }, [controls]);
 
   const selectedVariant = variants[variant];
