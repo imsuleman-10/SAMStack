@@ -229,11 +229,11 @@ export default function OfferLetterClient({ intern, trackTitle }: OfferLetterCli
               </div>
               <div className="flex items-center sm:justify-end gap-1.5">
                 <Globe className="w-3.5 h-3.5 text-cyan-400 print-accent-text" />
-                <span>www.samstack.tech</span>
+                <span>samstack-tech.vercel.app</span>
               </div>
               <div className="flex items-center sm:justify-end gap-1.5">
                 <Mail className="w-3.5 h-3.5 text-cyan-400 print-accent-text" />
-                <span>support@samstack.tech</span>
+                <span>support@samstack-tech.vercel.app</span>
               </div>
               <div className="flex items-center sm:justify-end gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-cyan-400 print-accent-text" />

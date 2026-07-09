@@ -80,7 +80,7 @@ export default function AdminLoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@samstack.tech"
+                placeholder="admin@samstack-tech.vercel.app"
                 className="w-full px-4 py-3 text-sm rounded-xl bg-white/70 dark:bg-black/30 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 placeholder-slate-400 transition-all font-mono"
               />
             </div>

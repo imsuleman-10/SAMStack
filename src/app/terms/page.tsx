@@ -195,7 +195,7 @@ export default function TermsPage() {
                     If you have questions or disputes regarding these terms, please contact:
                   </p>
                   <div className="bg-white dark:bg-neutral-950 rounded-xl p-5 border border-slate-200 dark:border-neutral-800 shadow-sm">
-                    <p className="font-mono text-sm text-slate-900 dark:text-slate-100">legal@samstack.tech</p>
+                    <p className="font-mono text-sm text-slate-900 dark:text-slate-100">legal@samstack-tech.vercel.app</p>
                   </div>
                 </section>
               </AnimateOnScroll>

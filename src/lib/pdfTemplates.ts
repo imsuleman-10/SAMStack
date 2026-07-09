@@ -93,7 +93,7 @@ export const generateOfferLetterPDF = async ({ fullName, rollNumber, track, date
   const rightTextX = W - marginX;
   page.drawText('SAMSTACK TECH', { x: rightTextX - bold.widthOfTextAtSize('SAMSTACK TECH', 18), y: currentY - 14, size: 18, font: bold, color: C.navy });
   page.drawText('Software Engineering Systems', { x: rightTextX - font.widthOfTextAtSize('Software Engineering Systems', 9), y: currentY - 28, size: 9, font, color: C.slate500 });
-  page.drawText('samstacktechs@gmail.com | samstack.tech', { x: rightTextX - font.widthOfTextAtSize('samstacktechs@gmail.com | samstack.tech', 8), y: currentY - 42, size: 8, font, color: C.slate400 });
+  page.drawText('samstacktechs@gmail.com | samstack-tech.vercel.app', { x: rightTextX - font.widthOfTextAtSize('samstacktechs@gmail.com | samstack-tech.vercel.app', 8), y: currentY - 42, size: 8, font, color: C.slate400 });
   page.drawText('Lahore, Pakistan', { x: rightTextX - font.widthOfTextAtSize('Lahore, Pakistan', 8), y: currentY - 54, size: 8, font, color: C.slate400 });
 
   currentY -= 75;
@@ -185,7 +185,7 @@ export const generateOfferLetterPDF = async ({ fullName, rollNumber, track, date
   const footY = 40;
   page.drawLine({ start: { x: marginX, y: footY + 15 }, end: { x: W - marginX, y: footY + 15 }, color: C.slate200, thickness: 1 });
   page.drawText('This is a highly confidential and officially auto-generated document issued by SAMStack Tech.', { x: marginX, y: footY, size: 8, font, color: C.slate400 });
-  page.drawText('samstack.tech', { x: rightTextX - font.widthOfTextAtSize('samstack.tech', 8), y: footY, size: 8, font, color: C.slate400 });
+  page.drawText('samstack-tech.vercel.app', { x: rightTextX - font.widthOfTextAtSize('samstack-tech.vercel.app', 8), y: footY, size: 8, font, color: C.slate400 });
 
   return Buffer.from(await pdfDoc.save());
 };
@@ -276,7 +276,7 @@ export const generateCertificatePDF = async ({ fullName, certificateNumber, trac
   page.drawText('CREDENTIAL ID', { x: LX, y: FC - 6, size: 8, font: bold, color: colorGray });
   const displayId = certificateNumber.length > 22 ? certificateNumber.substring(0, 20) + '...' : certificateNumber;
   page.drawText(displayId, { x: LX, y: FC - 20, size: 10, font: bold, color: colorBlack });
-  page.drawText('Verify at: samstack.tech/verify', { x: LX, y: FC - 35, size: 8, font, color: colorBlue });
+  page.drawText('Verify at: samstack-tech.vercel.app/verify', { x: LX, y: FC - 35, size: 8, font, color: colorBlue });
 
   // FIX: Premium Certificate Seal Base
   const SR = 48;
