@@ -264,8 +264,10 @@ export default function Header() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="hidden lg:block absolute top-[64px] left-0 w-full bg-white dark:bg-neutral-950 border-b border-slate-200/70 dark:border-neutral-800/70 shadow-xl z-40 overflow-hidden"
+              className="hidden lg:block absolute top-[64px] left-0 w-full h-[calc(100vh-64px)] bg-white dark:bg-neutral-950 border-b border-slate-200/70 dark:border-neutral-800/70 shadow-xl z-40 overflow-hidden"
             >
+              <div className="flex flex-col h-full justify-between">
+                <div>
               {NAV_ITEMS.map((item) => {
                 if (item.label !== openMenu) return null;
                 return (
@@ -335,6 +337,39 @@ export default function Header() {
                   </div>
                 );
               })}
+              </div>
+
+              {/* Professional Bottom Bar */}
+              <div className="bg-slate-50 dark:bg-neutral-900 border-t border-slate-200/70 dark:border-neutral-800/70 mt-auto">
+                <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-row items-center justify-between">
+                  <div className="flex items-center gap-8">
+                    <div className="flex items-center gap-2.5 text-slate-600 dark:text-slate-300 text-[13px] font-semibold">
+                      <div className="w-8 h-8 rounded-full bg-brand-500/10 flex items-center justify-center">
+                        <Globe className="w-4 h-4 text-brand-600 dark:text-brand-400" />
+                      </div>
+                      Lahore, Pakistan
+                    </div>
+                    <div className="flex items-center gap-2.5 text-slate-600 dark:text-slate-300 text-[13px] font-semibold">
+                      <div className="w-8 h-8 rounded-full bg-brand-500/10 flex items-center justify-center">
+                        <UserCheck className="w-4 h-4 text-brand-600 dark:text-brand-400" />
+                      </div>
+                      samstacktechs@gmail.com
+                    </div>
+                    <div className="flex items-center gap-2.5 text-slate-600 dark:text-slate-300 text-[13px] font-semibold">
+                      <div className="w-8 h-8 rounded-full bg-brand-500/10 flex items-center justify-center">
+                        <Shield className="w-4 h-4 text-brand-600 dark:text-brand-400" />
+                      </div>
+                      Strict NDA Protected
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">
+                      Enterprise Software Systems
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
             </motion.div>
           )}
         </AnimatePresence>
