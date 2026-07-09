@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   title: "SAMStack Tech | Software Engineering Agency in Lahore, Pakistan",
   description: "SAMStack Tech is an elite software engineering agency based in Lahore, Pakistan. We build high-performance enterprise web apps, AI-powered systems, and scalable cloud infrastructure for businesses worldwide. Free consultation available.",
   keywords: [
+    "samstack tech",
+    "samstack",
+    "suleman zaheer",
+    "saqib javed",
+    "syed abdullah",
     "software engineering agency Lahore Pakistan",
     "enterprise software development Pakistan",
     "hire software developers Pakistan",
@@ -19,8 +24,6 @@ export const metadata: Metadata = {
     "web development company Lahore",
     "custom software development Pakistan",
     "software agency Pakistan",
-    "SAMStack Tech",
-    "Suleman Zaheer",
   ],
   alternates: {
     canonical: BASE_URL,
