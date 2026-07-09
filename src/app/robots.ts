@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack-tech.vercel.app';
+  const baseUrl = 'https://samstack-tech.vercel.app';
 
   return {
     rules: [

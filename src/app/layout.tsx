@@ -17,7 +17,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack-tech.vercel.app'),
+  metadataBase: new URL('https://samstack-tech.vercel.app'),
   title: {
     default: "SAMStack Tech | Software Engineering Agency — Lahore, Pakistan",
     template: "%s | SAMStack Tech",
@@ -46,8 +46,8 @@ export const metadata: Metadata = {
   authors: [{ name: "Suleman Zaheer", url: "https://suleman-zaheer.vercel.app" }],
   creator: "SAMStack Tech",
   alternates: {
-    canonical: process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack-tech.vercel.app',
-    languages: { 'en': process.env.NEXT_PUBLIC_SITE_URL || 'https://samstack-tech.vercel.app' },
+    canonical: 'https://samstack-tech.vercel.app',
+    languages: { 'en': 'https://samstack-tech.vercel.app' },
   },
   verification: {
     google: 'JRME-PLs0sv_kYo3-V1UEvHaoSnq5Db5Elq65LYHri0',
