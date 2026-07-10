@@ -1,5 +1,5 @@
 import React from "react";
-import { ExternalLink, Check, X, FileText, Award, GraduationCap } from "lucide-react";
+import { ExternalLink, Check, X, FileText, Award, GraduationCap, Trash2, Download } from "lucide-react";
 
 interface InternTableProps {
   isLoading: boolean;
@@ -9,6 +9,8 @@ interface InternTableProps {
   resendingRoll: string | null;
   handleAction: (rollNumber: string, action: "APPROVE" | "REJECT") => void;
   handleResend: (rollNumber: string, type: "OFFER_LETTER" | "CERTIFICATE") => void;
+  handleDownload?: (rollNumber: string, type: "OFFER_LETTER" | "CERTIFICATE") => void;
+  handleDelete?: (id: string) => void;
   formatDate: (timestamp: any) => string;
 }
 
@@ -20,6 +22,8 @@ export const InternTable = React.memo(function InternTable({
   resendingRoll,
   handleAction,
   handleResend,
+  handleDownload,
+  handleDelete,
   formatDate
 }: InternTableProps) {
   if (isLoading) {
@@ -207,18 +211,29 @@ export const InternTable = React.memo(function InternTable({
                             Reject
                           </button>
                         </div>
-                        <button
-                          disabled={resendingRoll !== null}
-                          onClick={() => handleResend(intern.rollNumber, "OFFER_LETTER")}
-                          className="text-slate-500 hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400 text-[11px] font-semibold transition-colors flex items-center gap-1.5 disabled:opacity-50"
-                        >
-                          {resendingRoll === `${intern.rollNumber}-OFFER_LETTER` ? (
-                            <span className="w-3.5 h-3.5 border-2 border-brand-400 border-t-transparent rounded-full animate-spin" />
-                          ) : (
-                            <FileText className="w-3.5 h-3.5" />
+                        <div className="flex flex-col items-end gap-2 mt-2">
+                          <button
+                            disabled={resendingRoll !== null}
+                            onClick={() => handleResend(intern.rollNumber, "OFFER_LETTER")}
+                            className="text-slate-500 hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400 text-[11px] font-semibold transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                          >
+                            {resendingRoll === `${intern.rollNumber}-OFFER_LETTER` ? (
+                              <span className="w-3.5 h-3.5 border-2 border-brand-400 border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <FileText className="w-3.5 h-3.5" />
+                            )}
+                            Resend Offer Letter
+                          </button>
+                          {handleDownload && (
+                            <button
+                              onClick={() => handleDownload(intern.rollNumber, "OFFER_LETTER")}
+                              className="text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 text-[11px] font-semibold transition-colors flex items-center gap-1.5"
+                            >
+                              <Download className="w-3.5 h-3.5" />
+                              Download Offer
+                            </button>
                           )}
-                          Resend Offer Letter
-                        </button>
+                        </div>
                       </>
                     )}
 
@@ -257,39 +272,92 @@ export const InternTable = React.memo(function InternTable({
                             Cert
                           </button>
                         </div>
+                        {handleDownload && (
+                          <div className="flex items-center gap-3 mt-1">
+                            <button
+                              onClick={() => handleDownload(intern.rollNumber, "OFFER_LETTER")}
+                              className="text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 text-[11px] font-semibold transition-colors flex items-center gap-1.5"
+                            >
+                              <Download className="w-3.5 h-3.5" />
+                              Offer
+                            </button>
+                            <span className="text-slate-300 dark:text-neutral-700">•</span>
+                            <button
+                              onClick={() => handleDownload(intern.rollNumber, "CERTIFICATE")}
+                              className="text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 text-[11px] font-semibold transition-colors flex items-center gap-1.5"
+                            >
+                              <Download className="w-3.5 h-3.5" />
+                              Cert
+                            </button>
+                          </div>
+                        )}
                       </>
                     )}
 
                     {intern.status === "REJECTED" && (
-                      <button
-                        disabled={resendingRoll !== null}
-                        onClick={() => handleResend(intern.rollNumber, "OFFER_LETTER")}
-                        className="text-slate-500 hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400 text-[11px] font-semibold transition-colors flex items-center gap-1.5 disabled:opacity-50"
-                      >
-                        {resendingRoll === `${intern.rollNumber}-OFFER_LETTER` ? (
-                          <span className="w-3.5 h-3.5 border-2 border-brand-400 border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                          <FileText className="w-3.5 h-3.5" />
+                      <div className="flex flex-col items-end gap-2 mt-2">
+                        <button
+                          disabled={resendingRoll !== null}
+                          onClick={() => handleResend(intern.rollNumber, "OFFER_LETTER")}
+                          className="text-slate-500 hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400 text-[11px] font-semibold transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                        >
+                          {resendingRoll === `${intern.rollNumber}-OFFER_LETTER` ? (
+                            <span className="w-3.5 h-3.5 border-2 border-brand-400 border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <FileText className="w-3.5 h-3.5" />
+                          )}
+                          Resend Offer Letter
+                        </button>
+                        {handleDownload && (
+                          <button
+                            onClick={() => handleDownload(intern.rollNumber, "OFFER_LETTER")}
+                            className="text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 text-[11px] font-semibold transition-colors flex items-center gap-1.5"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                            Download Offer
+                          </button>
                         )}
-                        Resend Offer Letter
-                      </button>
+                      </div>
                     )}
 
                     {intern.status === "APPLIED" && (
-                      <button
-                        disabled={resendingRoll !== null}
-                        onClick={() => handleResend(intern.rollNumber, "OFFER_LETTER")}
-                        className="text-slate-500 hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400 text-[11px] font-semibold transition-colors flex items-center gap-1.5 disabled:opacity-50"
-                      >
-                        {resendingRoll === `${intern.rollNumber}-OFFER_LETTER` ? (
-                          <span className="w-3.5 h-3.5 border-2 border-brand-400 border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                          <FileText className="w-3.5 h-3.5" />
+                      <div className="flex flex-col items-end gap-2 mt-2">
+                        <button
+                          disabled={resendingRoll !== null}
+                          onClick={() => handleResend(intern.rollNumber, "OFFER_LETTER")}
+                          className="text-slate-500 hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400 text-[11px] font-semibold transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                        >
+                          {resendingRoll === `${intern.rollNumber}-OFFER_LETTER` ? (
+                            <span className="w-3.5 h-3.5 border-2 border-brand-400 border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <FileText className="w-3.5 h-3.5" />
+                          )}
+                          Resend Offer Letter
+                        </button>
+                        {handleDownload && (
+                          <button
+                            onClick={() => handleDownload(intern.rollNumber, "OFFER_LETTER")}
+                            className="text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 text-[11px] font-semibold transition-colors flex items-center gap-1.5"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                            Download Offer
+                          </button>
                         )}
-                        Resend Offer Letter
-                      </button>
+                      </div>
                     )}
 
+                    {handleDelete && (
+                      <div className="mt-3 pt-3 border-t border-slate-200 dark:border-white/5 w-full flex justify-end">
+                        <button
+                          onClick={() => handleDelete(intern.id)}
+                          className="text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 text-[11px] font-semibold transition-colors flex items-center gap-1.5"
+                          title="Delete Intern"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          Delete
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </td>
 

@@ -95,6 +95,10 @@ export default function AdminDashboardPage() {
   const [purgeConfirmationText, setPurgeConfirmationText] = useState("");
   const [isPurging, setIsPurging] = useState(false);
 
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newIntern, setNewIntern] = useState({ fullName: "", email: "", university: "", trackSelected: "PYTHON" });
+  const [isAddingIntern, setIsAddingIntern] = useState(false);
+
   const fetchApplications = async () => {
     setIsLoading(true);
     setError(null);
@@ -259,6 +263,50 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const handleAddIntern = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAddingIntern(true);
+    setError(null);
+    try {
+      const response = await fetch("/api/admin/interns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newIntern),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Failed to add intern.");
+      setActionSuccessMessage(data.message);
+      setShowAddModal(false);
+      setNewIntern({ fullName: "", email: "", university: "", trackSelected: "PYTHON" });
+      await fetchApplications();
+    } catch (err: any) {
+      setError(err.message || "Failed to add intern.");
+    } finally {
+      setIsAddingIntern(false);
+      setTimeout(() => setActionSuccessMessage(null), 5000);
+    }
+  };
+
+  const handleDelete = useCallback(async (id: string) => {
+    if (!confirm("Are you sure you want to delete this intern?")) return;
+    setError(null);
+    try {
+      const response = await fetch(`/api/admin/interns/${id}`, { method: "DELETE" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Failed to delete intern.");
+      setActionSuccessMessage(data.message);
+      await fetchApplications();
+    } catch (err: any) {
+      setError(err.message || "Failed to delete intern.");
+    } finally {
+      setTimeout(() => setActionSuccessMessage(null), 5000);
+    }
+  }, []);
+
+  const handleDownload = useCallback((rollNumber: string, type: "OFFER_LETTER" | "CERTIFICATE") => {
+    window.open(`/api/admin/download?rollNumber=${rollNumber}&type=${type}`, "_blank");
+  }, []);
+
   const handleExportCSV = () => {
     let csvContent = "data:text/csv;charset=utf-8,";
     if (activeTab === "INTERNS") {
@@ -405,6 +453,15 @@ export default function AdminDashboardPage() {
 
           <div className="flex flex-wrap items-center gap-3">
             <button
+              onClick={() => setShowAddModal(true)}
+              className="btn-primary px-4 py-2.5 text-xs bg-brand-600 hover:bg-brand-500 text-white flex items-center gap-2 border-brand-500/30"
+              title="Add New Intern"
+            >
+              <Users className="w-3.5 h-3.5" />
+              Add Intern
+            </button>
+
+            <button
               onClick={refreshAllData}
               disabled={isLoading || isLoadingMessages}
               className="btn-secondary px-3 py-2.5 text-xs"
@@ -538,6 +595,8 @@ export default function AdminDashboardPage() {
               resendingRoll={resendingRoll}
               handleAction={handleAction}
               handleResend={handleResend}
+              handleDownload={handleDownload}
+              handleDelete={handleDelete}
               formatDate={formatDate}
             />
           ) : (
@@ -624,6 +683,96 @@ export default function AdminDashboardPage() {
                   Purge Database
                 </button>
               </div>
+            </div>
+          </AnimateOnScroll>
+        </div>
+      )}
+
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md transition-opacity">
+          <AnimateOnScroll variant="scaleUp">
+            <div className="glass-card w-full max-w-md mx-4 p-6 rounded-2xl border border-brand-500/20 shadow-2xl space-y-6 text-slate-800 dark:text-slate-100">
+              <div className="flex items-center gap-3 text-brand-500">
+                <div className="p-3 bg-brand-500/10 rounded-xl border border-brand-500/20">
+                  <Users className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white uppercase">
+                    Add New Intern
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                    Manually enroll a candidate
+                  </p>
+                </div>
+              </div>
+
+              <form onSubmit={handleAddIntern} className="space-y-4">
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-500">Full Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={newIntern.fullName}
+                    onChange={e => setNewIntern({...newIntern, fullName: e.target.value})}
+                    className="w-full px-3 py-2 text-xs text-slate-900 dark:text-white bg-white/70 dark:bg-black/30 border border-slate-300 dark:border-white/10 rounded-lg outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/40 transition-all"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-500">Email</label>
+                  <input
+                    type="email"
+                    required
+                    value={newIntern.email}
+                    onChange={e => setNewIntern({...newIntern, email: e.target.value})}
+                    className="w-full px-3 py-2 text-xs text-slate-900 dark:text-white bg-white/70 dark:bg-black/30 border border-slate-300 dark:border-white/10 rounded-lg outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/40 transition-all"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-500">University</label>
+                  <input
+                    type="text"
+                    required
+                    value={newIntern.university}
+                    onChange={e => setNewIntern({...newIntern, university: e.target.value})}
+                    className="w-full px-3 py-2 text-xs text-slate-900 dark:text-white bg-white/70 dark:bg-black/30 border border-slate-300 dark:border-white/10 rounded-lg outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/40 transition-all"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-500">Track</label>
+                  <select
+                    value={newIntern.trackSelected}
+                    onChange={e => setNewIntern({...newIntern, trackSelected: e.target.value})}
+                    className="w-full px-3 py-2 text-xs text-slate-900 dark:text-white bg-white/70 dark:bg-black/30 border border-slate-300 dark:border-white/10 rounded-lg outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/40 transition-all"
+                  >
+                    {Object.keys(tracks).map(trackKey => (
+                      <option key={trackKey} value={trackKey}>{tracks[trackKey].title}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="flex items-center justify-end gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddModal(false)}
+                    disabled={isAddingIntern}
+                    className="btn-secondary px-4 py-2 text-xs"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isAddingIntern}
+                    className="btn-primary px-4 py-2 text-xs flex items-center gap-2"
+                  >
+                    {isAddingIntern ? (
+                      <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Check className="w-3.5 h-3.5" />
+                    )}
+                    Add Intern
+                  </button>
+                </div>
+              </form>
             </div>
           </AnimateOnScroll>
         </div>

@@ -26,10 +26,24 @@ export default function robots(): MetadataRoute.Robots {
         crawlDelay: 2,
       },
       {
-        userAgent: ['GPTBot', 'PerplexityBot', 'ClaudeBot', 'Google-Extended', 'anthropic-ai'],
-        allow: '/',
-      },
-    ],
+        // AI Crawlers — full access for GEO
+      userAgent: [
+        'GPTBot',
+        'PerplexityBot',
+        'ClaudeBot',
+        'Google-Extended',
+        'anthropic-ai',
+        'Omgilibot',
+        'YouBot',
+        'cohere-ai',
+        'CCBot',
+        'ChatGPT-User',
+        'ia_archiver',
+      ],
+      allow: ['/'],
+      disallow: ['/admin/', '/api/'],
+    },
+  ],
     sitemap: `${baseUrl}/sitemap.xml`,
     host: baseUrl,
   };

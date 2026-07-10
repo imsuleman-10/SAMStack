@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { services } from '@/lib/data/services';
 import { blogPosts } from '@/lib/data/blog-posts';
+import { teamData } from '@/lib/data/team';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://samstack-tech.vercel.app';
@@ -62,14 +63,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
+  // ── Dynamic: Team portfolio pages (0.7) ────────────────────────────────
+  const teamSitemaps: MetadataRoute.Sitemap = teamData.map((member) => ({
+    url: `${baseUrl}/team/${member.id}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  }));
+
+  const teamIndex: MetadataRoute.Sitemap = [
+    { url: `${baseUrl}/team`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+  ];
+
   return [
     ...homePage,
     ...conversionPages,
     ...brandPages,
     ...blogIndex,
+    ...teamIndex,
     ...programmePages,
     ...legalPages,
     ...serviceSitemaps,
     ...blogSitemaps,
+    ...teamSitemaps,
   ];
 }

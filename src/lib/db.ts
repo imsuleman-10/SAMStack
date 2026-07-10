@@ -6,6 +6,7 @@ import {
   setDoc,
   updateDoc,
   addDoc,
+  deleteDoc,
   runTransaction,
   query,
   where,
@@ -277,6 +278,13 @@ export const db = {
         status: 'SUBMITTED',
         submissionData: submission,
       });
+      return true;
+    },
+
+    async delete(id: string): Promise<boolean> {
+      const intern = await db.interns.get(id);
+      if (!intern) return false;
+      await deleteDoc(doc(firestore, COLLECTIONS.INTERNS, intern.id));
       return true;
     },
 

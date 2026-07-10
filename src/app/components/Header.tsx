@@ -88,7 +88,7 @@ const NAV_ITEMS = [
           heading: "Company",
           links: [
             { label: "About SAMStack", href: "/about", icon: Users, desc: "Our story & mission" },
-            { label: "Our Team", href: "/about#team", icon: Users, desc: "Meet the engineers" },
+            { label: "Our Team", href: "/team", icon: Users, desc: "Meet the engineers" },
             { label: "Our Values", href: "/about#values", icon: Shield, desc: "Principles we build by" },
           ],
         },
@@ -101,7 +101,7 @@ const NAV_ITEMS = [
           ],
         },
       ],
-      cta: { label: "Meet the Team", href: "/about#team" },
+      cta: { label: "Meet the Team", href: "/team" },
     },
   },
   {
