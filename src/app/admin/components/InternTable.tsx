@@ -12,6 +12,7 @@ interface InternTableProps {
   handleDownload?: (rollNumber: string, type: "OFFER_LETTER" | "CERTIFICATE") => void;
   handleDelete?: (id: string) => void;
   formatDate: (timestamp: any) => string;
+  onRowClick?: (intern: any) => void;
 }
 
 export const InternTable = React.memo(function InternTable({
@@ -24,7 +25,8 @@ export const InternTable = React.memo(function InternTable({
   handleResend,
   handleDownload,
   handleDelete,
-  formatDate
+  formatDate,
+  onRowClick,
 }: InternTableProps) {
   if (isLoading) {
     return (
@@ -67,7 +69,12 @@ export const InternTable = React.memo(function InternTable({
             const trackInfo = tracks[intern.trackSelected];
 
             return (
-              <tr key={intern.id} className="transition-colors hover:bg-slate-50/50 dark:hover:bg-white/[0.015]" style={{ animationDelay: `${idx * 30}ms` }}>
+              <tr
+                key={intern.id}
+                className="transition-colors hover:bg-slate-50/50 dark:hover:bg-white/[0.015] cursor-pointer group"
+                style={{ animationDelay: `${idx * 30}ms` }}
+                onClick={() => onRowClick?.(intern)}
+              >
                 <td className="py-5 px-6">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-500/20 to-indigo-500/20 border border-brand-500/10 flex items-center justify-center text-sm font-bold text-brand-600 dark:text-brand-400 shrink-0">
@@ -185,7 +192,7 @@ export const InternTable = React.memo(function InternTable({
                 </td>
 
                 <td className="py-5 px-6 text-right">
-                  <div className="flex flex-col items-end gap-2">
+                  <div className="flex flex-col items-end gap-2" onClick={(e) => e.stopPropagation()}>
 
                     {intern.status === "SUBMITTED" && (
                       <>

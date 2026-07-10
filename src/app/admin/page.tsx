@@ -6,6 +6,7 @@ import { DashboardStats } from "./components/DashboardStats";
 import { DashboardFilters } from "./components/DashboardFilters";
 import { InternTable } from "./components/InternTable";
 import { MessageList } from "./components/MessageList";
+import { InternDrawer } from "./components/InternDrawer";
 import {
   Users,
   Clock,
@@ -103,6 +104,8 @@ export default function AdminDashboardPage() {
   const [directSendRoll, setDirectSendRoll] = useState("");
   const [directSendType, setDirectSendType] = useState<"OFFER_LETTER" | "CERTIFICATE">("OFFER_LETTER");
   const [isSendingDirect, setIsSendingDirect] = useState(false);
+
+  const [selectedIntern, setSelectedIntern] = useState<Intern | null>(null);
 
   const fetchApplications = async () => {
     setIsLoading(true);
@@ -637,6 +640,7 @@ export default function AdminDashboardPage() {
               handleDownload={handleDownload}
               handleDelete={handleDelete}
               formatDate={formatDate}
+              onRowClick={(intern) => setSelectedIntern(intern)}
             />
           ) : (
             <MessageList
@@ -916,6 +920,22 @@ export default function AdminDashboardPage() {
             </div>
           </AnimateOnScroll>
         </div>
+      )}
+
+      {/* Intern Detail Drawer */}
+      {selectedIntern && (
+        <InternDrawer
+          intern={selectedIntern}
+          tracks={tracks}
+          processingRoll={processingRoll}
+          resendingRoll={resendingRoll}
+          handleAction={handleAction}
+          handleResend={handleResend}
+          handleDownload={handleDownload}
+          handleDelete={handleDelete}
+          formatDate={formatDate}
+          onClose={() => setSelectedIntern(null)}
+        />
       )}
     </div>
   );
