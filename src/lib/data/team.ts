@@ -79,13 +79,13 @@ export const teamData: TeamMember[] = [
         title: "SAM Clinic",
         description: "A comprehensive digital healthcare management platform facilitating patient record handling, appointment scheduling, and clinic operations.",
         techStack: ["React", "Node.js", "PostgreSQL"],
-        link: "https://github.com/imsuleman-10/sam-clinic",
+        link: "https://github.com/imsuleman-10/SAM-AI-Clinic",
       },
       {
         title: "SAM College",
         description: "An integrated educational management system designed for academic institutions to manage student enrollment, attendance, and grading securely.",
-        techStack: ["Next.js", "Firebase"],
-        link: "https://github.com/imsuleman-10/samcollege",
+        techStack: ["PHP", "MySQL", "HTML/CSS"],
+        link: "https://github.com/imsuleman-10/sam_college",
       },
     ],
     seoKeywords: [
