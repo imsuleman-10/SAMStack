@@ -42,7 +42,7 @@ export const teamData: TeamMember[] = [
     jobTitle: "Founder & Lead Software Engineer",
     bio: "Suleman is the founder and lead engineer behind SAMStack Tech, specializing in high-performance cloud architectures, full-stack engineering, and building enterprise-grade web applications that scale.",
     longBio: "Suleman Zaheer is a Computer Science student at the University of Engineering and Technology (UET), Lahore — one of Pakistan's most prestigious engineering universities — and the founder of SAMStack Tech. With deep expertise in Next.js App Router architecture, Firebase, Node.js, TypeScript, and AI-powered systems, Suleman has led the development of multiple production-grade platforms for clients across industries. Originally from Lahore, he built SAMStack Tech with a clear mission: to bridge the gap between cutting-edge technology and practical, scalable software systems, and to mentor the next generation of Pakistani engineers through SAMStack's internship programme.",
-    avatarUrl: "/suleman.jpg",
+    avatarUrl: "/suleman-zaheer-software-engineer-samstack-tech.jpg",
     skills: ["Next.js", "React", "Node.js", "TypeScript", "Firebase", "Cloud Architecture", "UI/UX Design", "DevOps", "Agentic AI", "System Design", "PostgreSQL", "Docker"],
     specializations: ["Full-Stack Engineering", "Cloud Architecture", "AI Agent Systems", "Enterprise SaaS", "DevOps & CI/CD"],
     education: {
@@ -110,7 +110,7 @@ export const teamData: TeamMember[] = [
     jobTitle: "Frontend Engineer & UI Specialist",
     bio: "Saqib is a Software Engineering student at UCP and SAMStack Tech's frontend engineer, crafting pixel-perfect, high-performance user interfaces with React and modern CSS architectures.",
     longBio: "Saqib Javed is a Software Engineering student at the University of Central Punjab (UCP), Lahore, and a frontend engineer at SAMStack Tech. Originally from Narowal, Punjab, Saqib brings meticulous attention to detail and deep expertise in React component architecture, Tailwind CSS design systems, and modern animation libraries. He is responsible for crafting the client-facing interfaces that define the look, feel, and experience of every product SAMStack delivers — translating complex requirements into intuitive, elegant, and performant user interfaces.",
-    avatarUrl: "/saqib.jpg",
+    avatarUrl: "/saqib-javed-software-engineer-samstack-tech.jpg",
     skills: ["React", "Next.js", "TypeScript", "CSS", "Tailwind CSS", "Figma", "UI/UX Design", "Framer Motion", "JavaScript", "HTML5"],
     specializations: ["Frontend Engineering", "UI/UX Design", "Design Systems", "Component Architecture", "Responsive Interfaces"],
     education: {
@@ -153,7 +153,7 @@ export const teamData: TeamMember[] = [
     jobTitle: "Backend Engineer & Database Architect",
     bio: "Syed Abdullah is a CS student at UET and SAMStack Tech's backend lead, designing the robust API layers and database architectures that power enterprise-grade applications.",
     longBio: "Syed Abdullah is a Computer Science student at the University of Engineering and Technology (UET), Lahore, and the backend engineering lead at SAMStack Tech. Originally from Sialkot, Punjab, Syed is responsible for designing and implementing the server-side logic, database schemas, and API layers that power SAMStack's enterprise-grade applications. His expertise spans RESTful API design, database optimization, cloud functions, and system reliability engineering — forming the invisible, high-performance backbone behind every client-facing product SAMStack delivers.",
-    avatarUrl: "/abdullah.png",
+    avatarUrl: "/syed-abdullah-software-engineer-samstack-tech.png",
     skills: ["Node.js", "Express.js", "Firebase", "PostgreSQL", "MongoDB", "REST APIs", "TypeScript", "Cloud Functions", "SQL", "System Design", "GraphQL"],
     specializations: ["Backend Engineering", "Database Architecture", "API Design", "Cloud Infrastructure", "System Reliability"],
     education: {

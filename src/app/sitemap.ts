@@ -64,12 +64,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // ── Dynamic: Team portfolio pages (0.7) ────────────────────────────────
-  const teamSitemaps: MetadataRoute.Sitemap = teamData.map((member) => ({
-    url: `${baseUrl}/team/${member.id}`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly',
-    priority: 0.7,
-  }));
+  const teamSitemaps: MetadataRoute.Sitemap = teamData.map((member) => {
+    const imageUrl = member.avatarUrl.startsWith("http") ? member.avatarUrl : `${baseUrl}${member.avatarUrl}`;
+    return {
+      url: `${baseUrl}/team/${member.id}`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+      images: [imageUrl],
+    };
+  });
 
   const teamIndex: MetadataRoute.Sitemap = [
     { url: `${baseUrl}/team`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },

@@ -243,7 +243,7 @@ export default async function TeamMemberPage({ params }: { params: Promise<{ id:
               {/* ── Left Column: Profile Card ── */}
               <div className="lg:col-span-1 space-y-4">
                 <div className="glass-card rounded-2xl p-6 text-center space-y-5 border border-slate-200/50 dark:border-white/5 shadow-xl">
-                  <TeamAvatar src={member.avatarUrl} name={member.name} />
+                  <TeamAvatar src={member.avatarUrl} name={member.name} role={member.role} />
 
                   <div>
                     <h1 className="text-xl font-extrabold text-slate-900 dark:text-white uppercase tracking-tight">{member.name}</h1>
