@@ -99,6 +99,11 @@ export default function AdminDashboardPage() {
   const [newIntern, setNewIntern] = useState({ fullName: "", email: "", university: "", trackSelected: "PYTHON" });
   const [isAddingIntern, setIsAddingIntern] = useState(false);
 
+  const [showDirectSendModal, setShowDirectSendModal] = useState(false);
+  const [directSendRoll, setDirectSendRoll] = useState("");
+  const [directSendType, setDirectSendType] = useState<"OFFER_LETTER" | "CERTIFICATE">("OFFER_LETTER");
+  const [isSendingDirect, setIsSendingDirect] = useState(false);
+
   const fetchApplications = async () => {
     setIsLoading(true);
     setError(null);
@@ -288,7 +293,7 @@ export default function AdminDashboardPage() {
   };
 
   const handleDelete = useCallback(async (id: string) => {
-    if (!confirm("Are you sure you want to delete this intern?")) return;
+    if (!confirm("Are you sure you want to permanently delete this intern record? This cannot be undone.")) return;
     setError(null);
     try {
       const response = await fetch(`/api/admin/interns/${id}`, { method: "DELETE" });
@@ -302,6 +307,31 @@ export default function AdminDashboardPage() {
       setTimeout(() => setActionSuccessMessage(null), 5000);
     }
   }, []);
+
+  const handleDirectSend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!directSendRoll.trim()) return;
+    setIsSendingDirect(true);
+    setError(null);
+    try {
+      const response = await fetch("/api/admin/send-direct", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rollNumber: directSendRoll.trim(), type: directSendType }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Direct send failed.");
+      setActionSuccessMessage(data.message);
+      setShowDirectSendModal(false);
+      setDirectSendRoll("");
+      await fetchApplications();
+    } catch (err: any) {
+      setError(err.message || "Direct send failed.");
+    } finally {
+      setIsSendingDirect(false);
+      setTimeout(() => setActionSuccessMessage(null), 6000);
+    }
+  };
 
   const handleDownload = useCallback((rollNumber: string, type: "OFFER_LETTER" | "CERTIFICATE") => {
     window.open(`/api/admin/download?rollNumber=${rollNumber}&type=${type}`, "_blank");
@@ -459,6 +489,15 @@ export default function AdminDashboardPage() {
             >
               <Users className="w-3.5 h-3.5" />
               Add Intern
+            </button>
+
+            <button
+              onClick={() => setShowDirectSendModal(true)}
+              className="btn-primary px-4 py-2.5 text-xs !bg-amber-600 hover:!bg-amber-500 text-white flex items-center gap-2"
+              title="Directly send offer letter or certificate to any intern"
+            >
+              <Send className="w-3.5 h-3.5" />
+              Direct Send
             </button>
 
             <button
@@ -770,6 +809,107 @@ export default function AdminDashboardPage() {
                       <Check className="w-3.5 h-3.5" />
                     )}
                     Add Intern
+                  </button>
+                </div>
+              </form>
+            </div>
+          </AnimateOnScroll>
+        </div>
+      )}
+      {showDirectSendModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md">
+          <AnimateOnScroll variant="scaleUp">
+            <div className="glass-card w-full max-w-md mx-4 p-6 rounded-2xl border border-amber-500/20 shadow-2xl space-y-6 text-slate-800 dark:text-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                  <Send className="w-6 h-6 text-amber-500" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white uppercase">
+                    Direct Send
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                    Send credentials to any intern instantly — no approval needed
+                  </p>
+                </div>
+              </div>
+
+              <form onSubmit={handleDirectSend} className="space-y-4">
+
+                {/* Roll Number Selector */}
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-500">Select Intern</label>
+                  <select
+                    required
+                    value={directSendRoll}
+                    onChange={e => setDirectSendRoll(e.target.value)}
+                    className="w-full px-3 py-2 text-xs text-slate-900 dark:text-white bg-white/70 dark:bg-black/30 border border-slate-300 dark:border-white/10 rounded-lg outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/40 transition-all"
+                  >
+                    <option value="">— Choose an intern —</option>
+                    {interns.map(i => (
+                      <option key={i.rollNumber} value={i.rollNumber}>
+                        {i.fullName} ({i.rollNumber})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Document Type */}
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-mono uppercase tracking-widest text-slate-500">Document to Send</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setDirectSendType("OFFER_LETTER")}
+                      className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 text-xs font-bold transition-all ${
+                        directSendType === "OFFER_LETTER"
+                          ? "border-brand-500 bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400"
+                          : "border-slate-200 dark:border-white/10 text-slate-500 hover:border-brand-400"
+                      }`}
+                    >
+                      <FileText className="w-5 h-5" />
+                      Offer Letter
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDirectSendType("CERTIFICATE")}
+                      className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 text-xs font-bold transition-all ${
+                        directSendType === "CERTIFICATE"
+                          ? "border-amber-500 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                          : "border-slate-200 dark:border-white/10 text-slate-500 hover:border-amber-400"
+                      }`}
+                    >
+                      <Award className="w-5 h-5" />
+                      Certificate
+                    </button>
+                  </div>
+                  {directSendType === "CERTIFICATE" && (
+                    <p className="text-[11px] text-amber-600 dark:text-amber-400 font-mono bg-amber-50 dark:bg-amber-500/10 px-3 py-2 rounded-lg border border-amber-500/20">
+                      ⚡ A certificate will be auto-generated and the intern's status will be set to APPROVED automatically.
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => { setShowDirectSendModal(false); setDirectSendRoll(""); }}
+                    disabled={isSendingDirect}
+                    className="btn-secondary px-4 py-2 text-xs"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSendingDirect || !directSendRoll}
+                    className="px-4 py-2 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-white rounded-lg flex items-center gap-2 transition-all disabled:opacity-50 shadow-lg shadow-amber-500/20"
+                  >
+                    {isSendingDirect ? (
+                      <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Send className="w-3.5 h-3.5" />
+                    )}
+                    Send Now
                   </button>
                 </div>
               </form>
