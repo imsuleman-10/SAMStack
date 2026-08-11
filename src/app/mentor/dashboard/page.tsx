@@ -28,6 +28,7 @@ export default function MentorDashboardPage() {
     async function fetchInterns() {
       try {
         const res = await fetch('/api/mentor/interns');
+        if (!res.ok) return;
         const data = await res.json();
         setInterns(data.interns || []);
       } catch (error) {

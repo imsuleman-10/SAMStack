@@ -16,8 +16,11 @@ const getSecretKey = () => {
 
 async function getSessionUser() {
   const cookieStore = await cookies();
+  // Prefer unified session_token, fall back to legacy cookies
   const token =
-    cookieStore.get("user_token")?.value || cookieStore.get("admin_token")?.value;
+    cookieStore.get("session_token")?.value ||
+    cookieStore.get("user_token")?.value ||
+    cookieStore.get("admin_token")?.value;
   if (!token) return null;
   try {
     const { payload } = await jwtVerify(token, getSecretKey());

@@ -17,6 +17,7 @@ export default function CommunityPage() {
   const fetchPosts = async () => {
     try {
       const res = await fetch('/api/community/posts');
+      if (!res.ok) { setLoading(false); return; }
       const data = await res.json();
       setPosts(data.posts || []);
     } catch (error) {

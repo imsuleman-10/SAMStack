@@ -18,6 +18,7 @@ export default function MentorDirectoryPage() {
         const url = new URL('/api/mentors', window.location.origin);
         if (search) url.searchParams.set('search', search);
         const res = await fetch(url);
+        if (!res.ok) return;
         const data = await res.json();
         setMentors(data.mentors || []);
       } catch (error) {

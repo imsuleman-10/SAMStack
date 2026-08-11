@@ -18,6 +18,7 @@ export default function InternDirectoryPage() {
         const url = new URL('/api/interns', window.location.origin);
         if (search) url.searchParams.set('search', search);
         const res = await fetch(url);
+        if (!res.ok) return;
         const data = await res.json();
         setInterns(data.interns || []);
       } catch (error) {

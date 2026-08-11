@@ -96,6 +96,8 @@ export async function POST(request: NextRequest) {
         message: `Certificate (${cert.certificateNumber}) successfully resent to ${intern.email}.`,
       });
     }
+    // Should never reach here given the type validation above
+    return NextResponse.json({ error: "Invalid request type." }, { status: 400 });
   } catch (error) {
     console.error("Resend email error:", error);
     return NextResponse.json(

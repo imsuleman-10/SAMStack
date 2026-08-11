@@ -91,7 +91,7 @@ export default function LoginPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token, fullName: n, phone: p, email: e }),
     });
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || 'Server error');
     // Role-based redirect is driven by the server — no role logic needed here
     router.push(data.dashboard || '/dashboard');

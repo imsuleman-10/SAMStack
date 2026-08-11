@@ -27,6 +27,7 @@ export default function AdminUsersPage() {
       if (s) url.searchParams.set('search', s);
       
       const res = await fetch(url);
+      if (!res.ok) return;
       const data = await res.json();
       if (data.users) {
         setUsers(data.users);
