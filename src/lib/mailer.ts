@@ -3,8 +3,8 @@ import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER || 'samstacktechs@gmail.com',
-    pass: process.env.EMAIL_PASS || 'swen pwcw uben dfsy',
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -16,7 +16,7 @@ export const sendOfferLetterEmail = async (
   pdfBuffer: Buffer
 ) => {
   const mailOptions = {
-    from: `"SAMStack Tech" <${process.env.EMAIL_USER || 'samstacktechs@gmail.com'}>`,
+    from: `"SAMStack Tech" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: `Internship Offer Letter - ${track}`,
     html: `
@@ -52,7 +52,7 @@ export const sendCertificateEmail = async (
   pdfBuffer: Buffer
 ) => {
   const mailOptions = {
-    from: `"SAMStack Tech" <${process.env.EMAIL_USER || 'samstacktechs@gmail.com'}>`,
+    from: `"SAMStack Tech" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: `Internship Certificate - ${track}`,
     html: `

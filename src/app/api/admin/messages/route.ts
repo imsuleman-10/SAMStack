@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { verifyAdminSession } from "@/lib/adminAuth";
 
 export async function GET(request: NextRequest) {
   try {
-    // Note: middleware already protects this route by verifying the admin_token cookie
+    const admin = await verifyAdminSession();
+    if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+
     const messages = await db.messages.list();
     // Sort by timestamp descending
     messages.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());

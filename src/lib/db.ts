@@ -5,18 +5,15 @@ import {
   getDocs,
   setDoc,
   updateDoc,
-  addDoc,
   deleteDoc,
   runTransaction,
   query,
   where,
-  orderBy,
-  Timestamp,
 } from "firebase/firestore/lite";
 import { firestore } from "./firebase";
 
 // ─────────────────────────────────────────────
-//  Types
+//  Types (client-side / legacy)
 // ─────────────────────────────────────────────
 
 export interface Intern {
@@ -74,6 +71,85 @@ export interface ClientMessage {
   message: string;
   timestamp: string;
   status: 'UNREAD' | 'READ' | 'RESPONDED';
+}
+
+// ─────────────────────────────────────────────
+//  New: Firestore-backed types (replacing Supabase)
+// ─────────────────────────────────────────────
+
+export interface FSUser {
+  id: string;
+  full_name: string;
+  email: string | null;
+  phone_number: string | null;
+  role: 'intern' | 'mentor' | 'support' | 'admin' | 'staff';
+  image_url: string | null;
+  gender: string | null;
+  assigned_tracks: string[];
+  created_at: string;
+}
+
+export interface FSInternProfile {
+  user_id: string;
+  track_selected: string | null;
+  roll_number: string | null;
+  university: string | null;
+  degree: string | null;
+  city: string | null;
+  cgpa: string | null;
+  linkedin_url: string | null;
+  github_url: string | null;
+  portfolio_url: string | null;
+  application_status: 'APPLIED' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' | null;
+  start_date: string | null;
+  enrolled_at: string | null;
+  assigned_mentor_id: string | null;
+  phone_number: string | null;
+  email: string | null;
+  created_at: string;
+}
+
+export interface FSTrackTask {
+  id: string;
+  track_id: string;
+  mentor_id: string;
+  title: string;
+  scope: string;
+  criteria: string;
+  week_number: number;
+  created_at: string;
+}
+
+export interface FSTaskProgress {
+  intern_id: string;
+  task_id: string;
+  status: 'pending' | 'completed' | 'reviewing';
+  submission_link: string | null;
+  mentor_feedback: string | null;
+  updated_at: string;
+}
+
+export interface FSComplaint {
+  id: string;
+  user_id: string;
+  subject: string;
+  message: string;
+  status: 'open' | 'resolved' | 'closed';
+  created_at: string;
+}
+
+export interface FSHomepageTeam {
+  id: string;
+  user_id: string | null;
+  name: string;
+  designation: string;
+  bio: string;
+  badge: string;
+  skills: string[];
+  image_url: string;
+  is_active: boolean;
+  display_order: number | null;
+  created_at: string;
 }
 
 // ─────────────────────────────────────────────
@@ -208,7 +284,7 @@ async function getNextSequence(): Promise<number> {
 }
 
 // ─────────────────────────────────────────────
-//  DB Access Methods — same interface as before
+//  DB Access Methods — client-side (unchanged)
 // ─────────────────────────────────────────────
 
 export const db = {
@@ -264,7 +340,6 @@ export const db = {
     },
 
     async updateStatus(id: string, status: 'APPLIED' | 'SUBMITTED' | 'APPROVED' | 'REJECTED'): Promise<boolean> {
-      // Resolve document ID
       const intern = await db.interns.get(id);
       if (!intern) return false;
       await updateDoc(doc(firestore, COLLECTIONS.INTERNS, intern.id), { status });
@@ -319,7 +394,6 @@ export const db = {
     },
 
     async create(certificate: Omit<Certificate, 'issuanceDate' | 'isValid'>): Promise<Certificate> {
-      // Check for duplicate (by roll number)
       const q = query(
         collection(firestore, COLLECTIONS.CERTIFICATES),
         where("associatedRollNumber", "==", certificate.associatedRollNumber)
@@ -348,7 +422,7 @@ export const db = {
         await seedPostsIfNeeded();
         const snap = await getDocs(collection(firestore, COLLECTIONS.POSTS));
         return snap.docs.map(d => d.data() as BlogPost);
-      } catch (error) {
+      } catch (_) {
         console.warn("Falling back to local INITIAL_POSTS due to Firebase error.");
         return INITIAL_POSTS;
       }
@@ -364,7 +438,7 @@ export const db = {
         const snap = await getDocs(q);
         if (snap.empty) return null;
         return snap.docs[0].data() as BlogPost;
-      } catch (error) {
+      } catch (_) {
         console.warn("Falling back to local INITIAL_POSTS for slug due to Firebase error.");
         return INITIAL_POSTS.find(p => p.slug === slug) || null;
       }
@@ -397,3 +471,345 @@ export const db = {
     }
   }
 };
+
+// ─────────────────────────────────────────────
+//  Server-side Admin Firestore helpers
+//  (replaces ALL Supabase table operations)
+//  Usage in API routes:
+//    import { adminDb } from '@/lib/firebase-admin'
+//    import { createAdminDb } from '@/lib/db'
+//    const adb = createAdminDb(adminDb!)
+// ─────────────────────────────────────────────
+
+import type { Firestore, Query, QuerySnapshot } from 'firebase-admin/firestore';
+
+export function createAdminDb(firestoreDb: Firestore) {
+  return {
+
+    // ── Users ──────────────────────────────────────────────────────
+    users: {
+      async get(uid: string): Promise<FSUser | null> {
+        const snap = await firestoreDb.collection('users').doc(uid).get();
+        if (!snap.exists) return null;
+        return { id: snap.id, ...snap.data() } as FSUser;
+      },
+
+      async getByEmail(email: string): Promise<FSUser | null> {
+        const snap = await firestoreDb.collection('users')
+          .where('email', '==', email.toLowerCase()).limit(1).get();
+        if (snap.empty) return null;
+        return { id: snap.docs[0].id, ...snap.docs[0].data() } as FSUser;
+      },
+
+      async getByPhone(phone: string): Promise<FSUser | null> {
+        const snap = await firestoreDb.collection('users')
+          .where('phone_number', '==', phone).limit(1).get();
+        if (snap.empty) return null;
+        return { id: snap.docs[0].id, ...snap.docs[0].data() } as FSUser;
+      },
+
+      async list(role?: string): Promise<FSUser[]> {
+        let q: Query = firestoreDb.collection('users').orderBy('created_at', 'desc');
+        if (role && role !== 'ALL') {
+          q = firestoreDb.collection('users')
+            .where('role', '==', role).orderBy('created_at', 'desc');
+        }
+        const snap = await q.get();
+        return snap.docs.map(d => ({ id: d.id, ...d.data() }) as FSUser);
+      },
+
+      async create(uid: string, data: Omit<FSUser, 'id' | 'created_at'>): Promise<FSUser> {
+        const now = new Date().toISOString();
+        const user: Omit<FSUser, 'id'> = {
+          ...data,
+          assigned_tracks: data.assigned_tracks || [],
+          created_at: now,
+        };
+        await firestoreDb.collection('users').doc(uid).set(user);
+        return { id: uid, ...user };
+      },
+
+      async update(uid: string, data: Partial<Omit<FSUser, 'id' | 'created_at'>>): Promise<void> {
+        await firestoreDb.collection('users').doc(uid).update(data);
+      },
+
+      async delete(uid: string): Promise<void> {
+        await firestoreDb.collection('users').doc(uid).delete();
+      },
+    },
+
+    // ── Intern Profiles ────────────────────────────────────────────
+    internProfiles: {
+      async get(userId: string): Promise<FSInternProfile | null> {
+        const snap = await firestoreDb.collection('intern_profiles').doc(userId).get();
+        if (!snap.exists) return null;
+        return snap.data() as FSInternProfile;
+      },
+
+      async list(): Promise<FSInternProfile[]> {
+        const snap = await firestoreDb.collection('intern_profiles').get();
+        return snap.docs.map(d => d.data() as FSInternProfile);
+      },
+
+      async listWithUsers(): Promise<(FSInternProfile & { user: FSUser | null })[]> {
+        const [profilesSnap, usersSnap] = await Promise.all([
+          firestoreDb.collection('intern_profiles').get(),
+          firestoreDb.collection('users').where('role', '==', 'intern').get(),
+        ]);
+        const userMap = new Map<string, FSUser>();
+        usersSnap.docs.forEach(d => userMap.set(d.id, { id: d.id, ...d.data() } as FSUser));
+        return profilesSnap.docs.map(d => ({
+          ...(d.data() as FSInternProfile),
+          user: userMap.get((d.data() as FSInternProfile).user_id) || null,
+        }));
+      },
+
+      async getByMentorTracks(
+        tracks: string[],
+        mentorGender?: string | null
+      ): Promise<(FSInternProfile & { user: FSUser | null })[]> {
+        if (tracks.length === 0) return [];
+        const snap = await firestoreDb.collection('intern_profiles')
+          .where('track_selected', 'in', tracks).get();
+        const profiles = snap.docs.map(d => d.data() as FSInternProfile);
+
+        const userIds = [...new Set(profiles.map(p => p.user_id))];
+        const userDocs = await Promise.all(
+          userIds.map(uid => firestoreDb.collection('users').doc(uid).get())
+        );
+        const userMap = new Map<string, FSUser>();
+        userDocs.forEach(d => {
+          if (d.exists) userMap.set(d.id, { id: d.id, ...d.data() } as FSUser);
+        });
+
+        const result = profiles.map(p => ({ ...p, user: userMap.get(p.user_id) || null }));
+        if (mentorGender && mentorGender !== 'OTHER') {
+          return result.filter(r => r.user?.gender === mentorGender);
+        }
+        return result;
+      },
+
+      async upsert(userId: string, data: Partial<FSInternProfile>): Promise<void> {
+        const ref = firestoreDb.collection('intern_profiles').doc(userId);
+        const snap = await ref.get();
+        if (snap.exists) {
+          await ref.update(data);
+        } else {
+          await ref.set({
+            user_id: userId,
+            created_at: new Date().toISOString(),
+            ...data,
+          });
+        }
+      },
+
+      async delete(userId: string): Promise<void> {
+        await firestoreDb.collection('intern_profiles').doc(userId).delete();
+      },
+    },
+
+    // ── Track Tasks ────────────────────────────────────────────────
+    trackTasks: {
+      async list(trackIds?: string[]): Promise<FSTrackTask[]> {
+        let snap: QuerySnapshot;
+        if (trackIds && trackIds.length > 0) {
+          snap = await firestoreDb.collection('track_tasks')
+            .where('track_id', 'in', trackIds)
+            .orderBy('week_number', 'asc').get();
+        } else {
+          snap = await firestoreDb.collection('track_tasks')
+            .orderBy('week_number', 'asc').get();
+        }
+        return snap.docs.map(d => ({ id: d.id, ...d.data() }) as FSTrackTask);
+      },
+
+      async get(taskId: string): Promise<FSTrackTask | null> {
+        const snap = await firestoreDb.collection('track_tasks').doc(taskId).get();
+        if (!snap.exists) return null;
+        return { id: snap.id, ...snap.data() } as FSTrackTask;
+      },
+
+      async create(data: Omit<FSTrackTask, 'id' | 'created_at'>): Promise<FSTrackTask> {
+        const ref = firestoreDb.collection('track_tasks').doc();
+        const task: FSTrackTask = {
+          id: ref.id,
+          ...data,
+          created_at: new Date().toISOString(),
+        };
+        await ref.set(task);
+        return task;
+      },
+
+      async update(taskId: string, data: Partial<Omit<FSTrackTask, 'id' | 'created_at'>>): Promise<void> {
+        await firestoreDb.collection('track_tasks').doc(taskId).update(data);
+      },
+
+      async delete(taskId: string, mentorId?: string): Promise<void> {
+        const ref = firestoreDb.collection('track_tasks').doc(taskId);
+        const snap = await ref.get();
+        if (!snap.exists) return;
+        if (mentorId && snap.data()?.mentor_id !== mentorId) {
+          throw new Error('Forbidden — you can only delete your own tasks');
+        }
+        await ref.delete();
+      },
+    },
+
+    // ── Task Progress ──────────────────────────────────────────────
+    taskProgress: {
+      async upsert(
+        internId: string,
+        taskId: string,
+        data: Partial<Omit<FSTaskProgress, 'intern_id' | 'task_id'>>
+      ): Promise<void> {
+        const docId = `${internId}_${taskId}`;
+        await firestoreDb.collection('task_progress').doc(docId).set({
+          intern_id: internId,
+          task_id: taskId,
+          ...data,
+          updated_at: new Date().toISOString(),
+        }, { merge: true });
+      },
+
+      async listForIntern(internId: string): Promise<FSTaskProgress[]> {
+        const snap = await firestoreDb.collection('task_progress')
+          .where('intern_id', '==', internId).get();
+        return snap.docs.map(d => d.data() as FSTaskProgress);
+      },
+
+      async deleteForUser(internId: string): Promise<void> {
+        const snap = await firestoreDb.collection('task_progress')
+          .where('intern_id', '==', internId).get();
+        const batch = firestoreDb.batch();
+        snap.docs.forEach(d => batch.delete(d.ref));
+        await batch.commit();
+      },
+    },
+
+    // ── Complaints ─────────────────────────────────────────────────
+    complaints: {
+      async list(userId?: string): Promise<FSComplaint[]> {
+        let snap: QuerySnapshot;
+        if (userId) {
+          snap = await firestoreDb.collection('complaints')
+            .where('user_id', '==', userId)
+            .orderBy('created_at', 'desc').get();
+        } else {
+          snap = await firestoreDb.collection('complaints')
+            .orderBy('created_at', 'desc').get();
+        }
+        return snap.docs.map(d => ({ id: d.id, ...d.data() }) as FSComplaint);
+      },
+
+      async listWithUsers(): Promise<(FSComplaint & { user_full_name?: string })[]> {
+        const snap = await firestoreDb.collection('complaints')
+          .orderBy('created_at', 'desc').get();
+        const complaints = snap.docs.map(d => ({ id: d.id, ...d.data() }) as FSComplaint);
+
+        const userIds = [...new Set(complaints.map(c => c.user_id))];
+        const userDocs = await Promise.all(
+          userIds.map(uid => firestoreDb.collection('users').doc(uid).get())
+        );
+        const userMap = new Map<string, string>();
+        userDocs.forEach(d => {
+          if (d.exists) userMap.set(d.id, (d.data() as FSUser).full_name);
+        });
+
+        return complaints.map(c => ({ ...c, user_full_name: userMap.get(c.user_id) }));
+      },
+
+      async create(userId: string, subject: string, message: string): Promise<FSComplaint> {
+        const ref = firestoreDb.collection('complaints').doc();
+        const complaint: FSComplaint = {
+          id: ref.id,
+          user_id: userId,
+          subject,
+          message,
+          status: 'open',
+          created_at: new Date().toISOString(),
+        };
+        await ref.set(complaint);
+        return complaint;
+      },
+
+      async updateStatus(complaintId: string, status: string): Promise<void> {
+        await firestoreDb.collection('complaints').doc(complaintId)
+          .update({ status: status.toLowerCase() });
+      },
+
+      async deleteForUser(userId: string): Promise<void> {
+        const snap = await firestoreDb.collection('complaints')
+          .where('user_id', '==', userId).get();
+        const batch = firestoreDb.batch();
+        snap.docs.forEach(d => batch.delete(d.ref));
+        await batch.commit();
+      },
+    },
+
+    // ── Homepage Team ──────────────────────────────────────────────
+    homepageTeam: {
+      async list(activeOnly = false): Promise<FSHomepageTeam[]> {
+        const snap = await firestoreDb.collection('homepage_team')
+          .orderBy('display_order', 'asc').get();
+        let items = snap.docs.map(d => ({ id: d.id, ...d.data() }) as FSHomepageTeam);
+        if (activeOnly) {
+          items = items.filter(item => item.is_active === true);
+        }
+        return items;
+      },
+
+      async getByUserId(userId: string): Promise<FSHomepageTeam | null> {
+        const snap = await firestoreDb.collection('homepage_team')
+          .where('user_id', '==', userId).limit(1).get();
+        if (snap.empty) return null;
+        return { id: snap.docs[0].id, ...snap.docs[0].data() } as FSHomepageTeam;
+      },
+
+      async upsertByUserId(
+        userId: string,
+        data: Partial<Omit<FSHomepageTeam, 'id' | 'created_at'>>
+      ): Promise<FSHomepageTeam> {
+        const existing = await this.getByUserId(userId);
+        if (existing) {
+          await firestoreDb.collection('homepage_team').doc(existing.id).update(data);
+          return { ...existing, ...data } as FSHomepageTeam;
+        } else {
+          const allSnap = await firestoreDb.collection('homepage_team')
+            .orderBy('display_order', 'desc').limit(1).get();
+          const nextOrder = allSnap.empty
+            ? 1
+            : ((allSnap.docs[0].data().display_order || 0) + 1);
+          const ref = firestoreDb.collection('homepage_team').doc();
+          const member: FSHomepageTeam = {
+            id: ref.id,
+            user_id: userId,
+            name: '',
+            designation: '',
+            bio: '',
+            badge: '',
+            skills: [],
+            image_url: '',
+            is_active: true,
+            display_order: nextOrder,
+            created_at: new Date().toISOString(),
+            ...data,
+          };
+          await ref.set(member);
+          return member;
+        }
+      },
+
+      async updateOrder(orderedIds: string[]): Promise<void> {
+        const batch = firestoreDb.batch();
+        orderedIds.forEach((id, i) => {
+          batch.update(firestoreDb.collection('homepage_team').doc(id), { display_order: i + 1 });
+        });
+        await batch.commit();
+      },
+
+      async delete(id: string): Promise<void> {
+        await firestoreDb.collection('homepage_team').doc(id).delete();
+      },
+    },
+  };
+}

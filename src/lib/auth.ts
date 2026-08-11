@@ -1,22 +1,29 @@
 import { SignJWT, jwtVerify } from "jose";
 
-// Get the secret key from environment variables, or fallback to a dummy key for development only
+export type UserRole = "admin" | "mentor" | "intern" | "staff" | "member" | "user";
+export type AccountStatus = "active" | "inactive" | "suspended" | "pending";
+
+export interface SessionPayload {
+  id: string;
+  role: UserRole;
+  email?: string;
+  status?: AccountStatus;
+}
+
 const getSecretKey = () => {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
-    console.warn("JWT_SECRET is not defined in environment variables. Using a fallback secret. Do NOT do this in production.");
+    throw new Error("CRITICAL: JWT_SECRET is not defined in environment variables.");
   }
-  return new TextEncoder().encode(secret || "samstack-fallback-secret-key-2026-super-secure");
+  return new TextEncoder().encode(secret);
 };
 
 /**
- * Creates a signed JWT for the admin session
- * @param payload Data to encode in the JWT
- * @returns A signed JWT string
+ * Creates a unified signed JWT session token for any role.
  */
-export async function signAdminToken(payload: { email: string }): Promise<string> {
+export async function signSessionToken(payload: SessionPayload): Promise<string> {
   const iat = Math.floor(Date.now() / 1000);
-  const exp = iat + 24 * 60 * 60; // 24 hours
+  const exp = iat + 60 * 60 * 24 * 7; // 7 days
 
   return new SignJWT({ ...payload })
     .setProtectedHeader({ alg: "HS256", typ: "JWT" })
@@ -27,16 +34,41 @@ export async function signAdminToken(payload: { email: string }): Promise<string
 }
 
 /**
- * Verifies a JWT admin token
- * @param token The JWT string to verify
- * @returns The payload if valid, or null if invalid/expired
+ * Verifies a session token and returns the payload.
  */
-export async function verifyAdminToken(token: string): Promise<{ email: string } | null> {
+export async function verifySessionToken(token: string): Promise<SessionPayload | null> {
   try {
     const { payload } = await jwtVerify(token, getSecretKey());
-    return payload as { email: string };
-  } catch (error) {
-    // Token is invalid or expired
+    const p = payload as Record<string, unknown>;
+
+    // Support legacy admin_token format: { email } with no role
+    if (p.email && !p.role) {
+      return { id: p.email as string, role: "admin", email: p.email as string, status: "active" };
+    }
+
+    if (!p.id || !p.role) return null;
+
+    return {
+      id: p.id as string,
+      role: p.role as UserRole,
+      email: p.email as string | undefined,
+      status: (p.status as AccountStatus) ?? "active",
+    };
+  } catch {
     return null;
   }
+}
+
+// ─── Legacy compat — kept so existing callers don't break ────────────────────
+
+/** @deprecated Use signSessionToken instead */
+export async function signAdminToken(payload: { email: string }): Promise<string> {
+  return signSessionToken({ id: payload.email, role: "admin", email: payload.email, status: "active" });
+}
+
+/** @deprecated Use verifySessionToken instead */
+export async function verifyAdminToken(token: string): Promise<{ email: string } | null> {
+  const session = await verifySessionToken(token);
+  if (!session || session.role !== "admin") return null;
+  return { email: session.email ?? session.id };
 }

@@ -7,9 +7,13 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email, password } = body;
 
-    // Standard secure developer credentials for out-of-the-box local operation
     const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "samstacktechs@gmail.com";
-    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Salman123@";
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+
+    if (!ADMIN_PASSWORD) {
+      console.error("CRITICAL: ADMIN_PASSWORD is not set in environment variables.");
+      return NextResponse.json({ error: "Server misconfiguration. Admin login disabled." }, { status: 500 });
+    }
 
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       const token = await signAdminToken({ email });

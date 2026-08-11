@@ -24,16 +24,22 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+import { getAuth } from "firebase/auth";
+
 let app;
 let firestoreDb;
+let authObj;
 
 // Prevent duplicate initialization in Next.js hot-reload environments
 if (getApps().length === 0) {
   app = initializeApp(firebaseConfig);
   firestoreDb = getFirestore(app);
+  authObj = getAuth(app);
 } else {
   app = getApps()[0];
   firestoreDb = getFirestore(app);
+  authObj = getAuth(app);
 }
 
 export const firestore = firestoreDb;
+export const auth = authObj;

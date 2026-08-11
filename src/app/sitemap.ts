@@ -37,7 +37,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // ── Tier 5: Programme pages (0.75) ─────────────────────────────────────
   const programmePages: MetadataRoute.Sitemap = [
     { url: `${baseUrl}/internship`,        lastModified: new Date(), changeFrequency: 'monthly', priority: 0.75 },
-    { url: `${baseUrl}/internship/submit`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.65 },
+    { url: `${baseUrl}/internship/apply`,  lastModified: new Date(), changeFrequency: 'monthly', priority: 0.65 },
     { url: `${baseUrl}/verify`,            lastModified: new Date(), changeFrequency: 'yearly',  priority: 0.5  },
   ];
 

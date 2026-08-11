@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 
-import Shell from "./components/Shell";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { Toaster } from "sonner";
 
@@ -361,11 +360,9 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
         <ThemeProvider>
-
           {/* Global Toast Notifications */}
           <Toaster position="top-right" richColors closeButton theme="system" />
-
-          <Shell>{children}</Shell>
+          {children}
         </ThemeProvider>
       </body>
     </html>

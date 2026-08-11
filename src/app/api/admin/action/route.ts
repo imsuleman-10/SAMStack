@@ -3,9 +3,13 @@ import { db } from "@/lib/db";
 import { tracks } from "@/lib/curriculum";
 import { generateCertificatePDF } from "@/lib/pdfTemplates";
 import { sendCertificateEmail } from "@/lib/mailer";
+import { verifyAdminSession } from "@/lib/adminAuth";
 
 export async function POST(request: NextRequest) {
   try {
+    const admin = await verifyAdminSession();
+    if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+
     const body = await request.json();
     const { rollNumber, action } = body;
 

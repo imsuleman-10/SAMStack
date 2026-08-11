@@ -11,7 +11,7 @@ import {
 import AnimateOnScroll from "@/app/components/AnimateOnScroll";
 
 interface DashboardStatsProps {
-  activeTab: "INTERNS" | "MESSAGES";
+  activeTab: "INTERNS" | "MESSAGES" | "TEAM_USERS";
   stats: {
     total: number;
     applied: number;

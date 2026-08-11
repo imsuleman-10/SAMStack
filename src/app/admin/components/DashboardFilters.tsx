@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Search, Filter } from "lucide-react";
 
 interface DashboardFiltersProps {
-  activeTab: "INTERNS" | "MESSAGES";
+  activeTab: "INTERNS" | "MESSAGES" | "TEAM_USERS";
   searchTerm: string;
   setSearchTerm: (value: string) => void;
   selectedStatus: string;
@@ -11,7 +11,7 @@ interface DashboardFiltersProps {
   setSelectedTrack: (value: string) => void;
 }
 
-const statusOptions = {
+const statusOptions: Record<string, { value: string; label: string }[]> = {
   INTERNS: [
     { value: "ALL", label: "All Statuses" },
     { value: "SUBMITTED", label: "Pending (Submitted)" },
@@ -24,6 +24,9 @@ const statusOptions = {
     { value: "UNREAD", label: "Unread" },
     { value: "READ", label: "Read" },
     { value: "RESPONDED", label: "Responded" },
+  ],
+  TEAM_USERS: [
+    { value: "ALL", label: "All Users" },
   ],
 };
 
@@ -45,7 +48,7 @@ function Select({ value, onChange, options }: { value: string; onChange: (v: str
       onChange={(e) => onChange(e.target.value)}
       className="bg-white/70 dark:bg-black/30 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs text-slate-700 dark:text-slate-200 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/40 transition-all appearance-none cursor-pointer hover:border-slate-300 dark:hover:border-white/20"
     >
-      {options.map((o) => (
+      {options?.map((o) => (
         <option key={o.value} value={o.value}>{o.label}</option>
       ))}
     </select>
@@ -84,7 +87,7 @@ export const DashboardFilters = React.memo(function DashboardFilters({
           type="text"
           value={localSearch}
           onChange={(e) => setLocalSearch(e.target.value)}
-          placeholder={activeTab === "INTERNS" ? "Search by name, roll, university..." : "Search client name, email, budget, service..."}
+          placeholder={activeTab === "INTERNS" ? "Search by name, roll, university..." : activeTab === "MESSAGES" ? "Search client name, email, budget, service..." : "Search users by name or phone..."}
           className="w-full pl-9 pr-4 py-2.5 text-xs rounded-lg placeholder:text-slate-400 bg-white/70 dark:bg-black/30 border border-slate-200 dark:border-white/10 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/40 text-slate-900 dark:text-white transition-all"
         />
       </div>
@@ -96,7 +99,7 @@ export const DashboardFilters = React.memo(function DashboardFilters({
           <Select
             value={selectedStatus}
             onChange={setSelectedStatus}
-            options={statusOptions[activeTab]}
+            options={statusOptions[activeTab] ?? statusOptions["MESSAGES"]}
           />
         </div>
 

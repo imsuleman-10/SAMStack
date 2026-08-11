@@ -1,28 +1,59 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db, createAdminDb } from "@/lib/db";
+import { adminDb } from "@/lib/firebase-admin";
 import { tracks } from "@/lib/curriculum";
 import { generateOfferLetterPDF, generateCertificatePDF } from "@/lib/pdfTemplates";
+import { verifyAdminSession } from "@/lib/adminAuth";
 
 export async function GET(request: NextRequest) {
   try {
+    const admin = await verifyAdminSession();
+    if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+
+
     const { searchParams } = new URL(request.url);
     const rollNumber = searchParams.get("rollNumber");
+    const userId = searchParams.get("userId");
     const type = searchParams.get("type"); // "OFFER_LETTER" | "CERTIFICATE"
 
-    if (!rollNumber || !["OFFER_LETTER", "CERTIFICATE"].includes(type as string)) {
+    if ((!rollNumber && !userId) || !["OFFER_LETTER", "CERTIFICATE"].includes(type as string)) {
       return NextResponse.json(
-        { error: "Invalid rollNumber or type. Must be 'OFFER_LETTER' or 'CERTIFICATE'." },
+        { error: "Invalid identifier or type. Must provide rollNumber or userId, and type must be 'OFFER_LETTER' or 'CERTIFICATE'." },
         { status: 400 }
       );
     }
 
-    // Fetch intern record
-    const intern = await db.interns.get(rollNumber);
-    if (!intern) {
-      return NextResponse.json({ error: "Intern record not found." }, { status: 404 });
+    let internFullName = "";
+    let internRollNumber = "";
+    let internTrackTitle = "";
+    let internStatus = "";
+
+    if (userId) {
+      // 1. Modern FSUser approach
+      const adb = createAdminDb(adminDb!);
+      const user = await adb.users.get(userId);
+      const profile = await adb.internProfiles.get(userId);
+
+      if (!user || user.role !== "intern") {
+        return NextResponse.json({ error: "Intern record not found." }, { status: 404 });
+      }
+
+      internFullName = user.full_name;
+      internRollNumber = profile?.roll_number || `SAM-${userId.substring(0, 6).toUpperCase()}`;
+      internTrackTitle = profile?.track_selected ? tracks[profile.track_selected]?.title || profile.track_selected : "General Specialization";
+      internStatus = profile?.application_status || "PENDING";
+    } else if (rollNumber) {
+      // 2. Legacy db.interns approach
+      const intern = await db.interns.get(rollNumber);
+      if (!intern) {
+        return NextResponse.json({ error: "Intern record not found." }, { status: 404 });
+      }
+      internFullName = intern.fullName;
+      internRollNumber = intern.rollNumber;
+      internTrackTitle = tracks[intern.trackSelected]?.title || intern.trackSelected;
+      internStatus = intern.status;
     }
 
-    const trackTitle = tracks[intern.trackSelected]?.title || intern.trackSelected;
     const dateStr = new Date().toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -31,49 +62,54 @@ export async function GET(request: NextRequest) {
 
     if (type === "OFFER_LETTER") {
       const pdfBuffer = await generateOfferLetterPDF({
-        fullName: intern.fullName,
-        rollNumber: intern.rollNumber,
-        track: trackTitle,
+        fullName: internFullName,
+        rollNumber: internRollNumber,
+        track: internTrackTitle,
         date: dateStr,
       });
 
-      return new NextResponse(pdfBuffer, {
+      return new NextResponse(new Uint8Array(pdfBuffer), {
         headers: {
           "Content-Type": "application/pdf",
-          "Content-Disposition": `attachment; filename="OfferLetter_${intern.rollNumber}.pdf"`,
+          "Content-Disposition": `attachment; filename="OfferLetter_${internRollNumber}.pdf"`,
         },
       });
     }
 
     if (type === "CERTIFICATE") {
-      if (intern.status !== "APPROVED") {
+      if (internStatus !== "APPROVED") {
         return NextResponse.json(
           { error: "Cannot download certificate — this intern has not been APPROVED yet." },
           { status: 400 }
         );
       }
 
-      const certificates = await db.certificates.list();
-      const cert = certificates.find((c) => c.associatedRollNumber === intern.rollNumber);
-
-      if (!cert) {
-        return NextResponse.json(
-          { error: "No certificate record found for this intern. Please approve first." },
-          { status: 404 }
-        );
+      let certNumber = "";
+      if (rollNumber) {
+        const certificates = await db.certificates.list();
+        const cert = certificates.find((c) => c.associatedRollNumber === internRollNumber);
+        if (!cert) {
+          return NextResponse.json(
+            { error: "No certificate record found for this intern. Please approve first." },
+            { status: 404 }
+          );
+        }
+        certNumber = cert.certificateNumber;
+      } else {
+        certNumber = `CERT-${userId!.substring(0, 8).toUpperCase()}`;
       }
 
       const pdfBuffer = await generateCertificatePDF({
-        fullName: intern.fullName,
-        certificateNumber: cert.certificateNumber,
-        track: trackTitle,
+        fullName: internFullName,
+        certificateNumber: certNumber,
+        track: internTrackTitle,
         date: dateStr,
       });
 
-      return new NextResponse(pdfBuffer, {
+      return new NextResponse(new Uint8Array(pdfBuffer), {
         headers: {
           "Content-Type": "application/pdf",
-          "Content-Disposition": `attachment; filename="Certificate_${cert.certificateNumber}.pdf"`,
+          "Content-Disposition": `attachment; filename="Certificate_${certNumber}.pdf"`,
         },
       });
     }

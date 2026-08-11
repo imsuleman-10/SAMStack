@@ -70,7 +70,7 @@ export const generateOfferLetterPDF = async ({ fullName, rollNumber, track, date
   let signatureFont;
   try {
     signatureFont = await pdfDoc.embedFont(fs.readFileSync(fontPath));
-  } catch (e) {
+  } catch (_) {
     signatureFont = await pdfDoc.embedFont(StandardFonts.TimesRomanItalic);
   }
 
@@ -209,7 +209,7 @@ export const generateCertificatePDF = async ({ fullName, certificateNumber, trac
   let signatureFont;
   try {
     signatureFont = await pdfDoc.embedFont(fs.readFileSync(fontPath));
-  } catch (e) {
+  } catch (_) {
     signatureFont = await pdfDoc.embedFont(StandardFonts.TimesRomanItalic);
   }
 

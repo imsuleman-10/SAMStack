@@ -3,7 +3,7 @@
 import React from "react";
 import {
   X, ExternalLink, FileText, Award, Download, Check,
-  GraduationCap, Calendar, Mail, Hash, Building2, Trash2
+  GraduationCap, Calendar, Mail, Hash, Building2, Trash2, KeyRound
 } from "lucide-react";
 
 interface InternDrawerProps {
@@ -15,6 +15,7 @@ interface InternDrawerProps {
   handleResend: (roll: string, type: "OFFER_LETTER" | "CERTIFICATE") => void;
   handleDownload?: (roll: string, type: "OFFER_LETTER" | "CERTIFICATE") => void;
   handleDelete?: (id: string) => void;
+  handleUpdateCredentials?: (intern: any) => void;
   formatDate: (ts: any) => string;
   onClose: () => void;
 }
@@ -51,6 +52,7 @@ export function InternDrawer({
   handleResend,
   handleDownload,
   handleDelete,
+  handleUpdateCredentials,
   formatDate,
   onClose,
 }: InternDrawerProps) {
@@ -243,6 +245,17 @@ export function InternDrawer({
                   <Download className="w-3.5 h-3.5" /> Download Cert
                 </button>
               </div>
+            )}
+
+            {/* Credentials */}
+            {handleUpdateCredentials && (
+              <button
+                onClick={() => handleUpdateCredentials(intern)}
+                className="w-full py-2 bg-orange-50 hover:bg-orange-100 dark:bg-orange-500/10 dark:hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/20 text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition-all"
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                Change Email / Password
+              </button>
             )}
 
             {/* Delete */}

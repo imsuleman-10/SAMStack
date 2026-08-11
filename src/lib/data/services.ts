@@ -1,4 +1,4 @@
-import { Code2, Globe, Bot, ServerCog, Smartphone, Palette, BarChart3 } from "lucide-react";
+import { Code, Globe, Bot, ServerCog, Smartphone, Palette, BarChart3 } from "lucide-react";
 
 export const services = [
   {
@@ -8,7 +8,7 @@ export const services = [
     subtitle: "Scale Without Limits",
     description: "We engineer resilient backends that prevent downtime and scale seamlessly. Stop losing revenue to system crashes; our low-latency architectures ensure your business operations remain uninterrupted, no matter the traffic.",
     image: "/images/img-servers.jpg",
-    icon: Code2,
+    icon: Code,
     features: [
       "Zero-Downtime Architecture",
       "High-throughput APIs",

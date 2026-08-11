@@ -47,7 +47,41 @@
   --input-text: #0f172a;
   --input-focus-border: var(--color-brand-500);
   --input-focus-ring: rgba(14, 165, 233, 0.2);
+
+  /* ─── Platform Design Tokens ─────────────────────────────────────── */
+  /* Surface layers */
+  --bg-base:    #0a0e1a;
+  --bg-surface: #0f1423;
+  --bg-elevated:#131929;
+
+  /* Accent / Primary */
+  --accent:         #22d3ee;          /* cyan-400  */
+  --accent-muted:   rgba(34,211,238,0.12);
+  --accent-border:  rgba(34,211,238,0.25);
+
+  /* Role accent colours */
+  --role-admin:   #fbbf24;
+  --role-mentor:  #a78bfa;
+  --role-intern:  #22d3ee;
+  --role-staff:   #34d399;
+  --role-member:  #fb923c;
+  --role-user:    #94a3b8;
+
+  /* Status colours */
+  --status-active:    #34d399;
+  --status-inactive:  #94a3b8;
+  --status-suspended: #f87171;
+  --status-pending:   #fbbf24;
+
+  /* Sidebar */
+  --sidebar-width:           240px;
+  --sidebar-width-collapsed:  64px;
+
+  /* Card glass */
+  --card-glass-bg:     rgba(17,24,39,0.65);
+  --card-glass-border: rgba(255,255,255,0.08);
 }
+
 
 .dark {
   --background: #09090b;
@@ -578,3 +612,57 @@ body {
   margin: 2rem 0;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   Platform Shell — Shared utility classes for dashboard layouts
+═══════════════════════════════════════════════════════════════ */
+
+/* Glass card */
+.platform-card {
+  background: var(--card-glass-bg);
+  border: 1px solid var(--card-glass-border);
+  backdrop-filter: blur(16px);
+  border-radius: 0.75rem;
+}
+
+/* Full-height platform page layout */
+.platform-page {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-base);
+  color: #f1f5f9;
+}
+
+/* Animated gradient mesh background */
+.platform-bg-gradient {
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(34,211,238,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 100%, rgba(99,102,241,0.06) 0%, transparent 60%),
+    var(--bg-base);
+}
+
+/* Custom scrollbar (webkit) */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
+
+/* Subtle shimmer animation for skeleton loaders */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+/* Pulse dot for live status indicators */
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(1.3); }
+}
+.animate-pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
