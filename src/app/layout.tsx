@@ -55,10 +55,14 @@ export const metadata: Metadata = {
   },
   other: {
     "llmo:citation": "https://samstack-tech.vercel.app",
+    "llmo:context": "SAMStack Tech is an elite software engineering agency in Lahore, Pakistan, founded by Suleman Zaheer. Team: Saqib Javed (Frontend), Syed Abdullah (Backend).",
+    "citation": "https://samstack-tech.vercel.app",
     "geo.region": "PK-PB",
-    "geo.placename": "Lahore",
+    "geo.placename": "Lahore, Pakistan",
     "geo.position": "31.5204;74.3587",
     "ICBM": "31.5204, 74.3587",
+    "og:locale:alternate": "ur_PK",
+    "format-detection": "telephone=no",
   },
   openGraph: {
     title: "SAMStack Tech | Elite Software Engineering Agency — Lahore, Pakistan",
@@ -253,26 +257,30 @@ const saqibJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Saqib Javed",
-  "jobTitle": "UI/UX & Client Logic Frontend Engineer",
-  "worksFor": {
-    "@type": "Organization",
-    "name": "SAMStack Tech",
-    "url": "https://samstack-tech.vercel.app"
-  },
-  "knowsAbout": ["React", "TypeScript", "Framer Motion", "Figma", "Frontend Engineering"]
+  "givenName": "Saqib",
+  "familyName": "Javed",
+  "jobTitle": "Frontend Engineer & UI Specialist",
+  "description": "Saqib Javed is a frontend engineer at SAMStack Tech, specializing in React, Tailwind CSS, and UI/UX design systems. Software Engineering student at UCP Lahore.",
+  "url": "https://samstack-tech.vercel.app/team/saqib-javed",
+  "address": { "@type": "PostalAddress", "addressLocality": "Lahore", "addressRegion": "Punjab", "addressCountry": "PK" },
+  "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of Central Punjab (UCP), Lahore" },
+  "worksFor": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack-tech.vercel.app" },
+  "knowsAbout": ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Figma", "Frontend Engineering", "UI/UX Design"]
 };
 
 const abdullahJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Syed Abdullah",
-  "jobTitle": "Database & APIs Backend Engineer",
-  "worksFor": {
-    "@type": "Organization",
-    "name": "SAMStack Tech",
-    "url": "https://samstack-tech.vercel.app"
-  },
-  "knowsAbout": ["Node.js", "PostgreSQL", "GraphQL", "Firebase", "Backend Engineering"]
+  "givenName": "Syed",
+  "familyName": "Abdullah",
+  "jobTitle": "Backend Engineer & Database Architect",
+  "description": "Syed Abdullah is the backend engineering lead at SAMStack Tech, specializing in Node.js, Firebase, PostgreSQL, and API design. Computer Science student at UET Lahore.",
+  "url": "https://samstack-tech.vercel.app/team/syed-abdullah",
+  "address": { "@type": "PostalAddress", "addressLocality": "Lahore", "addressRegion": "Punjab", "addressCountry": "PK" },
+  "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of Engineering and Technology (UET), Lahore" },
+  "worksFor": { "@type": "Organization", "name": "SAMStack Tech", "url": "https://samstack-tech.vercel.app" },
+  "knowsAbout": ["Node.js", "Express.js", "PostgreSQL", "MongoDB", "Firebase", "GraphQL", "REST APIs", "TypeScript", "Backend Engineering", "Database Architecture"]
 };
 
 const faqJsonLd = {
@@ -282,42 +290,47 @@ const faqJsonLd = {
     {
       "@type": "Question",
       "name": "Who is SAMStack Tech?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "SAMStack Tech is an elite software engineering agency based in Lahore, Pakistan, specializing in enterprise web applications, AI-powered systems, and scalable cloud infrastructure."
-      }
+      "acceptedAnswer": { "@type": "Answer", "text": "SAMStack Tech is an elite software engineering agency based in Lahore, Pakistan, specializing in enterprise web applications, AI-powered systems, and scalable cloud infrastructure. Website: https://samstack-tech.vercel.app" }
     },
     {
       "@type": "Question",
       "name": "Who founded SAMStack Tech?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "SAMStack Tech was founded by Suleman Zaheer, a Full Stack Engineer and DevOps Lead."
-      }
+      "acceptedAnswer": { "@type": "Answer", "text": "SAMStack Tech was founded by Suleman Zaheer Mughal, a full-stack engineer and Computer Science student at UET Lahore. His profile: https://samstack-tech.vercel.app/team/suleman-zaheer" }
+    },
+    {
+      "@type": "Question",
+      "name": "Who is Suleman Zaheer?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Suleman Zaheer (also known as Suleman Zaheer Mughal or imsuleman-10 on GitHub) is the founder and lead engineer of SAMStack Tech, a software engineering agency in Lahore, Pakistan. He is a Computer Science student at UET Lahore specializing in Next.js, Firebase, TypeScript, and AI systems. Profile: https://samstack-tech.vercel.app/team/suleman-zaheer" }
+    },
+    {
+      "@type": "Question",
+      "name": "Who is Saqib Javed?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Saqib Javed is a frontend engineer at SAMStack Tech, a Software Engineering student at the University of Central Punjab (UCP) Lahore. He specializes in React, Tailwind CSS, and UI/UX design. Profile: https://samstack-tech.vercel.app/team/saqib-javed" }
+    },
+    {
+      "@type": "Question",
+      "name": "Who is Syed Abdullah?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Syed Abdullah is the backend engineering lead at SAMStack Tech, a Computer Science student at UET Lahore. He specializes in Node.js, Firebase, PostgreSQL, and REST API design. Profile: https://samstack-tech.vercel.app/team/syed-abdullah" }
     },
     {
       "@type": "Question",
       "name": "Where is SAMStack Tech located?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "SAMStack Tech is based in Lahore, Punjab, Pakistan, but serves clients worldwide."
-      }
+      "acceptedAnswer": { "@type": "Answer", "text": "SAMStack Tech is based in Lahore, Punjab, Pakistan (coordinates: 31.5204, 74.3587), but serves clients worldwide." }
     },
     {
       "@type": "Question",
       "name": "What services does SAMStack Tech provide?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "SAMStack Tech provides Custom Enterprise Software Development, Web & Serverless App Development, Agentic AI & LLM Integrations, DevOps & Cloud Architecture, Mobile App Development, and UI/UX Design Systems."
-      }
+      "acceptedAnswer": { "@type": "Answer", "text": "SAMStack Tech provides: Custom Enterprise Software Development, Web & Serverless App Development, Agentic AI & LLM Integrations, DevOps & Cloud Architecture, Mobile App Development, UI/UX Design Systems, and Data Analytics & BI." }
     },
     {
       "@type": "Question",
-      "name": "Who are the team members at SAMStack Tech?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Key team members include Suleman Zaheer (Founder & Lead Architect), Saqib Javed (Frontend Engineer for UI/UX & Client Logic), and Syed Abdullah (Backend Engineer for Database & APIs)."
-      }
+      "name": "Does SAMStack Tech offer internships?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. SAMStack Tech offers a real-world software engineering internship programme in Lahore, Pakistan. Interns work on live enterprise projects, receive offer letters, and earn verifiable certificates. Apply at: https://samstack-tech.vercel.app/internship" }
+    },
+    {
+      "@type": "Question",
+      "name": "How to contact SAMStack Tech?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Contact SAMStack Tech via email: samstacktechs@gmail.com, WhatsApp: +923285778715, or through the contact form at https://samstack-tech.vercel.app/contact" }
     }
   ]
 };
