@@ -4,10 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
-  sendPasswordResetEmail,
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -57,6 +55,8 @@ export default function LoginPage() {
   const [sigEmail, setSigEmail] = useState('');
   const [sigPw, setSigPw] = useState('');
   const [showSigPw, setShowSigPw] = useState(false);
+  const [sigGender, setSigGender] = useState('Male');
+  const [sigTrack, setSigTrack] = useState('Frontend');
 
   // Forgot Password
   const [forgotId, setForgotId] = useState('');
@@ -107,7 +107,8 @@ export default function LoginPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ phone: fbEmail }),
         });
-        const d = await res.json();
+        const d = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(d.error || 'Failed to look up account.');
         // Fallback email format for legacy phone accounts
         const cleaned = fbEmail.replace(/[^0-9+]/g, '');
         const std = cleaned.startsWith('+') ? cleaned : `+92${cleaned.replace(/^0/, '')}`;
@@ -171,9 +172,33 @@ export default function LoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       
-      // Create account now that email is verified
-      const cred = await createUserWithEmailAndPassword(auth, sigEmail.trim(), sigPw);
-      await verifyOnServer(cred.user, sigName.trim(), undefined, sigEmail.trim());
+      // Create intern account using the new API
+      const signupRes = await fetch('/api/auth/intern-signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: sigEmail.trim(),
+          password: sigPw,
+          fullName: sigName.trim(),
+          gender: sigGender,
+          track: sigTrack,
+        })
+      });
+      const signupData = await signupRes.json();
+      if (!signupRes.ok) throw new Error(signupData.error || 'Failed to create intern account.');
+      
+      // Small delay to allow Firebase Auth to propagate the new user before sign-in
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      try {
+        const cred = await signInWithEmailAndPassword(auth, sigEmail.trim(), sigPw);
+        await verifyOnServer(cred.user, sigName.trim(), undefined, sigEmail.trim());
+      } catch (loginErr: any) {
+        // Account created but login failed. Switch to login mode to avoid deadlock.
+        setSuccess('Account created successfully! Please sign in.');
+        setMode('LOGIN');
+        return;
+      }
     } catch (err: any) {
       setError(firebaseErrorMessage(err.code) || err.message || 'Invalid verification code.');
     } finally { setLoading(false); }
@@ -282,7 +307,7 @@ export default function LoginPage() {
         <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-xl border border-slate-200 dark:border-neutral-800 rounded-3xl p-6 sm:p-8 shadow-xl dark:shadow-black/40">
 
           {/* Back button (Forgot/OTP modes) */}
-          {(mode === 'FORGOT' || mode.startsWith('OTP_')) && (
+          {(mode === 'FORGOT' || mode.startsWith('OTP_') || mode === 'NEW_PASSWORD') && (
             <button type="button" onClick={() => switchMode(mode === 'OTP_SIGNUP' ? 'SIGNUP' : 'LOGIN')}
               className="flex items-center gap-2 text-slate-400 dark:text-neutral-500 hover:text-brand-600 dark:hover:text-brand-400 text-xs font-bold mb-6 transition-colors">
               <ArrowLeft className="w-3.5 h-3.5" /> Back
@@ -427,6 +452,23 @@ export default function LoginPage() {
                       className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 dark:text-neutral-500 hover:text-brand-500 transition-colors">
                       {showSigPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className={lbl}>Gender</label>
+                    <select value={sigGender} onChange={e => setSigGender(e.target.value)} className={inp} required>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className={lbl}>Track</label>
+                    <select value={sigTrack} onChange={e => setSigTrack(e.target.value)} className={inp} required>
+                      <option value="Frontend">Frontend</option>
+                      <option value="Backend">Backend</option>
+                    </select>
                   </div>
                 </div>
 

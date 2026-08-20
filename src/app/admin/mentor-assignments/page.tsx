@@ -31,13 +31,15 @@ export default function AdminMentorAssignmentsPage() {
         fetch('/api/admin/users?role=mentor&limit=500'),
       ]);
       
-      const [assData, internsData, mentorsData] = await Promise.all([
-        assRes.json(), internsRes.json(), mentorsRes.json()
+      const [assData, internsData, mentorsData]: any[] = await Promise.all([
+        assRes.ok ? assRes.json() : {},
+        internsRes.ok ? internsRes.json() : {},
+        mentorsRes.ok ? mentorsRes.json() : {}
       ]);
       
-      setAssignments(assData.assignments || []);
-      setInterns(internsData.users || []);
-      setMentors(mentorsData.users || []);
+      setAssignments(assData?.assignments || []);
+      setInterns(internsData?.users || []);
+      setMentors(mentorsData?.users || []);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {

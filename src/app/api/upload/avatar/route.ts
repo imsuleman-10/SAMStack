@@ -4,11 +4,7 @@ import { requireAuth, isAuthError } from "@/lib/session";
 import { FS } from "@/lib/firestore-schema";
 import sharp from "sharp";
 import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { supabaseUpload } from "@/lib/supabase";
 
 /**
  * Server-side compression using sharp.
@@ -88,23 +84,13 @@ export async function POST(request: NextRequest) {
 
     const fileName = `${user.id}-avatar.jpg`;
 
-    // Upload to Supabase Storage
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(fileName, compressedBuffer, {
-        contentType: "image/jpeg",
-        upsert: true,
-      });
-
-    if (uploadError) {
-      throw new Error("Supabase upload failed: " + uploadError.message);
-    }
-
-    const { data: publicUrlData } = supabase.storage
-      .from("avatars")
-      .getPublicUrl(fileName);
-      
-    const publicUrl = publicUrlData.publicUrl;
+    // Upload to Supabase Storage with auto-retry (wakes project if paused)
+    const publicUrl = await supabaseUpload({
+      bucket: "avatars",
+      path: fileName,
+      body: compressedBuffer,
+      contentType: "image/jpeg",
+    });
 
     // Save avatar_url to the platform users collection
     if (adminDb) {

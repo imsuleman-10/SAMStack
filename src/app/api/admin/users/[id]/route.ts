@@ -19,15 +19,22 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   // Fetch role-specific profile
   const user = snap.data() as PlatformUser;
   let roleProfile = null;
+  let staffProfile = null;
   if (user.role === "intern") {
     const p = await adminDb.collection(FS.INTERN_PROFILES).doc(id).get();
     if (p.exists) roleProfile = p.data();
   } else if (user.role === "mentor") {
     const p = await adminDb.collection(FS.MENTOR_PROFILES).doc(id).get();
     if (p.exists) roleProfile = p.data();
+  } else if (user.role === "staff") {
+    const p = await adminDb.collection(FS.STAFF_PROFILES).doc(id).get();
+    if (p.exists) {
+      roleProfile = p.data();
+      staffProfile = p.data();
+    }
   }
 
-  // Fetch active mentor assignment
+  // Fetch active mentor assignment (with mentor's name)
   let mentorAssignment = null;
   if (user.role === "intern") {
     const aSnap = await adminDb.collection(FS.MENTOR_ASSIGNMENTS)
@@ -35,10 +42,19 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       .where("status", "==", "active")
       .limit(1)
       .get();
-    if (!aSnap.empty) mentorAssignment = aSnap.docs[0].data();
+    if (!aSnap.empty) {
+      const assignment = aSnap.docs[0].data();
+      // Fetch mentor's name
+      let mentorName = '';
+      try {
+        const mentorSnap = await adminDb.collection(FS.USERS).doc(assignment.mentor_id).get();
+        if (mentorSnap.exists) mentorName = (mentorSnap.data() as any).full_name || '';
+      } catch { /* silent */ }
+      mentorAssignment = { ...assignment, mentor_name: mentorName };
+    }
   }
 
-  return NextResponse.json({ user, roleProfile, mentorAssignment });
+  return NextResponse.json({ user, roleProfile, staffProfile, mentorAssignment });
 }
 
 // ─── PATCH /api/admin/users/[id] ─────────────────────────────────────────────
@@ -56,7 +72,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const existing = snap.data() as PlatformUser;
 
   const allowedFields: (keyof PlatformUser)[] = [
-    "full_name", "phone", "avatar_url", "bio", "city", "country",
+    "full_name", "phone", "avatar_url", "bio", "city", "country", "region", "language",
     "date_of_birth", "gender", "address", "skills", "social_links", "visibility",
   ];
 
@@ -82,6 +98,19 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 
   await adminDb.collection(FS.USERS).doc(id).update(updates);
+
+  // Update intern-specific profile fields if present
+  if (existing.role === "intern" || body.role === "intern") {
+    const internAllowed = ["track_selected", "university", "department", "semester", "position", "joining_date", "end_date", "status"] as const;
+    const internUpdates: Record<string, unknown> = { updated_at: new Date().toISOString() };
+    for (const field of internAllowed) {
+      if (field in body) internUpdates[field] = body[field];
+    }
+    if (Object.keys(internUpdates).length > 1) {
+      await adminDb.collection(FS.INTERN_PROFILES).doc(id).set(internUpdates, { merge: true });
+    }
+  }
+
   await auditLog(session.id, "ADMIN_EDIT_PROFILE", id, { fields: Object.keys(updates) });
 
   return NextResponse.json({ success: true });

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { adminDb } from "@/lib/firebase-admin";
 import { tracks } from "@/lib/curriculum";
 import { generateOfferLetterPDF, generateCertificatePDF } from "@/lib/pdfTemplates";
 import { sendOfferLetterEmail, sendCertificateEmail } from "@/lib/mailer";
@@ -16,11 +16,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!adminDb) return NextResponse.json({ error: "DB not initialized" }, { status: 500 });
+
     // Fetch intern record
-    const intern = await db.interns.get(rollNumber);
-    if (!intern) {
+    const internSnap = await adminDb.collection("interns").where("rollNumber", "==", rollNumber).limit(1).get();
+    if (internSnap.empty) {
       return NextResponse.json({ error: "Intern record not found." }, { status: 404 });
     }
+    const intern = internSnap.docs[0].data();
 
     const trackTitle = tracks[intern.trackSelected]?.title || intern.trackSelected;
     const dateStr = new Date().toLocaleDateString("en-US", {
@@ -64,15 +67,14 @@ export async function POST(request: NextRequest) {
       }
 
       // Look up the certificate record
-      const certificates = await db.certificates.list();
-      const cert = certificates.find((c) => c.associatedRollNumber === intern.rollNumber);
-
-      if (!cert) {
+      const certSnap = await adminDb.collection("certificates").where("associatedRollNumber", "==", intern.rollNumber).limit(1).get();
+      if (certSnap.empty) {
         return NextResponse.json(
           { error: "No certificate record found for this intern. Please approve first." },
           { status: 404 }
         );
       }
+      const cert = certSnap.docs[0].data();
 
       const pdfBuffer = await generateCertificatePDF({
         fullName: intern.fullName,

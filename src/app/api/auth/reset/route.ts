@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import { adminAuth } from "@/lib/firebase-admin";
 
-const getSecretKey = () =>
-  new TextEncoder().encode(
-    process.env.JWT_SECRET || "samstack-fallback-secret-key-2026-super-secure"
-  );
+const getSecretKey = () => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error("CRITICAL: JWT_SECRET is not defined in environment variables.");
+  return new TextEncoder().encode(secret);
+};
 
 export async function POST(request: NextRequest) {
   try {

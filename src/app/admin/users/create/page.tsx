@@ -20,6 +20,7 @@ export default function CreateUserPage() {
     department: '',
     position: '',
     status: 'active',
+    authProvider: 'email',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -101,18 +102,35 @@ export default function CreateUserPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1.5">Temporary Password *</label>
-              <input
-                type="text"
-                name="password"
+              <label className="block text-sm font-medium text-gray-400 mb-1.5">Authentication Provider *</label>
+              <select
+                name="authProvider"
                 required
-                minLength={6}
-                value={formData.password}
+                value={formData.authProvider}
                 onChange={handleChange}
                 className="w-full h-10 px-3 rounded-lg text-sm text-white outline-none transition-all focus:ring-2"
                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
-              />
+              >
+                <option value="email" className="bg-gray-900">Email & Password</option>
+                <option value="google" className="bg-gray-900">Google Login</option>
+              </select>
             </div>
+
+            {formData.authProvider === 'email' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1.5">Temporary Password *</label>
+                <input
+                  type="text"
+                  name="password"
+                  required
+                  minLength={6}
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full h-10 px-3 rounded-lg text-sm text-white outline-none transition-all focus:ring-2"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+                />
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-400 mb-1.5">Phone Number</label>
@@ -166,14 +184,33 @@ export default function CreateUserPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-1.5">Department</label>
-                  <input
-                    type="text"
-                    name="department"
-                    value={formData.department}
-                    onChange={handleChange}
-                    className="w-full h-10 px-3 rounded-lg text-sm text-white outline-none transition-all focus:ring-2"
-                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
-                  />
+                  {formData.role === 'staff' ? (
+                    <select
+                      name="department"
+                      value={formData.department}
+                      onChange={handleChange}
+                      className="w-full h-10 px-3 rounded-lg text-sm text-white outline-none transition-all focus:ring-2"
+                      style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+                    >
+                      <option value="" className="bg-gray-900">Select Department</option>
+                      <option value="Support + Marketing" className="bg-gray-900">Support + Marketing</option>
+                      <option value="Development" className="bg-gray-900">Development</option>
+                      <option value="Design" className="bg-gray-900">Design</option>
+                      <option value="HR" className="bg-gray-900">HR</option>
+                      <option value="Operations" className="bg-gray-900">Operations</option>
+                      <option value="Finance" className="bg-gray-900">Finance</option>
+                      <option value="Sales" className="bg-gray-900">Sales</option>
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      name="department"
+                      value={formData.department}
+                      onChange={handleChange}
+                      className="w-full h-10 px-3 rounded-lg text-sm text-white outline-none transition-all focus:ring-2"
+                      style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+                    />
+                  )}
                 </div>
                 
                 <div>

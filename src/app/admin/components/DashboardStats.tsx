@@ -71,6 +71,8 @@ function StatCard({ item, getValue, index }: { item: any; getValue: number; inde
 }
 
 export const DashboardStats = React.memo(function DashboardStats({ activeTab, stats, messageStats }: DashboardStatsProps) {
+  if (activeTab === "TEAM_USERS") return null;
+
   const items = activeTab === "INTERNS" ? statCards.interns : statCards.messages;
   const getValue = (item: any) => item.value(activeTab === "INTERNS" ? stats : messageStats);
 

@@ -3,12 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { useRouter } from 'next/navigation';
-import { Loader2, Trash2, Edit3, ShieldAlert } from 'lucide-react';
+import { Loader2, Trash2, Edit3, KeyRound, Send, Lock, Mail, CheckCircle2 } from 'lucide-react';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { UserAvatar } from '@/components/ui/UserAvatar';
 import { RoleBadge } from '@/components/ui/RoleBadge';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import Link from 'next/link';
+import { toast } from 'sonner';
+import { tracks } from '@/lib/curriculum';
 
 export default function UserDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -24,6 +26,16 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
   // Edit state
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState<any>({});
+  const [sendingCreds, setSendingCreds] = useState(false);
+  const [showSetPassword, setShowSetPassword] = useState(false);
+  const [customPassword, setCustomPassword] = useState('');
+  const [settingPassword, setSettingPassword] = useState(false);
+
+  const [showSetEmail, setShowSetEmail] = useState(false);
+  const [customEmail, setCustomEmail] = useState('');
+  const [settingEmail, setSettingEmail] = useState(false);
+  
+  const [approvingCert, setApprovingCert] = useState(false);
 
   useEffect(() => {
     params.then(p => setId(p.id));
@@ -39,6 +51,7 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
         full_name: json.user.full_name,
         role: json.user.role,
         status: json.user.status,
+        track_selected: json.roleProfile?.track_selected || json.roleProfile?.trackSelected || '',
       });
     } catch (err: any) {
       setError(err.message);
@@ -63,8 +76,9 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
       if (!res.ok) throw new Error('Failed to update');
       await fetchUser(id);
       setIsEditing(false);
+      toast.success('User updated successfully');
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message || 'Failed to update user');
     } finally {
       setActionLoading(false);
     }
@@ -77,12 +91,100 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
       const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' });
       const d = await res.json();
       if (!res.ok) throw new Error(d.error || 'Failed to delete');
+      toast.success('User deleted successfully');
       router.push('/admin/users');
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message || 'Failed to delete user');
       setShowDelete(false);
     } finally {
       setActionLoading(false);
+    }
+  };
+
+  const handleSendCredentials = async () => {
+    if (!id) return;
+    setSendingCreds(true);
+    try {
+      const res = await fetch(`/api/admin/users/${id}/send-credentials`, { method: 'POST' });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'Failed');
+      toast.success(`Credentials sent to ${d.email}`);
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to send credentials');
+    } finally {
+      setSendingCreds(false);
+    }
+  };
+
+  const handleSetPassword = async () => {
+    if (!id) return;
+    if (customPassword.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return;
+    }
+    setSettingPassword(true);
+    try {
+      const res = await fetch(`/api/admin/users/${id}/set-password`, { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newPassword: customPassword }),
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'Failed');
+      toast.success(d.message);
+      setShowSetPassword(false);
+      setCustomPassword('');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to set password');
+    } finally {
+      setSettingPassword(false);
+    }
+  };
+
+  const handleSetEmail = async () => {
+    if (!id) return;
+    if (!customEmail || !customEmail.includes('@')) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+    setSettingEmail(true);
+    try {
+      const res = await fetch(`/api/admin/users/${id}/set-email`, { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newEmail: customEmail }),
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'Failed');
+      toast.success(d.message);
+      setShowSetEmail(false);
+      setCustomEmail('');
+      fetchUser(id); // Reload user to show updated email
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to update email');
+    } finally {
+      setSettingEmail(false);
+    }
+  };
+
+  const handleApproveCertificate = async () => {
+    if (!id) return;
+    if (!confirm('Are you sure you want to approve this certificate request?')) return;
+    setApprovingCert(true);
+    try {
+      const res = await fetch(`/api/admin/users/${id}/certificate`, { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'approve' }),
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'Failed to approve certificate');
+      toast.success('Certificate approved successfully');
+      fetchUser(id);
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to approve certificate');
+    } finally {
+      setApprovingCert(false);
     }
   };
 
@@ -123,12 +225,48 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
               </button>
               
               <button 
+                onClick={handleSendCredentials}
+                disabled={sendingCreds}
+                className="w-full py-2 rounded-lg text-sm font-medium text-cyan-400 hover:text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {sendingCreds ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                {sendingCreds ? 'Sending...' : 'Auto-Send Credentials'}
+              </button>
+
+              <button 
+                onClick={() => setShowSetPassword(true)}
+                className="w-full py-2 rounded-lg text-sm font-medium text-amber-400 hover:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 transition-colors flex items-center justify-center gap-2"
+              >
+                <Lock className="w-4 h-4" />
+                Set Custom Password
+              </button>
+              
+              <button 
+                onClick={() => setShowSetEmail(true)}
+                className="w-full py-2 rounded-lg text-sm font-medium text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 transition-colors flex items-center justify-center gap-2"
+              >
+                <Mail className="w-4 h-4" />
+                Change Email Address
+              </button>
+
+              <button 
                 onClick={() => setShowDelete(true)}
                 className="w-full py-2 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2"
               >
                 <Trash2 className="w-4 h-4" />
                 Delete Account
               </button>
+
+              {user.role === 'intern' && roleProfile?.certificate_status === 'pending' && (
+                <button
+                  onClick={handleApproveCertificate}
+                  disabled={approvingCert}
+                  className="w-full mt-4 py-3 rounded-lg text-sm font-bold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors flex items-center justify-center gap-2 border border-emerald-500/20 disabled:opacity-50"
+                >
+                  {approvingCert ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                  {approvingCert ? 'Approving...' : 'Approve Certificate Request'}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -178,6 +316,24 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                     </select>
                   </div>
                 </div>
+
+                {/* Track field — only for interns */}
+                {(editForm.role === 'intern' || data?.user?.role === 'intern') && (
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-1">Internship Track</label>
+                    <select
+                      value={editForm.track_selected || ''}
+                      onChange={e => setEditForm({ ...editForm, track_selected: e.target.value })}
+                      className="w-full h-10 px-3 rounded-lg text-sm text-white bg-white/5 border border-white/10"
+                    >
+                      <option value="" className="bg-gray-900">— Not Assigned —</option>
+                      {Object.values(tracks).map(t => (
+                        <option key={t.id} value={t.id} className="bg-gray-900">{t.title}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
                 <div className="flex justify-end pt-4">
                   <button 
                     onClick={handleUpdate}
@@ -232,13 +388,26 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
                         <p className="text-sm text-gray-300 mt-1">{roleProfile.position || roleProfile.designation}</p>
                       </div>
                     )}
+                    {user.role === 'intern' && (
+                      <div className="col-span-2">
+                        <p className="text-sm text-gray-500">Internship Track</p>
+                        <p className="text-sm mt-1">
+                          {roleProfile?.track_selected || roleProfile?.trackSelected
+                            ? <span className="text-cyan-400 font-medium">{tracks[roleProfile.track_selected || roleProfile.trackSelected]?.title || roleProfile.track_selected || roleProfile.trackSelected}</span>
+                            : <span className="text-gray-600">— Not Assigned —</span>
+                          }
+                        </p>
+                      </div>
+                    )}
                     {user.role === 'intern' && mentorAssignment && (
                       <div className="col-span-2">
                         <p className="text-sm text-gray-500">Assigned Mentor</p>
                         <div className="mt-2 p-3 rounded-lg bg-white/5 border border-white/10 flex items-center justify-between">
-                          <span className="text-sm text-gray-300">Mentor ID: {mentorAssignment.mentor_id}</span>
+                          <span className="text-sm text-gray-300">
+                            {mentorAssignment.mentor_name || `ID: ${mentorAssignment.mentor_id}`}
+                          </span>
                           <Link href={`/admin/users/${mentorAssignment.mentor_id}`} className="text-xs text-cyan-400 hover:underline">
-                            View
+                            View Profile
                           </Link>
                         </div>
                       </div>
@@ -253,14 +422,96 @@ export default function UserDetailPage({ params }: { params: Promise<{ id: strin
 
       <ConfirmDialog
         open={showDelete}
-        title="Delete User Account"
-        description={`Are you sure you want to permanently delete ${user.full_name}? This will remove their authentication record, profile, and any associated data.`}
-        confirmLabel="Delete User"
-        danger
-        loading={actionLoading}
+        title="Delete User"
+        description={`Are you sure you want to delete ${user.full_name}? This action cannot be undone and will remove all their data from the platform.`}
         onConfirm={handleDelete}
         onCancel={() => setShowDelete(false)}
+        loading={actionLoading}
+        confirmLabel="Yes, delete user"
+        danger={true}
       />
+
+      {/* Set Password Modal */}
+      {showSetPassword && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95">
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-white mb-2">Set Custom Password</h3>
+              <p className="text-sm text-gray-400 mb-6">Manually override the password for <strong className="text-white">{user.email}</strong>.</p>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">New Password</label>
+                  <input 
+                    type="text" 
+                    value={customPassword}
+                    onChange={e => setCustomPassword(e.target.value)}
+                    placeholder="e.g. TempPass123!"
+                    className="w-full h-10 px-3 rounded-lg text-sm text-white bg-black/50 border border-white/10" 
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="px-6 py-4 bg-gray-900/50 border-t border-white/5 flex justify-end gap-3">
+              <button 
+                onClick={() => { setShowSetPassword(false); setCustomPassword(''); }}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleSetPassword}
+                disabled={settingPassword || customPassword.length < 8}
+                className="px-5 py-2 rounded-lg text-sm font-semibold bg-amber-500 hover:bg-amber-400 text-gray-900 flex items-center gap-2 disabled:opacity-50"
+              >
+                {settingPassword ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
+                {settingPassword ? 'Saving...' : 'Set Password'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Set Email Modal */}
+      {showSetEmail && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95">
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-white mb-2">Change Email Address</h3>
+              <p className="text-sm text-gray-400 mb-6">Update the primary email address for <strong className="text-white">{user.full_name}</strong>. Their old email is {user.email}.</p>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">New Email Address</label>
+                  <input 
+                    type="email" 
+                    value={customEmail}
+                    onChange={e => setCustomEmail(e.target.value)}
+                    placeholder="new@example.com"
+                    className="w-full h-10 px-3 rounded-lg text-sm text-white bg-black/50 border border-white/10" 
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="px-6 py-4 bg-gray-900/50 border-t border-white/5 flex justify-end gap-3">
+              <button 
+                onClick={() => { setShowSetEmail(false); setCustomEmail(''); }}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleSetEmail}
+                disabled={settingEmail || !customEmail.includes('@')}
+                className="px-5 py-2 rounded-lg text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white flex items-center gap-2 disabled:opacity-50"
+              >
+                {settingEmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+                {settingEmail ? 'Updating...' : 'Update Email'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

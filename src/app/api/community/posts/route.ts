@@ -32,19 +32,29 @@ export async function GET(req: NextRequest) {
     authorSnaps.forEach(a => {
       if (a.exists) {
         const u = a.data() as PlatformUser;
-        authorMap[u.id] = { id: u.id, full_name: u.full_name, avatar_url: u.avatar_url, role: u.role };
+        // Bug fix: use a.id (doc snapshot ID), NOT u.id (not present inside data())
+        authorMap[a.id] = { id: a.id, full_name: u.full_name, avatar_url: u.avatar_url, role: u.role };
       }
     });
   }
 
-  // Hydrate user's like status
   let userLikedPostIds = new Set<string>();
   if (posts.length > 0) {
-    const likesSnap = await adminDb.collection(FS.POST_LIKES)
-      .where("user_id", "==", session.id)
-      .where("post_id", "in", posts.map(p => p.id).slice(0, 30)) // Firestore 'in' limit is 30
-      .get();
-    likesSnap.forEach(l => userLikedPostIds.add(l.data().post_id));
+    const postIds = posts.map(p => p.id);
+    const chunkedQueries = [];
+    for (let i = 0; i < postIds.length; i += 30) {
+      const chunk = postIds.slice(i, i + 30);
+      chunkedQueries.push(
+        adminDb.collection(FS.POST_LIKES)
+          .where("user_id", "==", session.id)
+          .where("post_id", "in", chunk)
+          .get()
+      );
+    }
+    const chunkSnaps = await Promise.all(chunkedQueries);
+    chunkSnaps.forEach(snap => {
+      snap.forEach(l => userLikedPostIds.add(l.data().post_id));
+    });
   }
 
   const enriched = posts.map(p => ({

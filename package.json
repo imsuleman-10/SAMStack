@@ -4,7 +4,7 @@
   "private": true,
   "main": "electron/main.js",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -14,6 +14,7 @@
     "electron-pack-all": "electron-builder --win --x64 --mac --linux"
   },
   "dependencies": {
+    "@opentelemetry/api": "^1.9.1",
     "@pdf-lib/fontkit": "^1.1.1",
     "@supabase/supabase-js": "^2.112.2",
     "firebase": "^12.13.0",
@@ -27,8 +28,9 @@
     "pdf-lib": "^1.17.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "recharts": "^3.10.1",
     "sharp": "^0.35.3",
-    "sonner": "^2.0.7"
+    "sonner": "^2.0.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -36,6 +38,7 @@
     "@types/nodemailer": "^8.0.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/uuid": "^10.0.0",
     "concurrently": "^10.0.3",
     "electron": "^43.0.0",
     "electron-builder": "^26.15.3",

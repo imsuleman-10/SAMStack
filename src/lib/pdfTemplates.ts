@@ -25,7 +25,7 @@ async function tryEmbedLogo(pdfDoc: PDFDocument) {
   try {
     const p = path.join(process.cwd(), 'public', 'logo.png');
     if (fs.existsSync(p)) return await pdfDoc.embedPng(fs.readFileSync(p));
-  } catch { /* ignore */ }
+  } catch (e) { console.error("Logo embedding failed:", e); }
   return null;
 }
 
@@ -33,7 +33,7 @@ async function tryEmbedSignature(pdfDoc: PDFDocument) {
   try {
     const p = path.join(process.cwd(), 'public', 'signature.png');
     if (fs.existsSync(p)) return await pdfDoc.embedPng(fs.readFileSync(p));
-  } catch { /* ignore */ }
+  } catch (e) { console.error("Signature embedding failed:", e); }
   return null;
 }
 

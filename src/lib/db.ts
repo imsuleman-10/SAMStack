@@ -200,7 +200,7 @@ By offloading PDF rendering and SMTP mailing to a decoupled cloud service, our E
     author: {
       name: "Suleman Zaheer",
       role: "Founder & Lead Engineer",
-      avatarUrl: "/avatars/suleman.jpg"
+      avatarUrl: "/suleman-zaheer-software-engineer-samstack-tech.jpg"
     },
     tags: ["NEXTJS", "DEVOPS", "SERVERLESS"],
     publishedAt: "2026-05-15T08:00:00.000Z",
@@ -249,7 +249,7 @@ Applying smooth CSS transformations and subtle cyan-glowing shadows on hover ele
     author: {
       name: "Suleman Zaheer",
       role: "Founder & Lead Engineer",
-      avatarUrl: "/avatars/suleman.jpg"
+      avatarUrl: "/suleman-zaheer-software-engineer-samstack-tech.jpg"
     },
     tags: ["UI_UX", "CSS", "BRANDING"],
     publishedAt: "2026-05-16T12:00:00.000Z",
@@ -291,13 +291,19 @@ export const db = {
   interns: {
     async list(): Promise<Intern[]> {
       const snap = await getDocs(collection(firestore, COLLECTIONS.INTERNS));
-      return snap.docs.map(d => d.data() as Intern);
+      return snap.docs.map(d => {
+        const data = d.data();
+        return { ...data, email: data.email || data.gmail || '' } as Intern;
+      });
     },
 
     async get(id: string): Promise<Intern | null> {
       // Try by document ID first
       const byId = await getDoc(doc(firestore, COLLECTIONS.INTERNS, id));
-      if (byId.exists()) return byId.data() as Intern;
+      if (byId.exists()) {
+        const data = byId.data();
+        return { ...data, email: data.email || data.gmail || '' } as Intern;
+      }
 
       // Fall back to querying by rollNumber
       const q = query(
@@ -306,7 +312,8 @@ export const db = {
       );
       const snap = await getDocs(q);
       if (snap.empty) return null;
-      return snap.docs[0].data() as Intern;
+      const data = snap.docs[0].data();
+      return { ...data, email: data.email || data.gmail || '' } as Intern;
     },
 
     async getByEmailAndRoll(email: string, rollNumber: string): Promise<Intern | null> {

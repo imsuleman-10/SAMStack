@@ -22,6 +22,9 @@ interface DataTableProps<T> {
   page?: number;
   totalPages?: number;
   onPageChange?: (page: number) => void;
+  selectable?: boolean;
+  selectedIds?: string[];
+  onSelectionChange?: (ids: string[]) => void;
 }
 
 export function DataTable<T>({
@@ -36,7 +39,31 @@ export function DataTable<T>({
   page = 1,
   totalPages = 1,
   onPageChange,
+  selectable = false,
+  selectedIds = [],
+  onSelectionChange,
 }: DataTableProps<T>) {
+  const allIds = data.map(keyExtractor);
+  const isAllSelected = data.length > 0 && data.every(row => selectedIds.includes(keyExtractor(row)));
+  
+  const toggleSelectAll = () => {
+    if (isAllSelected) {
+      onSelectionChange?.(selectedIds.filter(id => !allIds.includes(id)));
+    } else {
+      const newSelections = Array.from(new Set([...selectedIds, ...allIds]));
+      onSelectionChange?.(newSelections);
+    }
+  };
+
+  const toggleSelectRow = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (selectedIds.includes(id)) {
+      onSelectionChange?.(selectedIds.filter(selected => selected !== id));
+    } else {
+      onSelectionChange?.([...selectedIds, id]);
+    }
+  };
+
   return (
     <div className="w-full" style={{ background: 'rgba(17,24,39,0.5)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)' }}>
       {onSearchChange && (
@@ -54,6 +81,16 @@ export function DataTable<T>({
         <table className="w-full text-sm text-left">
           <thead className="text-xs uppercase text-gray-400 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)' }}>
             <tr>
+              {selectable && (
+                <th className="px-6 py-4 w-12">
+                  <input 
+                    type="checkbox" 
+                    checked={isAllSelected}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 rounded border-gray-600 bg-gray-700/50 text-cyan-500 focus:ring-cyan-500/20"
+                  />
+                </th>
+              )}
               {columns.map(col => (
                 <th key={col.key} className="px-6 py-4 font-semibold">{col.label}</th>
               ))}
@@ -69,25 +106,39 @@ export function DataTable<T>({
               </tr>
             ) : data.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="px-6 py-12 text-center text-gray-500">
+                <td colSpan={columns.length + (selectable ? 1 : 0)} className="px-6 py-12 text-center text-gray-500">
                   No records found.
                 </td>
               </tr>
             ) : (
-              data.map(row => (
-                <tr
-                  key={keyExtractor(row)}
-                  onClick={() => onRowClick?.(row)}
-                  className={`border-b transition-colors ${onRowClick ? 'cursor-pointer hover:bg-white/5' : ''}`}
-                  style={{ borderColor: 'rgba(255,255,255,0.05)' }}
-                >
-                  {columns.map(col => (
-                    <td key={col.key} className="px-6 py-4 whitespace-nowrap">
-                      {col.render ? col.render(row) : String((row as any)[col.key] || '-')}
-                    </td>
-                  ))}
-                </tr>
-              ))
+              data.map(row => {
+                const id = keyExtractor(row);
+                const isSelected = selectedIds.includes(id);
+                return (
+                  <tr
+                    key={id}
+                    onClick={() => onRowClick?.(row)}
+                    className={`border-b transition-colors ${onRowClick ? 'cursor-pointer hover:bg-white/5' : ''} ${isSelected ? 'bg-cyan-500/5' : ''}`}
+                    style={{ borderColor: 'rgba(255,255,255,0.05)' }}
+                  >
+                    {selectable && (
+                      <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                        <input 
+                          type="checkbox" 
+                          checked={isSelected}
+                          onChange={(e) => toggleSelectRow(id, e as unknown as React.MouseEvent)}
+                          className="w-4 h-4 rounded border-gray-600 bg-gray-700/50 text-cyan-500 focus:ring-cyan-500/20"
+                        />
+                      </td>
+                    )}
+                    {columns.map(col => (
+                      <td key={col.key} className="px-6 py-4 whitespace-nowrap">
+                        {col.render ? col.render(row) : String((row as any)[col.key] || '-')}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>

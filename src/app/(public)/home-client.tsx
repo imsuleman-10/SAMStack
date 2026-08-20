@@ -39,7 +39,7 @@ const stats = [
 
 const defaultTeam = [
   {
-    image: "/suleman.jpg",
+    image: "/suleman-zaheer-software-engineer-samstack-tech.jpg",
     initials: "SZ",
     name: "Suleman Zaheer",
     role: "Founder & DevOps Lead",
@@ -51,7 +51,7 @@ const defaultTeam = [
     to: "to-indigo-600",
   },
   {
-    image: "/saqib.jpg",
+    image: "/saqib-javed-software-engineer-samstack-tech.jpg",
     initials: "SJ",
     name: "Saqib Javed",
     role: "Frontend Engineer",
@@ -63,7 +63,7 @@ const defaultTeam = [
     to: "to-teal-500",
   },
   {
-    image: "/abdullah.png",
+    image: "/syed-abdullah-software-engineer-samstack-tech.png",
     initials: "SA",
     name: "Syed Abdullah",
     role: "Backend Engineer",
@@ -570,7 +570,7 @@ export default function HomeClient() {
               {/* Subtle gradient glow inside card */}
               
               <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden flex-shrink-0 shadow-xl border-2 border-slate-100 dark:border-neutral-800">
-                <Image src="https://ui-avatars.com/api/?name=Suleman+Zaheer&background=random&size=256" alt="Suleman Zaheer" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" unoptimized />
+                <Image src="/suleman-zaheer-software-engineer-samstack-tech.jpg" alt="Suleman Zaheer" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
               </div>
               
               <div className="space-y-5 text-center md:text-left relative z-10 pt-1">

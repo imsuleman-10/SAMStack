@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { adminDb } from "@/lib/firebase-admin";
 import { tracks } from "@/lib/curriculum";
 import { generateOfferLetterPDF, generateCertificatePDF } from "@/lib/pdfTemplates";
 import { sendOfferLetterEmail, sendCertificateEmail } from "@/lib/mailer";
+import crypto from "crypto";
 
 /**
  * POST /api/admin/send-direct
@@ -24,10 +25,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const intern = await db.interns.get(rollNumber);
-    if (!intern) {
+    if (!adminDb) return NextResponse.json({ error: "DB not initialized" }, { status: 500 });
+
+    const internSnap = await adminDb.collection("interns").where("rollNumber", "==", rollNumber).limit(1).get();
+    if (internSnap.empty) {
       return NextResponse.json({ error: `Intern with roll number ${rollNumber} not found.` }, { status: 404 });
     }
+    const internDoc = internSnap.docs[0];
+    const intern = internDoc.data();
 
     const trackTitle = tracks[intern.trackSelected]?.title || intern.trackSelected;
     const dateStr = new Date().toLocaleDateString("en-US", {
@@ -64,23 +69,26 @@ export async function POST(request: NextRequest) {
     // ── DIRECT CERTIFICATE ──────────────────────────────────────────
     if (type === "CERTIFICATE") {
       // Check if a certificate already exists for this intern
-      const certificates = await db.certificates.list();
-      let cert = certificates.find((c) => c.associatedRollNumber === intern.rollNumber);
+      const certsSnap = await adminDb.collection("certificates").where("associatedRollNumber", "==", intern.rollNumber).limit(1).get();
+      let cert = certsSnap.empty ? null : certsSnap.docs[0].data();
 
       if (!cert) {
         // Auto-generate a new certificate record (no approval needed)
-        const certHex = Math.random().toString(16).substring(2, 10).toUpperCase();
+        const certHex = crypto.randomBytes(4).toString('hex').toUpperCase();
         const certificateNumber = `SAM-CERT-2026-${certHex}`;
 
-        cert = await db.certificates.create({
+        cert = {
           certificateNumber,
           associatedRollNumber: intern.rollNumber,
           recipientName: intern.fullName,
           trackTitle,
-        });
+          issuanceDate: new Date().toISOString(),
+          isValid: true,
+        };
+        await adminDb.collection("certificates").doc(certificateNumber).set(cert);
 
         // Also upgrade intern status to APPROVED so cert is discoverable
-        await db.interns.updateStatus(intern.rollNumber, "APPROVED");
+        await internDoc.ref.update({ status: "APPROVED" });
 
         console.log(`[ADMIN] Certificate auto-created: ${certificateNumber} for ${intern.rollNumber}`);
       }

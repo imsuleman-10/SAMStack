@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { ThemeProvider } from "./components/ThemeProvider";
 import { Toaster } from "sonner";
+import { NotificationProvider } from "@/context/NotificationContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -196,7 +197,7 @@ const personJsonLd = {
   "familyName": "Zaheer",
   "alternateName": "Suleman Zaheer Mughal",
   "url": "https://suleman-zaheer.vercel.app",
-  "image": "https://samstack-tech.vercel.app/suleman.jpg",
+  "image": "https://samstack-tech.vercel.app/suleman-zaheer-software-engineer-samstack-tech.jpg",
   "jobTitle": "Full Stack Engineer & DevOps Lead",
   "description": "Founder of SAMStack Tech — an elite software engineering studio based in Lahore, Pakistan. Specializes in Next.js, DevOps, cloud architecture, and AI agent systems.",
   "telephone": "+923285778715",
@@ -334,7 +335,7 @@ export default function RootLayout({
       className={`${inter.variable} ${outfit.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300 relative selection:bg-brand-500/30 selection:text-brand-700 dark:selection:text-brand-300 font-sans">
+      <body className="min-h-full bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300 relative selection:bg-brand-500/30 selection:text-brand-700 dark:selection:text-brand-300 font-sans">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
@@ -362,7 +363,9 @@ export default function RootLayout({
         <ThemeProvider>
           {/* Global Toast Notifications */}
           <Toaster position="top-right" richColors closeButton theme="system" />
-          {children}
+          <NotificationProvider>
+            {children}
+          </NotificationProvider>
         </ThemeProvider>
       </body>
     </html>

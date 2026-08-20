@@ -76,9 +76,9 @@ const getCoverImage = (slug: string, fallback?: string) => {
 };
 
 const getAuthorImage = (name: string) => {
-  if (name.includes("Suleman")) return "/suleman.jpg";
-  if (name.includes("Abdullah")) return "/abdullah.png";
-  if (name.includes("Saqib")) return "/saqib.jpg";
+  if (name.includes("Suleman")) return "/suleman-zaheer-software-engineer-samstack-tech.jpg";
+  if (name.includes("Abdullah")) return "/syed-abdullah-software-engineer-samstack-tech.png";
+  if (name.includes("Saqib")) return "/saqib-javed-software-engineer-samstack-tech.jpg";
   return null;
 };
 

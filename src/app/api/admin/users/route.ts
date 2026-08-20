@@ -3,6 +3,7 @@ import { adminDb } from "@/lib/firebase-admin";
 import { adminAuth } from "@/lib/firebase-admin";
 import { requireAuth, isAuthError } from "@/lib/session";
 import { auditLog } from "@/lib/audit";
+import { sendWelcomeEmailWithPassword, sendWelcomeEmailGoogle } from "@/lib/mailer";
 import { FS } from "@/lib/firestore-schema";
 import type { PlatformUser, UserRole, AccountStatus } from "@/lib/firestore-schema";
 
@@ -23,10 +24,24 @@ export async function GET(req: NextRequest) {
   let q = adminDb.collection(FS.USERS) as FirebaseFirestore.Query;
   if (role) q = q.where("role", "==", role);
   if (status) q = q.where("status", "==", status);
-  q = q.orderBy("created_at", "desc");
 
-  const snapshot = await q.get();
-  let users = snapshot.docs.map(d => d.data() as PlatformUser);
+  let allDocs: FirebaseFirestore.QueryDocumentSnapshot[] = [];
+  try {
+    // Try with orderBy — requires a composite index when filtering by role/status
+    const snapshot = await q.orderBy("created_at", "desc").get();
+    allDocs = snapshot.docs;
+  } catch (indexErr: any) {
+    // Composite index not yet created — fall back to unordered, sort in memory
+    console.warn("[users] Missing index, sorting in memory:", indexErr?.message?.slice(0, 120));
+    const snapshot = await q.get();
+    allDocs = snapshot.docs.sort((a, b) => {
+      const aDate = a.data().created_at ?? "";
+      const bDate = b.data().created_at ?? "";
+      return bDate.localeCompare(aDate);
+    });
+  }
+
+  let users = allDocs.map(d => ({ id: d.id, ...d.data() }) as PlatformUser);
 
   if (search) {
     users = users.filter(
@@ -40,7 +55,24 @@ export async function GET(req: NextRequest) {
   const total = users.length;
   const paginated = users.slice((page - 1) * limit, page * limit);
 
-  return NextResponse.json({ users: paginated, total, page, limit, pages: Math.ceil(total / limit) });
+  // For intern role, merge intern_profiles data (track, roll_number) into each user
+  let enrichedUsers: any[] = paginated;
+  if (role === 'intern' && paginated.length > 0) {
+    const profileFetches = paginated.map(u =>
+      adminDb!.collection(FS.INTERN_PROFILES).doc(u.id).get().catch(() => null)
+    );
+    const profiles = await Promise.all(profileFetches);
+    enrichedUsers = paginated.map((u, i) => {
+      const prof = profiles[i]?.exists ? profiles[i]!.data() : null;
+      return {
+        ...u,
+        track_selected: prof?.track_selected || prof?.trackSelected || null,
+        roll_number: prof?.roll_number || null,
+      };
+    });
+  }
+
+  return NextResponse.json({ users: enrichedUsers, total, page, limit, pages: Math.ceil(total / limit) });
 }
 
 // ─── POST /api/admin/users — create user ─────────────────────────────────────
@@ -53,46 +85,67 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "DB not available" }, { status: 500 });
 
   const body = await req.json();
-  const { full_name, email, password, role, phone, department, position, status = "active", avatar_url } =
+  const { full_name, email, password, role, phone, department, position, status = "active", avatar_url, authProvider = "email" } =
     body as {
-      full_name: string; email: string; password: string; role: UserRole;
+      full_name: string; email: string; password?: string; role: UserRole;
       phone?: string; department?: string; position?: string;
-      status?: AccountStatus; avatar_url?: string;
+      status?: AccountStatus; avatar_url?: string; authProvider?: string;
     };
 
-  if (!full_name || !email || !password || !role)
-    return NextResponse.json({ error: "full_name, email, password, and role are required." }, { status: 400 });
+  if (!full_name || !email || !role)
+    return NextResponse.json({ error: "full_name, email, and role are required." }, { status: 400 });
+
+  if (authProvider === "email" && !password)
+    return NextResponse.json({ error: "password is required for email authentication." }, { status: 400 });
 
   const allowedRoles: UserRole[] = ["intern", "mentor", "staff", "member", "user"];
   if (!allowedRoles.includes(role))
     return NextResponse.json({ error: "Invalid role." }, { status: 400 });
 
   try {
-    const fbUser = await adminAuth.createUser({ email, password, displayName: full_name });
+    let fbUid: string;
+    
+    if (authProvider === "email") {
+      const fbUser = await adminAuth.createUser({ email, password, displayName: full_name });
+      fbUid = fbUser.uid;
+    } else {
+      // For Google Provider, we might create a user without a password to reserve the email
+      // Or just create the user. Firebase allows creating users without a password.
+      const fbUser = await adminAuth.createUser({ email, displayName: full_name });
+      fbUid = fbUser.uid;
+    }
+
     const now = new Date().toISOString();
     const userDoc: PlatformUser = {
-      id: fbUser.uid, full_name: full_name.trim(), email: email.toLowerCase(),
+      id: fbUid, full_name: full_name.trim(), email: email.toLowerCase(),
       phone: phone ?? null, avatar_url: avatar_url ?? null, role, status,
       visibility: "organization", skills: [], created_at: now, updated_at: now,
     };
-    await adminDb.collection(FS.USERS).doc(fbUser.uid).set(userDoc);
+    await adminDb.collection(FS.USERS).doc(fbUid).set(userDoc);
 
     if (role === "intern") {
-      await adminDb.collection(FS.INTERN_PROFILES).doc(fbUser.uid).set({
-        user_id: fbUser.uid, department: department ?? null, position: position ?? null, created_at: now, updated_at: now,
+      await adminDb.collection(FS.INTERN_PROFILES).doc(fbUid).set({
+        user_id: fbUid, department: department ?? null, position: position ?? null, created_at: now, updated_at: now,
       });
     } else if (role === "mentor") {
-      await adminDb.collection(FS.MENTOR_PROFILES).doc(fbUser.uid).set({
-        user_id: fbUser.uid, department: department ?? null, designation: position ?? null, created_at: now, updated_at: now,
+      await adminDb.collection(FS.MENTOR_PROFILES).doc(fbUid).set({
+        user_id: fbUid, department: department ?? null, designation: position ?? null, created_at: now, updated_at: now,
       });
     } else if (role === "staff") {
-      await adminDb.collection(FS.STAFF_PROFILES).doc(fbUser.uid).set({
-        user_id: fbUser.uid, department: department ?? null, position: position ?? null, created_at: now, updated_at: now,
+      await adminDb.collection(FS.STAFF_PROFILES).doc(fbUid).set({
+        user_id: fbUid, department: department ?? null, position: position ?? null, created_at: now, updated_at: now,
       });
     }
 
-    await auditLog(session.id, "CREATE_USER", fbUser.uid, { role, email });
-    return NextResponse.json({ success: true, id: fbUser.uid }, { status: 201 });
+    // Send Welcome Email
+    if (authProvider === "email" && password) {
+      await sendWelcomeEmailWithPassword(email, full_name, password, role).catch(err => console.error("Failed to send welcome email:", err));
+    } else {
+      await sendWelcomeEmailGoogle(email, full_name, role).catch(err => console.error("Failed to send welcome email:", err));
+    }
+
+    await auditLog(session.id, "CREATE_USER", fbUid, { role, email });
+    return NextResponse.json({ success: true, id: fbUid }, { status: 201 });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Unknown error";
     console.error("Create user error:", msg);

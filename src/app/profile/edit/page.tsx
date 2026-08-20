@@ -3,19 +3,30 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { UserAvatar } from '@/components/ui/UserAvatar';
-import { Loader2, Camera, X, Plus } from 'lucide-react';
+import { Loader2, Camera, X, Plus, FileText, Upload, KeyRound, Eye, EyeOff } from 'lucide-react';
+import { toast } from 'sonner';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { PlatformUser, InternProfile, MentorProfile } from '@/lib/firestore-schema';
+import { compressImage, blobToFile } from '@/lib/compressImage';
+
+const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-400 mb-1.5">{label}</label>
+    {children}
+  </div>
+);
 
 export default function ProfileEditPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const resumeInputRef = useRef<HTMLInputElement>(null);
 
   const [data, setData] = useState<{ user: PlatformUser; internProfile?: InternProfile | null; mentorProfile?: MentorProfile | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingResume, setUploadingResume] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
@@ -23,6 +34,11 @@ export default function ProfileEditPage() {
   const [internForm, setInternForm] = useState<any>({});
   const [mentorForm, setMentorForm] = useState<any>({});
   const [skillInput, setSkillInput] = useState('');
+
+  // Password change state
+  const [pwForm, setPwForm] = useState({ newPassword: '', confirmPassword: '' });
+  const [showPw, setShowPw] = useState(false);
+  const [changingPw, setChangingPw] = useState(false);
 
   useEffect(() => {
     async function fetchProfile() {
@@ -38,6 +54,9 @@ export default function ProfileEditPage() {
           phone: json.user.phone || '',
           city: json.user.city || '',
           country: json.user.country || '',
+          region: json.user.region || '',
+          language: json.user.language || '',
+          gender: json.user.gender || '',
           skills: json.user.skills || [],
           visibility: json.user.visibility || 'organization',
           social_links: json.user.social_links || {},
@@ -45,6 +64,8 @@ export default function ProfileEditPage() {
         if (json.internProfile) {
           setInternForm({
             university: json.internProfile.university || '',
+            high_education: json.internProfile.high_education || '',
+            current_education: json.internProfile.current_education || '',
             degree: json.internProfile.degree || '',
             semester: json.internProfile.semester || '',
             cgpa: json.internProfile.cgpa || '',
@@ -52,6 +73,7 @@ export default function ProfileEditPage() {
             position: json.internProfile.position || '',
             roll_number: json.internProfile.roll_number || '',
             track_selected: json.internProfile.track_selected || '',
+            resume_url: json.internProfile.resume_url || '',
           });
         }
         if (json.mentorProfile) {
@@ -71,21 +93,57 @@ export default function ProfileEditPage() {
   }, []);
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    let file = e.target.files?.[0];
     if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size must be less than 5MB.');
+      return;
+    }
 
     setUploadingAvatar(true);
     try {
+      if (file.size > 150 * 1024) {
+        toast.info('Compressing image...');
+        const compressedBlob = await compressImage(file, { targetKB: 100 });
+        file = blobToFile(compressedBlob, file.name);
+      }
+
       const fd = new FormData();
       fd.append('avatar', file);
       const res = await fetch('/api/upload/avatar', { method: 'POST', body: fd });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Upload failed');
       setData(prev => prev ? { ...prev, user: { ...prev.user, avatar_url: json.avatar_url } } : null);
+      toast.success('Profile photo updated successfully.');
+    } catch (err: any) {
+      setError(err.message);
+      toast.error(err.message);
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingResume(true);
+    try {
+      const fd = new FormData();
+      fd.append('resume', file);
+      const res = await fetch('/api/upload/resume', { method: 'POST', body: fd });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Upload failed');
+      
+      setInternForm((prev: any) => ({ ...prev, resume_url: json.resume_url }));
+      setData(prev => prev ? { ...prev, internProfile: { ...prev.internProfile!, resume_url: json.resume_url } } : null);
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
     } catch (err: any) {
       setError(err.message);
     } finally {
-      setUploadingAvatar(false);
+      setUploadingResume(false);
     }
   };
 
@@ -126,13 +184,6 @@ export default function ProfileEditPage() {
       setSaving(false);
     }
   };
-
-  const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
-    <div>
-      <label className="block text-sm font-medium text-gray-400 mb-1.5">{label}</label>
-      {children}
-    </div>
-  );
 
   const inputClass = "w-full h-10 px-3 rounded-lg text-sm text-white bg-white/5 border border-white/10 outline-none focus:border-cyan-500/50 transition-colors";
 
@@ -196,11 +247,26 @@ export default function ProfileEditPage() {
             <Field label="Phone">
               <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className={inputClass} />
             </Field>
+            <Field label="Gender">
+              <select value={form.gender} onChange={e => setForm({ ...form, gender: e.target.value })} className={inputClass}>
+                <option value="" className="bg-gray-900">Select Gender</option>
+                <option value="Male" className="bg-gray-900">Male</option>
+                <option value="Female" className="bg-gray-900">Female</option>
+                <option value="Other" className="bg-gray-900">Other</option>
+                <option value="Prefer not to say" className="bg-gray-900">Prefer not to say</option>
+              </select>
+            </Field>
             <Field label="City">
               <input type="text" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} className={inputClass} />
             </Field>
             <Field label="Country">
               <input type="text" value={form.country} onChange={e => setForm({ ...form, country: e.target.value })} className={inputClass} />
+            </Field>
+            <Field label="Region / State">
+              <input type="text" value={form.region} onChange={e => setForm({ ...form, region: e.target.value })} className={inputClass} placeholder="e.g. Punjab, California" />
+            </Field>
+            <Field label="Primary Language">
+              <input type="text" value={form.language} onChange={e => setForm({ ...form, language: e.target.value })} className={inputClass} placeholder="e.g. English, Urdu" />
             </Field>
             <div className="sm:col-span-2">
               <Field label="Bio">
@@ -272,12 +338,58 @@ export default function ProfileEditPage() {
           <div className="p-6 rounded-xl border" style={{ background: 'rgba(17,24,39,0.5)', borderColor: 'rgba(255,255,255,0.08)' }}>
             <h2 className="text-base font-semibold text-white mb-6">Internship Details</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <Field label="University"><input type="text" value={internForm.university} onChange={e => setInternForm({ ...internForm, university: e.target.value })} className={inputClass} /></Field>
+              <Field label="College / University"><input type="text" value={internForm.university} onChange={e => setInternForm({ ...internForm, university: e.target.value })} className={inputClass} /></Field>
+              <Field label="High Education"><input type="text" value={internForm.high_education} onChange={e => setInternForm({ ...internForm, high_education: e.target.value })} className={inputClass} placeholder="e.g. A Levels, FSC" /></Field>
+              <Field label="Current Education"><input type="text" value={internForm.current_education} onChange={e => setInternForm({ ...internForm, current_education: e.target.value })} className={inputClass} placeholder="e.g. BSCS, BBA" /></Field>
               <Field label="Degree / Program"><input type="text" value={internForm.degree} onChange={e => setInternForm({ ...internForm, degree: e.target.value })} className={inputClass} /></Field>
               <Field label="Semester / Year"><input type="text" value={internForm.semester} onChange={e => setInternForm({ ...internForm, semester: e.target.value })} className={inputClass} /></Field>
               <Field label="CGPA"><input type="text" value={internForm.cgpa} onChange={e => setInternForm({ ...internForm, cgpa: e.target.value })} className={inputClass} /></Field>
               <Field label="Department"><input type="text" value={internForm.department} onChange={e => setInternForm({ ...internForm, department: e.target.value })} className={inputClass} /></Field>
               <Field label="Roll Number"><input type="text" value={internForm.roll_number} onChange={e => setInternForm({ ...internForm, roll_number: e.target.value })} className={inputClass} /></Field>
+            </div>
+
+            {/* Resume Upload (Interns Only) */}
+            <div className="mt-6 pt-6 border-t border-white/5">
+              <h3 className="text-md font-medium text-white mb-4">Resume / CV</h3>
+              
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                {internForm.resume_url ? (
+                  <a 
+                    href={internForm.resume_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border border-blue-500/20 transition-colors"
+                  >
+                    <FileText className="w-4 h-4" />
+                    View Current Resume
+                  </a>
+                ) : (
+                  <div className="text-sm text-gray-500 italic px-2 py-2">
+                    No resume uploaded yet.
+                  </div>
+                )}
+                
+                <div className="flex-1" />
+                
+                <input
+                  type="file"
+                  ref={resumeInputRef}
+                  onChange={handleResumeUpload}
+                  accept="application/pdf"
+                  className="hidden"
+                />
+                
+                <button
+                  type="button"
+                  onClick={() => resumeInputRef.current?.click()}
+                  disabled={uploadingResume}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-white/10 text-white hover:bg-white/20 transition-colors disabled:opacity-50"
+                >
+                  {uploadingResume ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  {internForm.resume_url ? 'Replace Resume (PDF)' : 'Upload Resume (PDF)'}
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 mt-3">Upload a PDF format of your resume. Maximum file size 5MB.</p>
             </div>
           </div>
         )}
@@ -294,7 +406,7 @@ export default function ProfileEditPage() {
           </div>
         )}
 
-        <div className="flex gap-4 pb-8">
+        <div className="flex gap-4 pb-4">
           <Link href="/profile" className="px-5 py-2.5 rounded-lg text-sm font-medium text-gray-300 border border-white/10 hover:bg-white/5 transition-colors">
             Cancel
           </Link>
@@ -309,6 +421,70 @@ export default function ProfileEditPage() {
           </button>
         </div>
       </form>
+
+      {/* ── Change Password ───────────────────────────────────── */}
+      <div className="mt-2 mb-8 p-6 rounded-xl border" style={{ background: 'rgba(17,24,39,0.5)', borderColor: 'rgba(255,255,255,0.08)' }}>
+        <div className="flex items-center gap-2 mb-5">
+          <KeyRound className="w-5 h-5 text-amber-400" />
+          <h2 className="text-lg font-semibold text-white">Change Password</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block text-sm text-gray-400 mb-1.5">New Password</label>
+            <div className="relative">
+              <input
+                type={showPw ? 'text' : 'password'}
+                value={pwForm.newPassword}
+                onChange={e => setPwForm({ ...pwForm, newPassword: e.target.value })}
+                placeholder="Min 8 characters"
+                className="w-full h-10 px-3 pr-10 rounded-lg text-sm text-white bg-white/5 border border-white/10 outline-none focus:border-amber-400/50 transition-colors"
+              />
+              <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300">
+                {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-400 mb-1.5">Confirm Password</label>
+            <input
+              type={showPw ? 'text' : 'password'}
+              value={pwForm.confirmPassword}
+              onChange={e => setPwForm({ ...pwForm, confirmPassword: e.target.value })}
+              placeholder="Repeat password"
+              className="w-full h-10 px-3 rounded-lg text-sm text-white bg-white/5 border border-white/10 outline-none focus:border-amber-400/50 transition-colors"
+            />
+          </div>
+        </div>
+        <button
+          type="button"
+          disabled={changingPw || !pwForm.newPassword}
+          onClick={async () => {
+            if (pwForm.newPassword.length < 8) { toast.error('Password must be at least 8 characters'); return; }
+            if (pwForm.newPassword !== pwForm.confirmPassword) { toast.error('Passwords do not match'); return; }
+            setChangingPw(true);
+            try {
+              const res = await fetch('/api/auth/change-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ newPassword: pwForm.newPassword }),
+              });
+              const d = await res.json();
+              if (!res.ok) throw new Error(d.error);
+              toast.success('Password changed successfully!');
+              setPwForm({ newPassword: '', confirmPassword: '' });
+            } catch (err: any) {
+              toast.error(err.message || 'Failed to change password');
+            } finally {
+              setChangingPw(false);
+            }
+          }}
+          className="px-6 py-2.5 rounded-lg text-sm font-semibold flex items-center gap-2 text-white disabled:opacity-50 transition-all"
+          style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)', boxShadow: '0 4px 16px rgba(245,158,11,0.2)' }}
+        >
+          {changingPw ? <Loader2 className="w-4 h-4 animate-spin" /> : <KeyRound className="w-4 h-4" />}
+          {changingPw ? 'Updating...' : 'Update Password'}
+        </button>
+      </div>
     </div>
   );
 }

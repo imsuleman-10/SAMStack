@@ -28,8 +28,8 @@ export default function AuditLogsPage() {
     async function fetchLogs() {
       try {
         const res = await fetch('/api/admin/audit-logs?limit=100');
-        const data = await res.json();
-        setLogs(data.logs || []);
+        const data = res.ok ? await res.json() : {};
+        setLogs(data?.logs || []);
       } catch (error) {
         console.error('Error fetching audit logs:', error);
       } finally {

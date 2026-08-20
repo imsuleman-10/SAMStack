@@ -54,6 +54,7 @@ const PROTECTED_ROUTES: RouteRule[] = [
   { prefix: "/api/community", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: false },
   { prefix: "/api/notifications", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: false },
   { prefix: "/api/upload", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: false },
+  { prefix: "/api/dashboard", allowedRoles: ["admin", "mentor", "intern", "staff", "member", "user"], isPage: false },
 ];
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
@@ -142,5 +143,7 @@ export const config = {
     "/api/community/:path*",
     "/api/notifications/:path*",
     "/api/upload/:path*",
+    "/api/dashboard/:path*",
+    "/api/dashboard",
   ],
 };

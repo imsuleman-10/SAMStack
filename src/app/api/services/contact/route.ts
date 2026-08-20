@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { adminDb } from "@/lib/firebase-admin";
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,14 +14,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const newMsg = await db.messages.create({
+    if (!adminDb) return NextResponse.json({ error: "DB not initialized" }, { status: 500 });
+
+    const ref = adminDb.collection("messages").doc();
+    const newMsg = {
+      id: ref.id,
       clientName,
       clientEmail,
       organization: organization || "N/A",
       serviceType,
       budget,
       message,
-    });
+      timestamp: new Date().toISOString(),
+      status: 'UNREAD',
+    };
+    await ref.set(newMsg);
 
     console.log(`[FIREBASE] CLIENT_INQUIRY: ${newMsg.id} — ${newMsg.clientName} (${newMsg.serviceType})`);
 

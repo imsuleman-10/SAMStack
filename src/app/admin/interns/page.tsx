@@ -5,7 +5,10 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { DataTable } from '@/components/ui/DataTable';
 import { UserAvatar } from '@/components/ui/UserAvatar';
 import { StatusBadge } from '@/components/ui/StatusBadge';
+import { Award, UserPlus, Mail, Loader2 } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import type { RichIntern } from '@/lib/firestore-schema';
 
 export default function AdminInternsPage() {
@@ -15,6 +18,7 @@ export default function AdminInternsPage() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [sendingMailId, setSendingMailId] = useState<string | null>(null);
 
   const fetchInterns = async (p = 1, s = '') => {
     setLoading(true);
@@ -45,11 +49,44 @@ export default function AdminInternsPage() {
     return () => clearTimeout(timeoutId);
   }, [search]);
 
+  const handleSendCredentials = async (e: React.MouseEvent, internId: string) => {
+    e.stopPropagation();
+    setSendingMailId(internId);
+    try {
+      const res = await fetch(`/api/admin/users/${internId}/send-credentials`, { method: 'POST' });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'Failed to send');
+      toast.success(`✅ Credentials sent to ${d.email}`);
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to send credentials');
+    } finally {
+      setSendingMailId(null);
+    }
+  };
+
   return (
     <div>
       <PageHeader
         title="Interns Management"
         description="View and manage all intern profiles."
+        action={
+          <div className="flex items-center gap-3">
+            <Link
+              href="/admin/interns/create"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-cyan-600 hover:bg-cyan-500 transition-colors"
+            >
+              <UserPlus className="w-4 h-4" />
+              Add Intern
+            </Link>
+            <Link
+              href="/admin/interns/certify"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors"
+            >
+              <Award className="w-4 h-4" />
+              Instant Certify
+            </Link>
+          </div>
+        }
       />
 
       <DataTable
@@ -78,14 +115,51 @@ export default function AdminInternsPage() {
             ),
           },
           {
+            key: 'track',
+            label: 'Track',
+            render: (i: any) => (
+              <span className="text-sm text-gray-300">
+                {i.track_selected || i.internProfile?.track_selected || '—'}
+              </span>
+            ),
+          },
+          {
+            key: 'roll',
+            label: 'Roll No.',
+            render: (i: any) => (
+              <span className="text-xs font-mono text-gray-400">
+                {i.roll_number || i.internProfile?.roll_number || '—'}
+              </span>
+            ),
+          },
+          {
             key: 'status',
-            label: 'Account Status',
-            render: (i) => <StatusBadge status={i.status} />,
+            label: 'Status',
+            render: (i: any) => <StatusBadge status={i.status} />,
           },
           {
             key: 'joined',
             label: 'Joined',
-            render: (i) => <span className="text-gray-400">{new Date(i.created_at).toLocaleDateString()}</span>,
+            render: (i: any) => <span className="text-gray-400">{new Date(i.created_at).toLocaleDateString()}</span>,
+          },
+          {
+            key: 'actions',
+            label: 'Actions',
+            render: (i: any) => (
+              <div className="flex items-center justify-end gap-2">
+                <button
+                  title="Send Login Credentials via Email"
+                  onClick={(e) => handleSendCredentials(e, i.id)}
+                  disabled={sendingMailId === i.id}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-cyan-400 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 transition-colors disabled:opacity-50"
+                >
+                  {sendingMailId === i.id
+                    ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    : <Mail className="w-3.5 h-3.5" />}
+                  {sendingMailId === i.id ? 'Sending...' : 'Send Mail'}
+                </button>
+              </div>
+            ),
           },
         ]}
       />

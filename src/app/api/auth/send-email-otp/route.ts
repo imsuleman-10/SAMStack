@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { firestore } from "@/lib/firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore/lite";
+import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = crypto.randomInt(100000, 1000000).toString();
     const now = Date.now();
     const expiresAt = now + 5 * 60 * 1000; // 5 minutes
 

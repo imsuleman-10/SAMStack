@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { adminDb } from "@/lib/firebase-admin";
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,13 +11,26 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Registered email address and Roll Number are required." }, { status: 400 });
     }
 
+    // Commit to database using adminDb to avoid permission issues
+    if (!adminDb) {
+      return NextResponse.json({ error: "Firebase Admin not initialized." }, { status: 500 });
+    }
+
     // Verify candidate in database
-    const intern = await db.interns.getByEmailAndRoll(email, rollNumber);
-    if (!intern) {
+    const internQuery = await adminDb.collection("interns")
+      .where("email", "==", email.toLowerCase())
+      .where("rollNumber", "==", rollNumber)
+      .limit(1)
+      .get();
+      
+    if (internQuery.empty) {
       return NextResponse.json({ 
         error: "Applicant credential verification failed. No registered record matched that email & Roll Number combination." 
       }, { status: 404 });
     }
+    
+    const internSnap = internQuery.docs[0];
+    const intern = internSnap.data();
 
     // Enforce submission state lock (prevent duplicate submissions)
     if (intern.status === "APPROVED") {
@@ -56,11 +69,10 @@ export async function POST(request: NextRequest) {
     if (liveUrl && liveUrl.trim()) submissionData.liveDeploymentUrl = liveUrl.trim();
     if (figmaUrl && figmaUrl.trim()) submissionData.figmaProjectUrl = figmaUrl.trim();
 
-    // Commit to database
-    const committed = await db.interns.submitWork(intern.rollNumber, submissionData);
-    if (!committed) {
-      return NextResponse.json({ error: "Database commit failed while submitting workspace. Please retry." }, { status: 500 });
-    }
+    await internSnap.ref.update({
+      status: 'SUBMITTED',
+      submissionData: submissionData,
+    });
 
     console.log(`[FIREBASE] WORK_SUBMITTED: ${intern.rollNumber} — ${intern.fullName} (${intern.trackSelected})`);
 

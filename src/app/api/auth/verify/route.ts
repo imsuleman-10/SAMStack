@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
-      if (resolvedPhone) insertPayload.phone = resolvedPhone;
+      if (resolvedPhone) insertPayload.phone_number = resolvedPhone;
       if (resolvedEmail) insertPayload.email = resolvedEmail;
 
       await userDocRef.set(insertPayload);
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
 
       // Update missing fields — NEVER overwrite existing role
       const updates: Record<string, unknown> = {};
-      if (!user.phone && resolvedPhone) updates.phone = resolvedPhone;
+      if (!user.phone_number && resolvedPhone) updates.phone_number = resolvedPhone;
       if (!user.email && resolvedEmail) updates.email = resolvedEmail;
       if (!user.full_name && fullName?.trim()) updates.full_name = fullName.trim();
       if (!user.status) updates.status = "active";

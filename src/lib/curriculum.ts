@@ -15,260 +15,260 @@ export interface TrackInfo {
 export const tracks: Record<string, TrackInfo> = {
   PYTHON: {
     id: 'PYTHON',
-    title: 'Python Development Specialization',
-    desc: 'Focuses on asynchronous distributed systems, multi-threaded pipelines, automated crawlers, data normalizations, and high-performance services.',
+    title: 'Python Development Basics',
+    desc: 'Focuses on core programming concepts, data structures, and basic algorithms suitable for beginners.',
     tasks: [
       {
         id: 'PY-01',
-        title: 'Asynchronous Distributed Scraping Engine',
-        scope: 'Build an elegant, high-throughput scraper using asyncio and aiohttp.',
-        criteria: 'Implement sliding-window rate limiters, dynamic deep DOM tree queries, regex cleaners, and normalized JSON schemas. Must gracefully catch 5xx server issues and prevent IP bans.'
+        title: 'Variables & Data Types',
+        scope: 'Create a simple script to store and print user information.',
+        criteria: 'Use strings, integers, and booleans. Print a formatted greeting message.'
       },
       {
         id: 'PY-02',
-        title: 'High-Throughput REST API Engine via FastAPI',
-        scope: 'Develop a highly scalable FastAPI REST backend.',
-        criteria: 'Implement relational localized SQLite tables, custom Pydantic schemas, and structured database migrations. Enforce speed optimizations under 45ms per response.'
+        title: 'Basic Calculator',
+        scope: 'Write a Python script that takes two numbers and an operator.',
+        criteria: 'Implement functions for add, subtract, multiply, and divide. Handle division by zero.'
       },
       {
         id: 'PY-03',
-        title: 'Multi-Threaded Log Analysis Engine',
-        scope: 'Construct a command-line interface map-reduce processor.',
-        criteria: 'Execute safe heap multi-threading to scan multi-gigabyte log logs. Perform high-performance regex matching, calculate exception distributions, and report thread efficiency metrics.'
+        title: 'Loops and Lists',
+        scope: 'Create a simple To-Do list using a Python List.',
+        criteria: 'Use a while loop to let the user add, remove, and view items in the list.'
       },
       {
         id: 'PY-04',
-        title: 'Data Engineering Pipeline via Pandas',
-        scope: 'Map out automated ETL cleansers handling raw unformatted CSV sheets.',
-        criteria: 'Perform vector transformations, execute outlier profiling, clean null matrices, group descriptive analytics, and export high-fidelity binary outputs.'
+        title: 'File I/O Basics',
+        scope: 'Read and write text to a file.',
+        criteria: 'Ask the user for input, save it to a .txt file, and then read the file back to the console.'
       },
       {
         id: 'PY-05',
-        title: 'Asynchronous Task Worker Queue',
-        scope: 'Build a raw thread-safe queue engine.',
-        criteria: 'Implement priority handling, persistent disk-based fail safes, automated task retries on failure, and dynamic concurrency worker caps.'
+        title: 'Object Oriented Programming Intro',
+        scope: 'Create a simple "Student" class.',
+        criteria: 'Class should have attributes like name, roll_number, and a method to display details.'
       }
     ]
   },
   UI_UX: {
     id: 'UI_UX',
-    title: 'Premium UI/UX Digital Product Design',
-    desc: 'Specializes in high-fidelity luxury digital designs, variable-driven design grids, motion curves, micro-states, and high-conversion landing systems.',
+    title: 'Basic UI/UX Design',
+    desc: 'Introduction to design tools, wireframing, and basic prototyping.',
     tasks: [
       {
         id: 'UI-01',
-        title: 'Dark Luxury SaaS Control Center Panel',
-        scope: 'Create a high-contrast obsidian digital dashboard tracking cloud computing streams.',
-        criteria: 'Use #0b0f19 base Obsidian canvas, apply modern glassmorphism (1px border at 8% opacity), map precise 8px layout grids, cyan focal coordinates, and design responsive mobile layouts.'
+        title: 'Figma Setup & Shapes',
+        scope: 'Create an account and draw basic geometric shapes.',
+        criteria: 'Use rectangles, circles, and lines. Apply different colors and borders.'
       },
       {
         id: 'UI-02',
-        title: 'Frictionless E-Commerce Checkout Pipeline',
-        scope: 'Map candidate checkout experiences.',
-        criteria: 'Present fully-wired Figma interactive prototype sheets detailing complex user payment states, inline validation errors, form prevention locks, and premium easing transitions.'
+        title: 'Wireframing a Login Page',
+        scope: 'Design a low-fidelity wireframe for a mobile login screen.',
+        criteria: 'Include placeholders for email, password, and a login button.'
       },
       {
         id: 'UI-03',
-        title: 'Atomic Enterprise Design System',
-        scope: 'Construct a robust Figma component stylesheet catalog.',
-        criteria: 'Detail typographic variable hierarchies, strict color ranges, component variant tokens, input state matrices, and versatile page layout grids.'
+        title: 'Color Palette & Typography',
+        scope: 'Select a primary color, secondary color, and a font pair.',
+        criteria: 'Create a small style guide frame showing heading sizes and color swatches.'
       },
       {
         id: 'UI-04',
-        title: 'Conversion-Optimized SaaS Landing Design',
-        scope: 'Formulate a high-impact SaaS marketing index page.',
-        criteria: 'Integrate custom testimonial displays, structured product pricing blocks, fluid neon call-to-actions, and clear structural hierarchy satisfying AAA contrast requirements.'
+        title: 'High-Fidelity App Screen',
+        scope: 'Convert the login wireframe into a colored, polished screen.',
+        criteria: 'Use real icons, proper alignment, and consistent padding.'
       },
       {
         id: 'UI-05',
-        title: 'Complex Interactive Component Specs',
-        scope: 'Detail advanced motion interactions inside design frames.',
-        criteria: 'Design custom side drawers, dynamic graph trackers, animated drawer selections, and compile explicit cubic-bezier speed definitions.'
+        title: 'Basic Prototyping',
+        scope: 'Link two screens together.',
+        criteria: 'Create a "Home" screen and link the login button to navigate to it.'
       }
     ]
   },
   CPP: {
     id: 'CPP',
-    title: 'C++ Advanced Systems Engineering',
-    desc: 'Validates raw dynamic heap management, persistent binary database handlers, pathfinding mathematical vectors, and parallel thread safe algorithms.',
+    title: 'C++ Programming Basics',
+    desc: 'Introduction to syntax, control structures, and basic memory management.',
     tasks: [
       {
         id: 'CP-01',
-        title: 'Custom Heap-Allocated Memory Vector Class',
-        scope: 'Build a dynamic array template structure from scratch.',
-        criteria: 'Manage dynamic heap pointers, design exact deep-copy and move operators, override array scaling parameters, and satisfy Valgrind audits with 0 memory leaks.'
+        title: 'Hello World & Variables',
+        scope: 'Write a program to print a greeting and use basic data types.',
+        criteria: 'Use int, float, and string. Output variables using cout.'
       },
       {
         id: 'CP-02',
-        title: 'Object-Oriented Database Engine',
-        scope: 'Write a CLI records management database.',
-        criteria: 'Process persistent binary disk files, read index nodes using pointer calculations, implement robust string query search, and catch bad inputs cleanly.'
+        title: 'Control Structures',
+        scope: 'Build a number guessing game.',
+        criteria: 'Use if/else statements and a while loop to let the user guess a pre-defined number.'
       },
       {
         id: 'CP-03',
-        title: 'Algorithmic Pathfinding Core Engine',
-        scope: 'Construct highly optimized graph analysis engines (Dijkstra or A*).',
-        criteria: 'Scan spatial grid parameters, optimize memory layout to avoid fragmentation, and export coordinates list to external trace formats.'
+        title: 'Functions & Arrays',
+        scope: 'Create a program to find the maximum number in an array.',
+        criteria: 'Pass an array to a function and return the highest integer.'
       },
       {
         id: 'CP-04',
-        title: 'Parallel Multi-Threaded Matrix Engine',
-        scope: 'Code accelerated matrix multiplier engines using native concurrency (std::thread).',
-        criteria: 'Partition calculations dynamically, establish safe thread locks to prevent collisions, and output benchmark acceleration metrics.'
+        title: 'Pointers Basics',
+        scope: 'Demonstrate passing by reference using pointers.',
+        criteria: 'Write a swap() function that exchanges the values of two variables using pointers.'
       },
       {
         id: 'CP-05',
-        title: 'Cryptographic Bit-Manipulation File Tool',
-        scope: 'Create a localized executable encoding binary structures.',
-        criteria: 'Perform custom XOR block cipher operations, employ high-performance bit masks, buffer large streams cleanly, and report metrics.'
+        title: 'Basic Classes (OOP)',
+        scope: 'Define a "Rectangle" class.',
+        criteria: 'Include width and height attributes, and a method to calculate the area.'
       }
     ]
   },
   WEB_DEV: {
     id: 'WEB_DEV',
-    title: 'Core Web Development (HTML5, CSS3, Vanilla JS)',
-    desc: 'Verifies extreme semantic accessibility, vanilla JavaScript DOM listeners, reactive localStorage state persistence, and native layout control.',
+    title: 'Web Development Basics (HTML/CSS)',
+    desc: 'Introduction to building static web pages with HTML and CSS.',
     tasks: [
       {
         id: 'WD-01',
-        title: 'Semantic Accessible Agency Webpage',
-        scope: 'Develop a responsive agency index webpage from scratch.',
-        criteria: 'Satisfy absolute W3C validation, enforce structural grid styles, design fluid typography, and score >98% on accessibility audit matrices.'
+        title: 'Basic HTML Structure',
+        scope: 'Create a simple webpage with headings, paragraphs, and lists.',
+        criteria: 'Include a title, an h1 tag, a p tag, and an unordered list.'
       },
       {
         id: 'WD-02',
-        title: 'Vanilla JS Kanban Task Workspace',
-        scope: 'Create an interactive task boards planner application.',
-        criteria: 'Use native JavaScript Event Listeners, manipulate DOM nodes dynamically, store task progress lists in localStorage, and manage element drop drag behaviors cleanly.'
+        title: 'Adding Media and Links',
+        scope: 'Enhance the webpage with images and hyper-links.',
+        criteria: 'Embed an image using the <img> tag and link to another website.'
       },
       {
         id: 'WD-03',
-        title: 'Interactive Data/Financial Simulator',
-        scope: 'Construct dynamic financial interest planners.',
-        criteria: 'Capture input fields securely, calculate custom logarithmic equations, display numerical metrics inside stylized HTML bars, and reject empty/bad strings.'
+        title: 'CSS Styling Basics',
+        scope: 'Style the webpage using an external CSS file.',
+        criteria: 'Change the background color, font family, and text colors.'
       },
       {
         id: 'WD-04',
-        title: 'Pure Layout Control System',
-        scope: 'Build complex responsive application frames without using external CSS toolkits.',
-        criteria: 'Employ modular CSS Grid and Flexbox rules, animate responsive drawers natively, and apply smooth transitions.'
+        title: 'CSS Flexbox Layout',
+        scope: 'Create a simple navigation bar using Flexbox.',
+        criteria: 'Use display: flex to align navigation links horizontally.'
       },
       {
         id: 'WD-05',
-        title: 'Asynchronous API Data Display',
-        scope: 'Design a dynamic search engine retrieving remote server details.',
-        criteria: 'Query endpoint arrays via fetch(), incorporate offline state catch, perform array searching/sorting, and dynamically paint changes to the page.'
+        title: 'Basic JavaScript Interaction',
+        scope: 'Add a button that changes the text on the page when clicked.',
+        criteria: 'Use document.getElementById() and an onClick event listener.'
       }
     ]
   },
   REACT: {
     id: 'REACT',
-    title: 'React.js Component Engineering',
-    desc: 'Analyzes React state coordination, custom hook caches, responsive layout virtualizers, and rich interactive components.',
+    title: 'React.js Basics',
+    desc: 'Introduction to components, props, and state in React.',
     tasks: [
       {
         id: 'RE-01',
-        title: 'Global State Metric Control Board',
-        scope: 'Build a multi-pane cloud monitoring layout.',
-        criteria: 'Manage nested states via React Context or Redux Toolkit, coordinate batch data operations, map structured matrices, and prevent unwanted re-renders.'
+        title: 'Hello React Component',
+        scope: 'Create a functional component that renders a greeting.',
+        criteria: 'Export the component and render it in the main App file.'
       },
       {
         id: 'RE-02',
-        title: 'Infinite Grid Visualizer Portal',
-        scope: 'Implement a highly performant infinite scroll catalog.',
-        criteria: 'Utilize raw IntersectionObserver API, serialize scroll coordinates in memory, implement virtual grid elements for large array loads, and design smooth skeleton loading panels.'
+        title: 'Using Props',
+        scope: 'Create a reusable "UserCard" component.',
+        criteria: 'Pass name and age as props and display them inside the card.'
       },
       {
         id: 'RE-03',
-        title: 'Custom Structural React Hook Suite',
-        scope: 'Compile a reusable package of performance custom React hooks.',
-        criteria: 'Code a complex form validator hook, and build custom async request caching hooks with built-in query debounce parameters.'
+        title: 'State with useState',
+        scope: 'Build a simple counter application.',
+        criteria: 'Include increment and decrement buttons that update a number on the screen.'
       },
       {
         id: 'RE-04',
-        title: 'Interactive Drag Kanban Grid Component',
-        scope: 'Design interactive component workspaces.',
-        criteria: 'Handle state arrays, re-index items dynamically, support custom cursor contextual menus, and manage multi-list card transfers smoothly.'
+        title: 'Handling Forms',
+        scope: 'Create a simple contact form.',
+        criteria: 'Capture input values using state and display an alert on submit.'
       },
       {
         id: 'RE-05',
-        title: 'Live Client Markdown Processor',
-        scope: 'Construct a side-by-side markdown visual editor.',
-        criteria: 'Parse strings into structured HTML elements, integrate strict sanitization filters against script injection, and synchronize scroll states across view panes.'
+        title: 'Rendering Lists',
+        scope: 'Display a list of items from an array.',
+        criteria: 'Use the .map() function to render an array of strings into an unordered list.'
       }
     ]
   },
   NEXT_JS: {
     id: 'NEXT_JS',
-    title: 'Next.js Production Architecture',
-    desc: 'Targets hybrid SSR/SSG compilers, Serverless API routing, Incremental Static Regeneration hooks, and edge optimization rules.',
+    title: 'Next.js Fundamentals',
+    desc: 'Introduction to routing, pages, and basic Next.js features.',
     tasks: [
       {
         id: 'NX-01',
-        title: 'Static Publishing Engine with ISR Hooks',
-        scope: 'Develop dynamic blog content architectures.',
-        criteria: 'Parse markdown files, execute compile paths using generateStaticParams(), and configure hourly Incremental Static Regeneration revalidation.'
+        title: 'App Router Basics',
+        scope: 'Create a Home page and an About page.',
+        criteria: 'Use the new App Router structure (page.tsx) and navigate between them.'
       },
       {
         id: 'NX-02',
-        title: 'Server-Side Crypto Metric Dashboard',
-        scope: 'Build server-rendered dashboard templates.',
-        criteria: 'Fetch dynamic data inside React Server Components, apply React Suspense streaming layouts, and capture database latency errors.'
+        title: 'Next/Link Navigation',
+        scope: 'Create a navigation bar.',
+        criteria: 'Use the <Link> component to navigate without full page reloads.'
       },
       {
         id: 'NX-03',
-        title: 'SEO-Optimized SaaS Conversion Platform',
-        scope: 'Develop high-performance product indices pages.',
-        criteria: 'Configure dynamic metadata generation metadata, apply next/image optimizations, structure semantic outline hierarchies, and maximize Core Web Vitals.'
+        title: 'Next/Image Component',
+        scope: 'Display an optimized image.',
+        criteria: 'Import a local image and render it using the <Image> component with proper width and height.'
       },
       {
         id: 'NX-04',
-        title: 'Multi-Language Integration Framework',
-        scope: 'Build automated routing translators.',
-        criteria: 'Configure Next.js Middleware parsing languages path, fetch dictionary translation files, and persist selections across views.'
+        title: 'Basic Server Component',
+        scope: 'Create a component that runs only on the server.',
+        criteria: 'Do not use "use client". Render some static text.'
       },
       {
         id: 'NX-05',
-        title: 'Optimized Media Management Pipeline',
-        scope: 'Implement blurred placeholder media loaders.',
-        criteria: 'Fetch images, generate dynamic base64 blur representations on the server, scale dynamic dimensions to prevent Cumulative Layout Shifts (CLS).'
+        title: 'Client Component Interactivity',
+        scope: 'Add a client-side interactive button.',
+        criteria: 'Use "use client" and add a button that toggles a boolean state.'
       }
     ]
   },
   MERN: {
     id: 'MERN',
-    title: 'Full Stack MERN Enterprise Ecosystems',
-    desc: 'The ultimate specialization. Focuses on JWT httpOnly cookie authentications, WebSockets synchronization engines, dynamic server filtering, and Mongo aggregations.',
+    title: 'MERN Stack Introduction',
+    desc: 'Basic overview of connecting a React frontend to an Express backend.',
     tasks: [
       {
         id: 'ME-01',
-        title: 'Cryptographically Secure Authentication System',
-        scope: 'Create secure stateless and stateful authentication APIs.',
-        criteria: 'Use bcrypt for password hashing. Configure volatile memory Access JWTs combined with secure, httpOnly, SameSite, long-lived Refresh JWT cookies. Enforce active database checks to allow token blacklisting.'
+        title: 'Basic Express Server',
+        scope: 'Setup a Node.js project with Express.',
+        criteria: 'Create a GET route at "/" that returns "Hello World".'
       },
       {
         id: 'ME-02',
-        title: 'Real-Time Project Board via WebSockets',
-        scope: 'Develop collaborative workspace maps using Socket.io and React.',
-        criteria: 'Stream real-time card transitions, resolve multi-user synchronization lock conflicts, and commit coordinates to MongoDB.'
+        title: 'JSON API Endpoint',
+        scope: 'Create an endpoint returning an array of objects.',
+        criteria: 'Return dummy user data as JSON from a /users route.'
       },
       {
         id: 'ME-03',
-        title: 'Product Engine with Advanced Filtering',
-        scope: 'Write intensive inventory database query interfaces.',
-        criteria: 'Parse REST options, run regex matching, configure numerical pagination, and implement debounced inputs in the React front-end.'
+        title: 'Connecting to MongoDB',
+        scope: 'Use Mongoose to connect to a local or cloud database.',
+        criteria: 'Successfully log "Database connected" on server startup.'
       },
       {
         id: 'ME-04',
-        title: 'Cloud-Synced Collaborative Text Engine',
-        scope: 'Construct unified synchronized text editing panes.',
-        criteria: 'Record string changes, debounce upload requests to Express APIs, filter script injections, and resolve data editing race conditions.'
+        title: 'Creating a Mongoose Model',
+        scope: 'Define a simple "Note" schema.',
+        criteria: 'Include fields for title and content (both strings).'
       },
       {
         id: 'ME-05',
-        title: 'Analytical MongoDB Aggregation Pipeline',
-        scope: 'Design massive data aggregation queries.',
-        criteria: 'Compile complex pipeline stages ($match, $group, $sort, $project) to transform logs into metrics. Paint results inside custom React SVG charts.'
+        title: 'React Fetch',
+        scope: 'Fetch the JSON API data from a React frontend.',
+        criteria: 'Use the fetch API or Axios in a useEffect hook and display the data.'
       }
     ]
   }

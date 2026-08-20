@@ -30,6 +30,7 @@ export default function InternMentorPage() {
 
   if (loading) return <div className="p-12 text-center text-gray-500"><Loader2 className="w-8 h-8 animate-spin mx-auto" /></div>;
   if (error) return <div className="p-12 text-center text-red-500">{error}</div>;
+  if (!data) return null;
 
   const { mentor, assignment } = data;
 

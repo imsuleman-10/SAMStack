@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { adminDb } from "@/lib/firebase-admin";
 
 export async function GET(request: NextRequest) {
   try {
@@ -11,10 +11,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Missing email address or Roll Number parameters." }, { status: 400 });
     }
 
-    const intern = await db.interns.getByEmailAndRoll(email, rollNumber);
-    if (!intern) {
+    if (!adminDb) return NextResponse.json({ error: "DB not initialized." }, { status: 500 });
+
+    const internQuery = await adminDb.collection("interns")
+      .where("email", "==", email.toLowerCase())
+      .where("rollNumber", "==", rollNumber)
+      .limit(1)
+      .get();
+      
+    if (internQuery.empty) {
       return NextResponse.json({ error: "Applicant credential verification failed. No matching profile found." }, { status: 404 });
     }
+    
+    const intern = internQuery.docs[0].data();
 
     return NextResponse.json({
       success: true,

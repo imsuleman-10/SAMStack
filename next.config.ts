@@ -14,9 +14,6 @@ const nextConfig: NextConfig = {
     ],
   },
   allowedDevOrigins: ['192.168.100.10'],
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   async headers() {
     return [
       {

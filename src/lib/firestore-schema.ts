@@ -15,6 +15,7 @@ export const FS = {
   FOLLOWS: "follows",
   NOTIFICATIONS: "notifications",
   AUDIT_LOGS: "audit_logs",
+  COMPANY_PROJECTS: "company_projects",
 } as const;
 
 export type CollectionName = (typeof FS)[keyof typeof FS];
@@ -39,6 +40,8 @@ export interface PlatformUser {
   address?: string | null;
   city?: string | null;
   country?: string | null;
+  region?: string | null;
+  language?: string | null;
   bio?: string | null;
   skills?: string[];
   social_links?: {
@@ -62,6 +65,8 @@ export interface PlatformUser {
 export interface InternProfile {
   user_id: string;
   university?: string | null;
+  high_education?: string | null;
+  current_education?: string | null;
   degree?: string | null;
   semester?: string | null;
   cgpa?: string | null;
@@ -73,6 +78,10 @@ export interface InternProfile {
   status?: "active" | "completed" | "terminated" | null;
   roll_number?: string | null;
   track_selected?: string | null;
+  resume_url?: string | null;
+  certificate_status?: "pending" | "approved" | "rejected" | null;
+  certificate_id?: string | null;
+  offer_letter_sent?: boolean | null;
   created_at: string;
   updated_at: string;
 }
@@ -94,6 +103,19 @@ export interface StaffProfile {
   position?: string | null;
   created_at: string;
   updated_at: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Company Projects (Support & Marketing)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface CompanyProject {
+  id: string;
+  user_id: string; // The staff who uploaded it
+  file_name: string;
+  file_url: string;
+  file_size: number;
+  created_at: string;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -167,7 +189,10 @@ export type NotificationType =
   | "account_suspended"
   | "post_liked"
   | "post_commented"
-  | "role_changed";
+  | "role_changed"
+  | "certificate_requested"
+  | "certificate_approved"
+  | "certificate_rejected";
 
 export interface Notification {
   id: string;
@@ -195,7 +220,9 @@ export type AuditAction =
   | "ADMIN_EDIT_PROFILE"
   | "RESET_PASSWORD"
   | "CREATE_POST"
-  | "DELETE_POST";
+  | "DELETE_POST"
+  | "GENERATE_CERTIFICATE"
+  | "GENERATE_OFFER_LETTER";
 
 export interface AuditLog {
   id: string;

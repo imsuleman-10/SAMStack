@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { adminDb } from "@/lib/firebase-admin";
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,10 +14,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid status value specified." }, { status: 400 });
     }
 
-    const success = await db.messages.updateStatus(messageId, status);
-    if (!success) {
+    if (!adminDb) return NextResponse.json({ error: "DB not initialized" }, { status: 500 });
+    const ref = adminDb.collection("messages").doc(messageId);
+    const snap = await ref.get();
+    if (!snap.exists) {
       return NextResponse.json({ error: "Client message not found." }, { status: 404 });
     }
+    await ref.update({ status });
 
     return NextResponse.json({ success: true, message: "Client message status updated successfully." }, { status: 200 });
   } catch (error) {

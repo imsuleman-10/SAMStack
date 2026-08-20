@@ -18,10 +18,10 @@ export async function GET() {
     ]);
 
     // Map Firestore profiles to common shape
-    const mappedFirestoreInterns = firestoreProfiles.map((p) => ({
+    const mappedFirestoreInterns = firestoreProfiles.map((p: any) => ({
       id: p.user_id,
       fullName: p.user?.full_name || "Unknown",
-      email: p.user?.email || p.email || p.user?.phone_number || "",
+      email: p.user?.email || p.email || p.gmail || p.user?.phone_number || "",
       university: p.university || "Unknown",
       trackSelected: p.track_selected || "UNKNOWN",
       rollNumber: p.roll_number || "",

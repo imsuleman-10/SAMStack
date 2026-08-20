@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase-admin";
+import crypto from "crypto";
 import { createAdminDb } from "@/lib/db";
 import { tracks } from "@/lib/curriculum";
 import { generateOfferLetterPDF } from "@/lib/pdfTemplates";
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest) {
     };
     const code = trackCodes[uppercaseTrack] || "IN";
     const ts = Date.now();
-    const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const rand = crypto.randomBytes(2).toString('hex').toUpperCase();
     const rollNumber = `SAM-${code}-${ts}-${rand}`;
 
     const adb = createAdminDb(adminDb!);

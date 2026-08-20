@@ -79,3 +79,57 @@ export const sendCertificateEmail = async (
 
   await transporter.sendMail(mailOptions);
 };
+
+export const sendWelcomeEmailWithPassword = async (
+  email: string,
+  fullName: string,
+  password: string,
+  role: string
+) => {
+  const mailOptions = {
+    from: `"SAMStack Tech" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: `Welcome to SAMStack Tech - Your Credentials`,
+    html: `
+      <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+        <h2 style="color: #06b6d4;">Welcome, ${fullName}!</h2>
+        <p>An administrator has created a <strong>${role}</strong> account for you on the SAMStack Tech platform.</p>
+        <p>You can log in using the following credentials:</p>
+        <div style="background: #f3f4f6; padding: 12px; border-radius: 6px; margin: 16px 0;">
+          <p style="margin: 0;"><strong>Email:</strong> ${email}</p>
+          <p style="margin: 0; margin-top: 8px;"><strong>Temporary Password:</strong> ${password}</p>
+        </div>
+        <p>Please log in and update your profile.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>SAMStack Tech Team</strong></p>
+      </div>
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
+export const sendWelcomeEmailGoogle = async (
+  email: string,
+  fullName: string,
+  role: string
+) => {
+  const mailOptions = {
+    from: `"SAMStack Tech" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: `Welcome to SAMStack Tech - Action Required`,
+    html: `
+      <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+        <h2 style="color: #06b6d4;">Welcome, ${fullName}!</h2>
+        <p>An administrator has created a <strong>${role}</strong> account for you on the SAMStack Tech platform.</p>
+        <p>Your account is configured to use Google Sign-In for enhanced security. To access your account, please go to the login page and click <strong>"Continue with Google"</strong> using this email address.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>SAMStack Tech Team</strong></p>
+      </div>
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+};

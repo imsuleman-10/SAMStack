@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore/lite";
+import { getFirestore as getRealtimeFirestore } from "firebase/firestore";
 
 // Suppress known Firebase GRPC background connection errors in Next.js Server Components
 const originalConsoleError = console.error;
@@ -27,19 +28,23 @@ const firebaseConfig = {
 import { getAuth } from "firebase/auth";
 
 let app;
-let firestoreDb;
-let authObj;
+let firestoreDb: any;
+let realtimeDbObj: any;
+let authObj: any;
 
 // Prevent duplicate initialization in Next.js hot-reload environments
 if (getApps().length === 0) {
   app = initializeApp(firebaseConfig);
   firestoreDb = getFirestore(app);
+  realtimeDbObj = getRealtimeFirestore(app);
   authObj = getAuth(app);
 } else {
   app = getApps()[0];
   firestoreDb = getFirestore(app);
+  realtimeDbObj = getRealtimeFirestore(app);
   authObj = getAuth(app);
 }
 
 export const firestore = firestoreDb;
+export const realtimeDb = realtimeDbObj;
 export const auth = authObj;

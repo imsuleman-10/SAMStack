@@ -42,6 +42,7 @@ export async function GET(request: NextRequest) {
       internRollNumber = profile?.roll_number || `SAM-${userId.substring(0, 6).toUpperCase()}`;
       internTrackTitle = profile?.track_selected ? tracks[profile.track_selected]?.title || profile.track_selected : "General Specialization";
       internStatus = profile?.application_status || "PENDING";
+      (request as any).modernProfile = profile;
     } else if (rollNumber) {
       // 2. Legacy db.interns approach
       const intern = await db.interns.get(rollNumber);
@@ -96,7 +97,8 @@ export async function GET(request: NextRequest) {
         }
         certNumber = cert.certificateNumber;
       } else {
-        certNumber = `CERT-${userId!.substring(0, 8).toUpperCase()}`;
+        const modernProfile = (request as any).modernProfile;
+        certNumber = modernProfile?.certificate_id || modernProfile?.roll_number || `CERT-${userId!.substring(0, 8).toUpperCase()}`;
       }
 
       const pdfBuffer = await generateCertificatePDF({

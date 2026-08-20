@@ -7,6 +7,7 @@ import { generateOfferLetterPDF } from "@/lib/pdfTemplates";
 import { sendOfferLetterEmail } from "@/lib/mailer";
 import { adminAuth, adminDb } from "@/lib/firebase-admin";
 import { createAdminDb } from "@/lib/db";
+import crypto from "crypto";
 
 const getSecretKey = () => {
   const secret = process.env.JWT_SECRET;
@@ -37,7 +38,8 @@ export async function GET(request: NextRequest) {
 
   const { searchParams } = new URL(request.url);
   const type = searchParams.get("type");
-  const adb = createAdminDb(adminDb!);
+  if (!adminDb) return NextResponse.json({ error: "Database not initialized" }, { status: 503 });
+  const adb = createAdminDb(adminDb);
 
   try {
     // ── profile ────────────────────────────────────────────────────
@@ -180,7 +182,8 @@ export async function POST(request: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { action, payload } = await request.json();
-  const adb = createAdminDb(adminDb!);
+  if (!adminDb) return NextResponse.json({ error: "Database not initialized" }, { status: 503 });
+  const adb = createAdminDb(adminDb);
 
   try {
     // ── complete_task ──────────────────────────────────────────────
@@ -208,7 +211,7 @@ export async function POST(request: NextRequest) {
       };
       const code = trackCodes[uppercaseTrack] || "IN";
       const ts = Date.now();
-      const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const rand = crypto.randomBytes(2).toString('hex').toUpperCase();
       const rollNumber = `SAM-${code}-${ts}-${rand}`;
 
       const userData = await adb.users.get(user.id);

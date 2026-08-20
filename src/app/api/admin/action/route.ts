@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { tracks } from "@/lib/curriculum";
+import { adminDb } from "@/lib/firebase-admin";
+import { FS } from "@/lib/firestore-schema";
 import { generateCertificatePDF } from "@/lib/pdfTemplates";
 import { sendCertificateEmail } from "@/lib/mailer";
+import crypto from "crypto";
 import { verifyAdminSession } from "@/lib/adminAuth";
+import { tracks } from "@/lib/curriculum";
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,10 +19,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid rollNumber or action parameter." }, { status: 400 });
     }
 
-    const intern = await db.interns.get(rollNumber);
-    if (!intern) {
+    if (!adminDb) return NextResponse.json({ error: "DB not initialized" }, { status: 500 });
+    const internSnap = await adminDb.collection("interns").where("rollNumber", "==", rollNumber).limit(1).get();
+    if (internSnap.empty) {
       return NextResponse.json({ error: "Intern record not found." }, { status: 404 });
     }
+    const internDoc = internSnap.docs[0];
+    const intern = internDoc.data();
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://samstack-tech.vercel.app";
     let responseData: Record<string, unknown> = { success: true };
@@ -28,22 +33,25 @@ export async function POST(request: NextRequest) {
     // ── APPROVE ──────────────────────────────────────────────────────────────
     if (action === "APPROVE") {
       // 1. Generate unique certificate ID
-      const certHex = Math.random().toString(16).substring(2, 10).toUpperCase();
+      const certHex = crypto.randomBytes(4).toString('hex').toUpperCase();
       const certificateNumber = `SAM-CERT-2026-${certHex}`;
 
       // 2. Resolve track title
       const trackTitle = tracks[intern.trackSelected]?.title || `${intern.trackSelected} Specialization`;
 
       // 3. Persist certificate in DB
-      const certificate = await db.certificates.create({
+      const certificate = {
         certificateNumber,
         associatedRollNumber: intern.rollNumber,
         recipientName: intern.fullName,
         trackTitle,
-      });
+        issuanceDate: new Date().toISOString(),
+        isValid: true,
+      };
+      await adminDb.collection("certificates").doc(certificateNumber).set(certificate);
 
       // 4. Mark intern as APPROVED
-      await db.interns.updateStatus(intern.rollNumber, "APPROVED");
+      await internDoc.ref.update({ status: "APPROVED" });
 
       console.log(`[FIREBASE] APPLICANT_APPROVED: ${intern.rollNumber} — cert ${certificateNumber}`);
 
@@ -82,7 +90,7 @@ export async function POST(request: NextRequest) {
 
     // ── REJECT ───────────────────────────────────────────────────────────────
     } else if (action === "REJECT") {
-      await db.interns.updateStatus(intern.rollNumber, "REJECTED");
+      await internDoc.ref.update({ status: "REJECTED" });
 
       console.log(`[FIREBASE] APPLICANT_REJECTED: ${intern.rollNumber} — ${intern.fullName}`);
 

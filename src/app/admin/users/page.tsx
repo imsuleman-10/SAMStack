@@ -6,10 +6,12 @@ import { DataTable } from '@/components/ui/DataTable';
 import { UserAvatar } from '@/components/ui/UserAvatar';
 import { RoleBadge } from '@/components/ui/RoleBadge';
 import { StatusBadge } from '@/components/ui/StatusBadge';
-import { UserPlus, MoreVertical, Edit } from 'lucide-react';
+import { UserPlus, Shield, Activity, Trash2, X, Loader2, Send, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import type { PlatformUser } from '@/lib/firestore-schema';
+import { UserQuickActionsMenu } from './components/UserQuickActionsMenu';
 
 export default function AdminUsersPage() {
   const router = useRouter();
@@ -18,6 +20,9 @@ export default function AdminUsersPage() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkAction, setBulkAction] = useState<{ type: string; loading: boolean } | null>(null);
+  const [sendingMailId, setSendingMailId] = useState<string | null>(null);
 
   const fetchUsers = async (p = 1, s = '') => {
     setLoading(true);
@@ -34,8 +39,9 @@ export default function AdminUsersPage() {
         setTotalPages(data.pages);
         setPage(data.page);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching users:', error);
+      toast.error(error.message || 'Failed to load users');
     } finally {
       setLoading(false);
     }
@@ -50,6 +56,48 @@ export default function AdminUsersPage() {
 
   const handleRowClick = (user: PlatformUser) => {
     router.push(`/admin/users/${user.id}`);
+  };
+
+  const handleBulkAction = async (action: 'CHANGE_ROLE' | 'CHANGE_STATUS' | 'DELETE', payload?: string) => {
+    if (!selectedIds.length) return;
+    if (action === 'DELETE' && !confirm(`Are you sure you want to delete ${selectedIds.length} users? This cannot be undone.`)) return;
+    
+    setBulkAction({ type: action, loading: true });
+    try {
+      const res = await fetch('/api/admin/users/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userIds: selectedIds, action, payload })
+      });
+      
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Bulk action failed');
+      }
+      
+      setSelectedIds([]);
+      fetchUsers(page, search);
+      toast.success(`Successfully applied bulk action to ${selectedIds.length} users`);
+    } catch (err: any) {
+      toast.error(err.message || 'An error occurred during bulk action');
+    } finally {
+      setBulkAction(null);
+    }
+  };
+
+  const handleSendCredentials = async (e: React.MouseEvent, userId: string) => {
+    e.stopPropagation(); // Prevent row click
+    setSendingMailId(userId);
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/send-credentials`, { method: 'POST' });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'Failed to send');
+      toast.success(`✅ Credentials sent to ${d.email}`);
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to send credentials');
+    } finally {
+      setSendingMailId(null);
+    }
   };
 
   return (
@@ -68,6 +116,75 @@ export default function AdminUsersPage() {
         }
       />
 
+      {/* Bulk Actions Bar */}
+      {selectedIds.length > 0 && (
+        <div className="mb-6 p-4 rounded-xl border bg-cyan-900/20 border-cyan-500/30 flex flex-wrap items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="flex items-center gap-3 text-sm text-cyan-100 font-medium">
+            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400">
+              {selectedIds.length}
+            </span>
+            Users Selected
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => handleBulkAction('CHANGE_ROLE', 'intern')}
+              disabled={!!bulkAction}
+              className="px-3 py-1.5 rounded-lg text-sm font-medium bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 border border-cyan-500/20 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+            >
+              {bulkAction?.type === 'CHANGE_ROLE' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
+              Role: Intern
+            </button>
+
+            <div className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-black/20 border border-white/5">
+              <Shield className="w-4 h-4 text-gray-400" />
+              <select 
+                className="bg-transparent text-sm text-gray-300 outline-none"
+                onChange={(e) => { if(e.target.value) { handleBulkAction('CHANGE_ROLE', e.target.value); e.target.value = ''; } }}
+                disabled={!!bulkAction}
+              >
+                <option value="" className="bg-gray-900">Change Role...</option>
+                <option value="admin" className="bg-gray-900">Admin</option>
+                <option value="mentor" className="bg-gray-900">Mentor</option>
+                <option value="intern" className="bg-gray-900">Intern</option>
+                <option value="staff" className="bg-gray-900">Staff</option>
+                <option value="member" className="bg-gray-900">Member</option>
+              </select>
+            </div>
+
+            <div className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-black/20 border border-white/5">
+              <Activity className="w-4 h-4 text-gray-400" />
+              <select 
+                className="bg-transparent text-sm text-gray-300 outline-none"
+                onChange={(e) => { if(e.target.value) { handleBulkAction('CHANGE_STATUS', e.target.value); e.target.value = ''; } }}
+                disabled={!!bulkAction}
+              >
+                <option value="" className="bg-gray-900">Change Status...</option>
+                <option value="active" className="bg-gray-900">Active</option>
+                <option value="suspended" className="bg-gray-900">Suspended</option>
+                <option value="inactive" className="bg-gray-900">Inactive</option>
+              </select>
+            </div>
+
+            <button
+              onClick={() => handleBulkAction('DELETE')}
+              disabled={!!bulkAction}
+              className="px-3 py-1.5 rounded-lg text-sm font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+            >
+              {bulkAction?.type === 'DELETE' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+              Delete
+            </button>
+
+            <button
+              onClick={() => setSelectedIds([])}
+              disabled={!!bulkAction}
+              className="p-1.5 ml-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      )}
+
       <DataTable
         data={users}
         isLoading={loading}
@@ -79,6 +196,9 @@ export default function AdminUsersPage() {
         page={page}
         totalPages={totalPages}
         onPageChange={(p) => fetchUsers(p, search)}
+        selectable={true}
+        selectedIds={selectedIds}
+        onSelectionChange={setSelectedIds}
         columns={[
           {
             key: 'user',
@@ -110,12 +230,10 @@ export default function AdminUsersPage() {
           },
           {
             key: 'actions',
-            label: '',
-            render: () => (
-              <div className="flex justify-end">
-                <button className="p-1 text-gray-500 hover:text-white transition-colors rounded hover:bg-white/10">
-                  <ChevronRightIcon className="w-4 h-4" />
-                </button>
+            label: 'Actions',
+            render: (u) => (
+              <div className="flex items-center justify-end gap-2">
+                <UserQuickActionsMenu user={u} onRefresh={() => fetchUsers(page, search)} />
               </div>
             ),
           },

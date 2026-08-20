@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase-admin";
 import { requireAuth, isAuthError } from "@/lib/session";
 import { FS } from "@/lib/firestore-schema";
-import type { PlatformUser, InternProfile, MentorProfile } from "@/lib/firestore-schema";
+import type { PlatformUser, InternProfile, MentorProfile, StaffProfile } from "@/lib/firestore-schema";
 
 // ─── GET /api/profile — own profile ──────────────────────────────────────────
 export async function GET(req: NextRequest) {
@@ -11,10 +11,11 @@ export async function GET(req: NextRequest) {
   const { session } = auth;
   if (!adminDb) return NextResponse.json({ error: "DB not available" }, { status: 500 });
 
-  const [userSnap, internProfileSnap, mentorProfileSnap] = await Promise.all([
+  const [userSnap, internProfileSnap, mentorProfileSnap, staffProfileSnap] = await Promise.all([
     adminDb.collection(FS.USERS).doc(session.id).get(),
     adminDb.collection(FS.INTERN_PROFILES).doc(session.id).get(),
     adminDb.collection(FS.MENTOR_PROFILES).doc(session.id).get(),
+    adminDb.collection(FS.STAFF_PROFILES).doc(session.id).get(),
   ]);
 
   if (!userSnap.exists) {
@@ -24,8 +25,9 @@ export async function GET(req: NextRequest) {
   const user = userSnap.data() as PlatformUser;
   const internProfile = internProfileSnap.exists ? (internProfileSnap.data() as InternProfile) : null;
   const mentorProfile = mentorProfileSnap.exists ? (mentorProfileSnap.data() as MentorProfile) : null;
+  const staffProfile = staffProfileSnap.exists ? (staffProfileSnap.data() as StaffProfile) : null;
 
-  return NextResponse.json({ user, internProfile, mentorProfile });
+  return NextResponse.json({ user, internProfile, mentorProfile, staffProfile });
 }
 
 // ─── PATCH /api/profile — update own profile ─────────────────────────────────
@@ -40,7 +42,7 @@ export async function PATCH(req: NextRequest) {
   // Fields a user is allowed to update on their own profile
   const allowedUserFields: (keyof PlatformUser)[] = [
     "full_name", "bio", "username", "city", "country", "address",
-    "gender", "date_of_birth", "phone", "skills", "social_links", "visibility",
+    "gender", "region", "language", "date_of_birth", "phone", "skills", "social_links", "visibility",
   ];
 
   const userUpdates: Record<string, unknown> = { updated_at: new Date().toISOString() };
@@ -55,7 +57,7 @@ export async function PATCH(req: NextRequest) {
 
   if (session.role === "intern" && body.internProfile) {
     const allowedInternFields: (keyof InternProfile)[] = [
-      "university", "degree", "semester", "cgpa", "department",
+      "university", "high_education", "current_education", "degree", "semester", "cgpa", "department",
       "position", "skills", "joining_date", "end_date", "roll_number", "track_selected",
     ];
     const internUpdates: Record<string, unknown> = { updated_at: now };
