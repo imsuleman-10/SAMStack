@@ -139,6 +139,29 @@ const organizationJsonLd = {
   "areaServed": [{ "@type": "Place", "name": "Worldwide" }],
   "serviceType": ["Web Application Development", "Enterprise Software", "AI & Machine Learning", "DevOps & Cloud Infrastructure", "UI/UX Design", "Mobile App Development"],
   "priceRange": "$$",
+  "founder": {
+    "@type": "Person",
+    "name": "Suleman Zaheer",
+    "jobTitle": "Founder & Lead Engineer",
+    "url": "https://samstack-tech.vercel.app/team/suleman-zaheer"
+  },
+  "employees": [
+    {
+      "@type": "Person",
+      "name": "Syed Abdullah",
+      "jobTitle": "Backend Engineer",
+      "url": "https://samstack-tech.vercel.app/team/syed-abdullah"
+    },
+    {
+      "@type": "Person",
+      "name": "Saqib Javed",
+      "jobTitle": "Frontend Engineer",
+      "url": "https://samstack-tech.vercel.app/team/saqib-javed"
+    }
+  ],
+  "sameAs": [
+    "https://github.com/imsuleman-10"
+  ],
   "openingHours": "Mo-Su 00:00-23:59",
   "aggregateRating": {
     "@type": "AggregateRating",

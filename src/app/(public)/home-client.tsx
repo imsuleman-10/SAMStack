@@ -113,7 +113,7 @@ export default function HomeClient() {
       >
         {/* No background image on section - clean solid background */}{/* Video */}
         <div className="absolute inset-0">
-          <video autoPlay loop muted playsInline className="w-full h-full object-cover" src="/hero-video.mp4" />
+          <video preload="metadata" poster="/logo.png" autoPlay loop muted playsInline className="w-full h-full object-cover bg-zinc-950" src="/hero-video.mp4" />
           <div className="absolute inset-0 bg-white/50 dark:bg-black/60 backdrop-blur-[2px]" />
           <div className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-slate-50 dark:from-black to-transparent" />
         </div>

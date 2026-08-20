@@ -55,12 +55,14 @@ export default function StickyVideoSection() {
           <video
             ref={videoRef}
             src="/2nd-vid.mp4"
+            preload="none"
+            poster="/logo.png"
             autoPlay
             muted
             playsInline
             loop
             onTimeUpdate={handleTimeUpdate}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover bg-zinc-950"
           />
         </motion.div>
 
@@ -100,11 +102,13 @@ export default function StickyVideoSection() {
           <div className="relative" style={{ height: "45vh" }}>
             <video
               src="/2nd-vid.mp4"
+              preload="none"
+              poster="/logo.png"
               autoPlay
               muted
               playsInline
               loop
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover bg-zinc-950"
             />
           </div>
         </motion.div>
